@@ -1,17 +1,21 @@
 package com.kk.nio.socket.httpserver.pervlet;
 
+import java.io.IOException;
+
 /**
- * ÓÃÀ´½øĞĞservletµÄÄ£Äâ
+ * ç”¨æ¥è¿›è¡Œservletçš„æ¨¡æ‹Ÿ
+ * 
  * @author Think
  *
  */
 public interface Pervlet {
-	
-	
+
 	/**
-	 * ½øĞĞÏà¹ØÒµÎñµÄ´¦Àí
-	 * @param req ÇëÇóĞÅÏ¢ 
-	 * @return ÏìÓ¦ĞÅÏ¢
+	 * è¿›è¡Œç›¸å…³ä¸šåŠ¡çš„å¤„ç†
+	 * 
+	 * @param req
+	 *            è¯·æ±‚ä¿¡æ¯
+	 * @return å“åº”ä¿¡æ¯
 	 */
-	public PvResponse process(PvRequest req);
+	public void process(PvRequest req, PvResponse rsp) throws IOException;
 }

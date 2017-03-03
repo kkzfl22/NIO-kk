@@ -5,31 +5,31 @@ import java.io.OutputStream;
 import java.util.Map;
 
 /**
- * Ä£ÄâµÄservletµÄÇëÇó
+ * æ¨¡æ‹Ÿçš„servletçš„è¯·æ±‚
  * @author Think
  *
  */
 public class PvRequest {
 	
 	/**
-	 * urlÖĞĞ¯´øµÄ²ÎÊı 
+	 * urlä¸­æºå¸¦çš„å‚æ•° 
 	 */
 	private Map<String,String> param;
 	
 	
 	/**
-	 * URLĞÅÏ¢
+	 * URLä¿¡æ¯
 	 */
 	private String url;
 	
 	/**
-	 * ÊäÈëÁ÷ĞÅÏ¢
+	 * è¾“å…¥æµä¿¡æ¯
 	 */
 	private InputStream input;
 	
 	
 	/**
-	 * Êä³öÁ÷ĞÅÏ¢
+	 * è¾“å‡ºæµä¿¡æ¯
 	 */
 	private OutputStream output ;
 

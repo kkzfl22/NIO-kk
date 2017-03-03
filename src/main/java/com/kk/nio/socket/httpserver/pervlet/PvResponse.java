@@ -1,15 +1,22 @@
 package com.kk.nio.socket.httpserver.pervlet;
 
+import java.io.OutputStream;
 
 /**
- * ½øĞĞservletµÄÏìÓ¦
+ * è¿›è¡Œservletçš„å“åº”
  * @author kk
- * @time 2017Äê3ÔÂ2ÈÕ
+ * @time 2017å¹´3æœˆ2æ—¥
  * @version 0.0.1
  */
 public class PvResponse {
 	
 	private StringBuilder msg = new StringBuilder();
+	
+	
+	/**
+	 * è¾“å‡ºæµä¿¡æ¯
+	 */
+	private OutputStream output ;
 	
 	public PvResponse(String initMsg)
 	{
@@ -22,6 +29,18 @@ public class PvResponse {
 
 	public void setMsg(String msg) {
 		this.msg.append(msg);
+	}
+
+	public OutputStream getOutput() {
+		return output;
+	}
+
+	public void setOutput(OutputStream output) {
+		this.output = output;
+	}
+
+	public void setMsg(StringBuilder msg) {
+		this.msg = msg;
 	}
 	
 	
