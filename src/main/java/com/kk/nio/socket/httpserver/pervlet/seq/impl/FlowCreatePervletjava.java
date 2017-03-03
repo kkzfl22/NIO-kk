@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 
-
 import com.kk.nio.socket.httpserver.pervlet.seq.ParamConfig;
 import com.kk.nio.socket.httpserver.pervlet.seq.SeqLinkedList;
 import com.kk.nio.socket.httpserver.pervlet.seq.ServiceExecInf;
@@ -33,7 +32,12 @@ public class FlowCreatePervletjava implements ServiceExecInf {
 			read = new FileReader(file);
 			bufferRead = new BufferedReader(read);
 
-			output = new FileOutputStream(filePath + "/" + CreatePervletFile.FileName + ".java");
+			String compPervletFile = filePath + "/" + CreatePervletFile.FileName + ".java";
+
+			seqList.putParam(ParamConfig.CONFIG_STR.PERVLET_COMPILER_FILE.getKey(), compPervletFile);
+
+			// 用来进行动态编译的文件的生成
+			output = new FileOutputStream(compPervletFile);
 
 			String line = null;
 
@@ -46,8 +50,7 @@ public class FlowCreatePervletjava implements ServiceExecInf {
 
 			output.write(javaFile.getMsg().getBytes());
 
-		} 
-		finally {
+		} finally {
 			IOUtils.colse(output);
 			IOUtils.colse(bufferRead);
 			IOUtils.colse(read);

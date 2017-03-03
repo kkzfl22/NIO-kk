@@ -11,7 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * httpµÄserverĞÅÏ¢
+ * httpçš„serverä¿¡æ¯
  * 
  * @author Think
  *
@@ -19,20 +19,20 @@ import java.net.Socket;
 public class HttpServer {
 
 	/**
-	 * Ä¬ÈÏµÄ¶Ë¿ÚĞÅÏ¢
+	 * é»˜è®¤çš„ç«¯å£ä¿¡æ¯
 	 */
 	private static final int PORT = 91;
 
 	public static void main(String[] args) {
 		try {
 			ServerSocket socket = new ServerSocket(PORT);
-			System.out.println("Æô¶¯³É¹¦£¬¶Ë¿Ú:" + PORT);
+			System.out.println("å¯åŠ¨æˆåŠŸï¼Œç«¯å£:" + PORT);
 
-			// ½ÓÊÕĞÅÏ¢
+			// æ¥æ”¶ä¿¡æ¯
 			while (true) {
-				// »ñµÃÍ¬²½µÄsocketµÄsocketĞÅÏ¢
+				// è·å¾—åŒæ­¥çš„socketçš„socketä¿¡æ¯
 				Socket synsokcet = socket.accept();
-				System.out.println("ÇëÇóĞÅÏ¢:" + synsokcet.toString());
+				System.out.println("è¯·æ±‚ä¿¡æ¯:" + synsokcet.toString());
 
 				LineNumberReader read = new LineNumberReader(new InputStreamReader(synsokcet.getInputStream()));
 
@@ -48,7 +48,7 @@ public class HttpServer {
 						reqPage = readLine.substring(readLine.indexOf('/') + 1, readLine.lastIndexOf(' '));
 						System.out.println("page info :" + reqPage);
 					} else {
-						// Èç¹ûÕÒµ½cookie
+						// å¦‚æœæ‰¾åˆ°cookie
 						if (readLine.startsWith("Cookie:")) {
 							cookieInfo = readLine;
 							System.out.println("cookie msg:" + cookieInfo);
@@ -109,7 +109,7 @@ public class HttpServer {
 	}
 
 	/**
-	 * Êä³öcookieĞÅÏ¢
+	 * è¾“å‡ºcookieä¿¡æ¯
 	 * 
 	 * @param userInfo
 	 * @param reqFile
@@ -125,7 +125,7 @@ public class HttpServer {
 		String rsponse = "HTTP/1.1 200 OK\r\n";
 		rsponse += "Server: kk server/1.0\r\n";
 
-		// Èç¹ûÓÃ»§µÄsessionĞÅÏ¢²»´æÔÚ£¬Ôò´´½¨
+		// å¦‚æœç”¨æˆ·çš„sessionä¿¡æ¯ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»º
 		if (null == userInfo) {
 			rsponse += getCookieMsg();
 		}

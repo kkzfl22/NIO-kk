@@ -21,6 +21,28 @@ public interface ParamConfig {
 		 */
 		PERVLET_CREATE_FILEPATH("pervlet.create.file.path"),
 
+		/**
+		 * 动态编译的文件的路径
+		 */
+		PERVLET_COMPILER_FILE("pervlet.compiler.file"),
+		
+		
+		/**
+		 * socket输入流信息
+		 */
+		PERVLET_SOCKET_INPUT("pervlet.socket.input"),
+
+		
+		/**
+		 * socket输出流信息
+		 */
+		PERVLET_SOCKET_OUTPUT("pervlet.socket.output"),
+		
+		
+		/**
+		 * 当前的参数map信息
+		 */
+		PERVLET_PARAM_MAP("pervlet.param.map"),
 		;
 
 		private String key;

@@ -9,6 +9,8 @@ import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -70,12 +72,23 @@ public class CorePervlet {
 		String reqPage = null;
 
 		String cookieInfo = null;
+		
+		Map<String, String> map =  null;
 
 		while ((readLine = read.readLine()) != null) {
 			System.out.println("line msg :" + readLine);
 
 			if (read.getLineNumber() == 1) {
-				reqPage = readLine.substring(readLine.indexOf('/') + 1, readLine.lastIndexOf(' '));
+				// 检查是否存在?号
+				if (readLine.indexOf("?") != -1) {
+					reqPage = readLine.substring(readLine.indexOf('/') + 1, readLine.indexOf("?"));
+					String lineValue = readLine.substring(readLine.indexOf("?") + 1, readLine.lastIndexOf(" "));
+					map= getParam(lineValue);
+
+				} else {
+
+					reqPage = readLine.substring(readLine.indexOf('/') + 1, readLine.lastIndexOf(' '));
+				}
 				System.out.println("page info :" + reqPage);
 			} else {
 				// 如果找到cookie
@@ -83,19 +96,30 @@ public class CorePervlet {
 					cookieInfo = readLine;
 					System.out.println("cookie msg:" + cookieInfo);
 				} else if (readLine.isEmpty()) {
-					outCookie(cookieInfo, reqPage, synsokcet);
-					readFile(reqPage, synsokcet);
+					// outCookie(cookieInfo, reqPage, synsokcet);
+					readFile(reqPage, map, synsokcet);
 
 				}
 			}
 		}
-
 	}
 
-	public void readFile(String reqFile, Socket sock) throws IOException {
+	private Map<String, String> getParam(String lineValue) {
+		Map<String, String> map = new HashMap<>();
+		String[] arrays = lineValue.split("&");
 
-		String path = CorePervlet.class.getClassLoader().getResource("com/kk/nio/socket/httpserver/pervlet")
-				.getPath();
+		for (int i = 0; i < arrays.length; i++) {
+			String[] items = arrays[i].split("=");
+
+			map.put(items[0], items[1]);
+		}
+
+		return map;
+	}
+
+	public void readFile(String reqFile, Map<String, String> param, Socket sock) throws IOException {
+
+		String path = CorePervlet.class.getClassLoader().getResource("com/kk/nio/socket/httpserver/pervlet").getPath();
 
 		File file = new File(path, reqFile);
 
@@ -103,7 +127,7 @@ public class CorePervlet {
 
 		if (file.exists()) {
 
-			PervletCoreFlow.runFlow(file,path);
+			PervletCoreFlow.runFlow(file, path, param,sock);
 
 			System.out.println("response over");
 		} else {
@@ -134,22 +158,22 @@ public class CorePervlet {
 
 		OutputStream output = sock.getOutputStream();
 
-		String msg = "I can't find file ....cry \r\n";
-
-		String rsponse = "HTTP/1.1 200 OK\r\n";
-		rsponse += "Server: kk server/1.0\r\n";
-
-		// 如果用户的session信息不存在，则创建
-		if (null == userInfo) {
-			rsponse += getCookieMsg();
-		}
-
-		rsponse += "Content-Length:" + (msg.length() - 4) + "\r\n";
-		rsponse += "\r\n";
-		rsponse += msg;
-
-		output.write(rsponse.getBytes());
-		output.flush();
+		// String msg = "I can't find file ....cry \r\n";
+		//
+		// String rsponse = "HTTP/1.1 200 OK\r\n";
+		// rsponse += "Server: kk server/1.0\r\n";
+		//
+		// // 如果用户的session信息不存在，则创建
+		// if (null == userInfo) {
+		// rsponse += getCookieMsg();
+		// }
+		//
+		// rsponse += "Content-Length:" + (msg.length() - 4) + "\r\n";
+		// rsponse += "\r\n";
+		// rsponse += msg;
+		//
+		// output.write(rsponse.getBytes());
+		// output.flush();
 
 	}
 

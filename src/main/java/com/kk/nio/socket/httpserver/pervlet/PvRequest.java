@@ -2,7 +2,9 @@ package com.kk.nio.socket.httpserver.pervlet;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 模拟的servlet的请求
@@ -74,6 +76,15 @@ public class PvRequest {
 	}
 
 	
-	
+	public static void main(String[] args) {
+		String ss = null;
+		PvRequest req = new PvRequest();
+		Iterator<Entry<String, String>> itervals = req.getParam().entrySet().iterator();
+		while(itervals.hasNext())
+		{
+			Entry<String, String> itemValeu = itervals.next();
+			ss = ss.replaceAll("\\$\\{"+itemValeu.getKey()+"\\}", itemValeu.getValue());
+		}
+	}
 	
 }

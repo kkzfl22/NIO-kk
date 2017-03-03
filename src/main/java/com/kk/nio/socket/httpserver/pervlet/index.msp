@@ -4,10 +4,11 @@
 </HEAD>
 <BODY>
 <P>
-<H3>Apache Tomcat Examples</H3>
+<H3>kk pervlet test</H3>
 <P></P>
 <ul>
-<li><a href="servlets">Servlets examples</a></li>
-<li><a href="jsp">perl-Examples</a></li>
+welcome to NIO ,name is ${username},password is ${passwd}
+<li><a href="servlets">out href</a></li>
+<li><a href="jsp">demo</a></li>
 </ul>
 </BODY></HTML>
