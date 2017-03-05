@@ -32,9 +32,9 @@ public class FlowCompilerPervlet implements ServiceExecInf {
 		InputStream input = (InputStream) seqList.getValue(ParamConfig.CONFIG_STR.PERVLET_SOCKET_INPUT.getKey());
 		OutputStream output = (OutputStream) seqList.getValue(ParamConfig.CONFIG_STR.PERVLET_SOCKET_OUTPUT.getKey());
 
-		Map<String,String> map = (Map<String, String>) seqList.getValue(ParamConfig.CONFIG_STR.PERVLET_PARAM_MAP.getKey());
-		
-		
+		Map<String, String> map = (Map<String, String>) seqList
+				.getValue(ParamConfig.CONFIG_STR.PERVLET_PARAM_MAP.getKey());
+
 		File comFile = new File(fileComp);
 
 		String classpathPath = FlowCompilerPervlet.class.getClassLoader().getResource(".").getPath();
@@ -55,7 +55,7 @@ public class FlowCompilerPervlet implements ServiceExecInf {
 		PvResponse rsp = new PvResponse();
 		rsp.setOutput(output);
 
-		Class corePerClass = Class.forName("com.kk.nio.socket.httpserver.pervlet.CorePervletProcess");
+		Class corePerClass = Class.forName("com.kk.nio.socket.httpserver.pervlet." + CreatePervletFile.FileName);
 		Method evalMethod = corePerClass.getMethod("process", PvRequest.class, PvResponse.class);
 		evalMethod.invoke(corePerClass.newInstance(), req, rsp);
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pervlets>
+	<pervlet>
+		<key>filesubmit.html</key>
+		<value>
+			<name>filesubmit</name>
+			<url>/filesubmit</url>
+			<javaClass>com.kk.nio.socket.httpserver.fileupload.pervletImpl.ReadFileProcess</javaClass>
+		</value>
+	</pervlet>
+	
+	<pervlet>
+		<key>fileUpload</key>
+		<value>
+			<name>filesubmit</name>
+			<url>/filesubmit</url>
+			<javaClass>com.kk.nio.socket.httpserver.fileupload.pervletImpl.FileUploadProcess</javaClass>
+		</value>
+	</pervlet>
+	
+</pervlets>

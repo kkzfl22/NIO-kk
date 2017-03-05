@@ -72,8 +72,8 @@ public class CorePervlet {
 		String reqPage = null;
 
 		String cookieInfo = null;
-		
-		Map<String, String> map =  null;
+
+		Map<String, String> map = new HashMap<>();
 
 		while ((readLine = read.readLine()) != null) {
 			System.out.println("line msg :" + readLine);
@@ -83,10 +83,9 @@ public class CorePervlet {
 				if (readLine.indexOf("?") != -1) {
 					reqPage = readLine.substring(readLine.indexOf('/') + 1, readLine.indexOf("?"));
 					String lineValue = readLine.substring(readLine.indexOf("?") + 1, readLine.lastIndexOf(" "));
-					map= getParam(lineValue);
+					getParam(lineValue, map);
 
 				} else {
-
 					reqPage = readLine.substring(readLine.indexOf('/') + 1, readLine.lastIndexOf(' '));
 				}
 				System.out.println("page info :" + reqPage);
@@ -104,8 +103,7 @@ public class CorePervlet {
 		}
 	}
 
-	private Map<String, String> getParam(String lineValue) {
-		Map<String, String> map = new HashMap<>();
+	private void getParam(String lineValue, Map<String, String> map) {
 		String[] arrays = lineValue.split("&");
 
 		for (int i = 0; i < arrays.length; i++) {
@@ -114,20 +112,21 @@ public class CorePervlet {
 			map.put(items[0], items[1]);
 		}
 
-		return map;
 	}
 
 	public void readFile(String reqFile, Map<String, String> param, Socket sock) throws IOException {
 
 		String path = CorePervlet.class.getClassLoader().getResource("com/kk/nio/socket/httpserver/pervlet").getPath();
 
-		File file = new File(path, reqFile);
+		String basepath = CorePervlet.class.getClassLoader().getResource(".").getPath();
+
+		File file = new File(basepath + "msp/", reqFile);
 
 		OutputStream output = sock.getOutputStream();
 
 		if (file.exists()) {
 
-			PervletCoreFlow.runFlow(file, path, param,sock);
+			PervletCoreFlow.runFlow(file, path, param, sock);
 
 			System.out.println("response over");
 		} else {
