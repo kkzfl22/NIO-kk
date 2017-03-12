@@ -1,4 +1,4 @@
-package com.kk.nio.socket.httpserver.util;
+package com.kk.nio.socket.util;
 
 import java.io.Closeable;
 

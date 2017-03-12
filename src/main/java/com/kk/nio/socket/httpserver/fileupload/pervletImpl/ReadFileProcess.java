@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import com.kk.nio.socket.httpserver.fileupload.PervletSocketInf;
 import com.kk.nio.socket.httpserver.fileupload.PervletUploadBean;
 import com.kk.nio.socket.httpserver.fileupload.comm.flowxml.PervletXml;
-import com.kk.nio.socket.httpserver.util.IOUtils;
+import com.kk.nio.socket.util.IOUtils;
 
 public class ReadFileProcess implements PervletSocketInf {
 

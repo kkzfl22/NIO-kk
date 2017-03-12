@@ -8,7 +8,7 @@ import java.io.FileReader;
 import com.kk.nio.socket.httpserver.pervlet.seq.ParamConfig;
 import com.kk.nio.socket.httpserver.pervlet.seq.SeqLinkedList;
 import com.kk.nio.socket.httpserver.pervlet.seq.ServiceExecInf;
-import com.kk.nio.socket.httpserver.util.IOUtils;
+import com.kk.nio.socket.util.IOUtils;
 
 /**
  * 创建核心的类文件信息

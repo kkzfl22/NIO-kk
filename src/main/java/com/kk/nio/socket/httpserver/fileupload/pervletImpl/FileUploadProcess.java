@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import com.kk.nio.socket.httpserver.fileupload.PervletSocketInf;
 import com.kk.nio.socket.httpserver.fileupload.PervletUploadBean;
-import com.kk.nio.socket.httpserver.util.IOUtils;
+import com.kk.nio.socket.util.IOUtils;
 
 /**
  * 进行文件的上传操作
