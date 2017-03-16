@@ -6,6 +6,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 用来进行NIO的轮循操作
@@ -25,6 +27,11 @@ public class ReactorNio extends Thread {
 	 * 服务器的socket信息
 	 */
 	private ServerSocketChannel serverSocket;
+	
+	/**
+	 * 线程池处理
+	 */
+	private ExecutorService execService = Executors.newFixedThreadPool(4);
 
 	/**
 	 * 用来构造基本的模型信息
@@ -52,7 +59,7 @@ public class ReactorNio extends Thread {
 		}
 
 	}
-
+	
 	@Override
 	public void run() {
 
@@ -76,9 +83,11 @@ public class ReactorNio extends Thread {
 				}
 				// 当发生其他读取或者写入事件，则使用IOHandler来处理
 				else {
-					System.out.println("收到其他处理请求..");
+					//System.out.println("收到其他处理请求..");
+					
+					execService.submit((IOHandler) selKey.attachment());
 					//进行具体的数据处理 
-					((IOHandler) selKey.attachment()).run();
+					//((IOHandler) selKey.attachment()).run();
 				}
 			}
 			//清除非当前感兴趣的事件

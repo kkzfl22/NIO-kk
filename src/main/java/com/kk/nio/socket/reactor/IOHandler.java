@@ -126,11 +126,12 @@ public class IOHandler implements Runnable {
 
 		// 4,当容量超过总容量的2分之一大小则需要压缩
 		if (readBuffer.position() > readBuffer.capacity() / 2) {
-			// 重新标识position
+			// 重新标识position,将当前的容量标识为buffer中已有数据的容量
 			readBuffer.limit(readBuffer.position());
+			//标识当前pos为上一次已经读取到的数据的pos
 			readBuffer.position(lastModPositon);
 
-			// 压缩数据
+			// 压缩数据,即将上一次读取之前的记录丢弃
 			readBuffer.compact();
 
 			lastModPositon = 0;
