@@ -6,7 +6,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-import com.kk.nio.socket.util.CmdUtils;
+import com.kk.nio.socket.reactor.command.CommandRun;
+import com.kk.nio.socket.reactor.command.WinCmdProcess;
 
 /**
  * 进行数据处理的接口
@@ -42,6 +43,16 @@ public class IOHandler implements Runnable {
 	 */
 	private int lastModPositon = 0;
 
+	/**
+	 * 进行cmd的运行
+	 */
+	private CommandRun cmdRun = new CommandRun();
+
+	/**
+	 * 当前的命令模式信息
+	 */
+	private String runCmd;
+
 	public IOHandler(SocketChannel channel, Selector select) throws IOException {
 		// 设置非阻塞模式
 		channel.configureBlocking(false);
@@ -63,7 +74,8 @@ public class IOHandler implements Runnable {
 		// 首先从服务器向客户端写入一段话，提示欢迎信息
 		writeBuffer.put("welcome to kk reactor nio!\r\n".getBytes());
 		writeBuffer.flip();
-		this.doWrite();
+
+		cmdRun.doWrite(WinCmdProcess.WIN_START, writeBuffer, selectKey);
 	}
 
 	@Override
@@ -73,7 +85,8 @@ public class IOHandler implements Runnable {
 			if (selectKey.isReadable()) {
 				doRead();
 			} else if (selectKey.isWritable()) {
-				doWrite();
+				// 进行持续的写入
+				cmdRun.doWrite(runCmd, writeBuffer, selectKey);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -117,18 +130,16 @@ public class IOHandler implements Runnable {
 		if (null != line && !"".equals(line)) {
 			// 取消事件注册
 			selectKey.interestOps(selectKey.interestOps() & ~SelectionKey.OP_READ);
-			// 执行命令
-			String msg = CmdUtils.runCmd(line);
-			writeBuffer.put(msg.getBytes("GBK"));
-			writeBuffer.flip();
-			doWrite();
+
+			// 进行操作
+			cmdRun.runCmd(line, selectKey);
 		}
 
 		// 4,当容量超过总容量的2分之一大小则需要压缩
 		if (readBuffer.position() > readBuffer.capacity() / 2) {
 			// 重新标识position,将当前的容量标识为buffer中已有数据的容量
 			readBuffer.limit(readBuffer.position());
-			//标识当前pos为上一次已经读取到的数据的pos
+			// 标识当前pos为上一次已经读取到的数据的pos
 			readBuffer.position(lastModPositon);
 
 			// 压缩数据,即将上一次读取之前的记录丢弃
@@ -138,18 +149,20 @@ public class IOHandler implements Runnable {
 		}
 	}
 
-	public void doWrite() throws IOException {
-		int rds = channel.write(writeBuffer);
+	public String getRunCmd() {
+		return runCmd;
+	}
 
-		// 如果需要继续写入，则继续注册事件，否则，仅关注读取事件
-		if (writeBuffer.hasRemaining()) {
-			System.out.println("write :" + rds + ";");
-			selectKey.interestOps(selectKey.interestOps() | SelectionKey.OP_WRITE);
-		} else {
-			System.out.println("write :" + rds + ";");
-			writeBuffer.clear();
-			selectKey.interestOps(selectKey.interestOps() & ~SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-		}
+	public void setRunCmd(String runCmd) {
+		this.runCmd = runCmd;
+	}
+
+	public ByteBuffer getWriteBuffer() {
+		return writeBuffer;
+	}
+
+	public void setWriteBuffer(ByteBuffer writeBuffer) {
+		this.writeBuffer = writeBuffer;
 	}
 
 }
