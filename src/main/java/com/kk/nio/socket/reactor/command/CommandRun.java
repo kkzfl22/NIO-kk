@@ -14,6 +14,9 @@ import java.util.Map;
  */
 public class CommandRun {
 
+	/**
+	 * 进行数据的运行时的map处理
+	 */
 	private static final Map<String, CommandInf> RUNCOMMAND = new HashMap<>();
 
 	static {
