@@ -82,7 +82,6 @@ public class DirectByteBufferChunk implements Comparable<DirectByteBufferChunk> 
 				for (int i = 0; i < chunkNum; i++) {
 					memoryUse.set(i, true);
 				}
-
 			} else {
 				bufferPool = null;
 				memoryUse = null;

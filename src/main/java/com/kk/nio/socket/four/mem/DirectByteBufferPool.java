@@ -33,6 +33,7 @@ public class DirectByteBufferPool {
 	public DirectByteBufferPool() {
 		// 128字节的大小进行分配
 		int index = 128;
+		//限制单内内存不能太大，131072 
 		while (initChunkSize / index > 4) {
 			useSet.add(new DirectByteBufferChunk(initChunkSize, index));
 			index = index * 2;

@@ -16,39 +16,38 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DirectByteBufferPool {
 
 	/**
-	 * 进行容量的存储
+	 * 内存池对象信息
 	 */
 	private final ByteBuffer[] bufferPool;
 
 	/**
-	 * 使用的buffer的记录
+	 * 节点保存信息
 	 */
 	private final TreeSet<Integer> useSet;
 
 	/**
 	 * 最大的内存块大小
 	 */
-	private int bufferSize;
+	private final int bufferSize;
 
 	/**
 	 * 是否锁定标识 isLock
 	 */
 	protected AtomicBoolean isLock = new AtomicBoolean(false);
 
+	int maxSize = 0;
+
 	/**
 	 * 初始化内存池信息
 	 * 
-	 * @param poolSize
-	 *            池信息
-	 * @param bufferSize
-	 *            单内内存块大小
+	 * @param memSize
+	 *            以m为单位的分配
 	 */
 	public DirectByteBufferPool(int poolSize, int bufferSize) {
+		this.bufferSize = bufferSize;
 		try {
 			// 如果成功则进行内存对象信息的分配
 			if (isLock.compareAndSet(false, true)) {
-
-				this.bufferSize = bufferSize;
 
 				bufferPool = new ByteBuffer[poolSize];
 				useSet = new TreeSet<>();
