@@ -3,41 +3,24 @@ package com.kk.nio.socket.multreactor.procchain;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 用来进行流程执行上下文对象信息
+ * 使用链式处理
  * 
- * @since 2017年3月28日 下午7:02:27
+ * @since 2017年3月28日 下午5:06:56
  * @version 0.0.1
  * @author liujun
  */
-public class ContextChain {
+public class ChainTelnetIOHandler extends ChainMultIOHandler {
 
 	/**
-	 * 用来存放流程的容器
+	 * 换行符
 	 */
-	private List<MsgProcessInf> chainInvoke = new LinkedList<MsgProcessInf>();
-
-	/**
-	 * 用来存放参数的集合
-	 */
-	private Map<String, Object> param = new HashMap<String, Object>();
-
-	/**
-	 * 通道信息
-	 */
-	private final SocketChannel socketChannel;
-
-	/**
-	 * 进行写入的buffer信息
-	 */
-	private volatile ByteBuffer writeBuffer;
+	private static final String LINE = "\r\n";
 
 	/**
 	 * 写的入队列信息
@@ -49,116 +32,44 @@ public class ContextChain {
 	 */
 	private AtomicBoolean writeFlag = new AtomicBoolean(false);
 
-	/**
-	 * 分配的读取的readerbuffer信息
-	 */
-	private ByteBuffer readerBuffer;
+	public ChainTelnetIOHandler(Selector select, SocketChannel socket) throws IOException {
 
-	/**
-	 * socket通道信息
-	 */
-	protected SelectionKey selectKey;
+		super(select, socket);
 
-	/**
-	 * 最后的位置信息
-	 */
-	private int lastModPositon;
+		// 进行数据的首次写入
+		this.doConnection();
 
-	public ContextChain(SocketChannel socketChannel, SelectionKey selectKey) {
-		this.socketChannel = socketChannel;
-		this.readerBuffer = ByteBuffer.allocate(1024);
-		this.selectKey = selectKey;
 	}
 
-	/**
-	 * 添加流程代码
-	 * 
-	 * @param serviceExec
-	 */
-	public void addExec(MsgProcessInf serviceExec) {
-		this.chainInvoke.add(serviceExec);
+	@Override
+	protected void doConnection() throws IOException {
+		StringBuilder msg = new StringBuilder();
+
+		msg.append("welcome come to kk telnet server,please input command !").append(LINE);
+		msg.append("1,input command ").append(LINE);
+		msg.append("2,exit ").append(LINE);
+
+		this.writeData(msg.toString().getBytes());
 	}
 
-	/**
-	 * 添加流程代码
-	 * 
-	 * @param serviceExec
-	 *            [] 流程执行数组
-	 */
-	public void addExec(MsgProcessInf[] serviceExec) {
-		if (null != serviceExec) {
-			for (int i = 0; i < serviceExec.length; i++) {
-				this.chainInvoke.add(serviceExec[i]);
-			}
+	@Override
+	protected void doHandler() throws IOException {
+		System.out.println("当前读取操作");
+	}
+
+	@Override
+	protected void onError() {
+		System.out.println("curr handler process error");
+	}
+
+	@Override
+	protected void onClose() {
+		this.selectKey.cancel();
+		try {
+			this.selectKey.channel().close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-	}
-
-	public void putParam(String key, Object value) {
-		this.param.put(key, value);
-	}
-
-	public Object getValue(String key) {
-		return param.get(key);
-	}
-
-	public Map<String, Object> getParam() {
-		return param;
-	}
-
-	/**
-	 * 执行下一个流程代码
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean nextDoInvoke() throws IOException {
-
-		if (null != chainInvoke && chainInvoke.size() > 0) {
-
-			MsgProcessInf servExec = chainInvoke.remove(0);
-
-			return servExec.invoke(this);
-		} else {
-			// 运行完毕，索引结束
-			return true;
-		}
-
-	}
-
-	public List<MsgProcessInf> getChainInvoke() {
-		return chainInvoke;
-	}
-
-	public SocketChannel getSocketChannel() {
-		return socketChannel;
-	}
-
-	public ByteBuffer getWriteBuffer() {
-		return writeBuffer;
-	}
-
-	public LinkedList<ByteBuffer> getWriteQueue() {
-		return writeQueue;
-	}
-
-	public AtomicBoolean getWriteFlag() {
-		return writeFlag;
-	}
-
-	public ByteBuffer getReaderBuffer() {
-		return readerBuffer;
-	}
-
-	public SelectionKey getSelectKey() {
-		return selectKey;
-	}
-
-	public int getLastModPositon() {
-		return lastModPositon;
-	}
-
-	public void setLastModPositon(int lastModPositon) {
-		this.lastModPositon = lastModPositon;
 	}
 
 	/**

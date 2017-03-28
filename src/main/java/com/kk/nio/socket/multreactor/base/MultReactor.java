@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor;
+package com.kk.nio.socket.multreactor.base;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -6,6 +6,9 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+
+import com.kk.nio.socket.multreactor.procchain.ChainMultIOHandler;
+import com.kk.nio.socket.multreactor.procchain.ChainTelnetIOHandler;
 
 /**
  * 多路reactor实现
@@ -40,9 +43,7 @@ public class MultReactor extends Thread {
 	public void rigisterNewConn(SocketChannel socket) throws IOException {
 
 		System.out.println("register conn :" + socket);
-		// new TelnetIOHandler(select, socket);
-		// new TelnetEnDecoderIOHandler(select, socket);
-		new TelnetChainIOHandler(select, socket);
+		 new TelnetIOHandler(select, socket);
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class MultReactor extends Thread {
 		Set<SelectionKey> selectKey = null;
 		while (true) {
 			try {
-				select.select(500);
+				select.select(200);
 				selectKey = select.selectedKeys();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -60,9 +61,8 @@ public class MultReactor extends Thread {
 
 			for (SelectionKey selectionKey : selectKey) {
 				// 从attach对象中获取处理对象信息
-				// MultIOHandler handler = (MultIOHandler)
-				// selectionKey.attachment();
-				MultChainIOHandler handler = (MultChainIOHandler) selectionKey.attachment();
+				MultIOHandler handler = (MultIOHandler) selectionKey.attachment();
+				//MultChainIOHandler handler = (MultChainIOHandler) selectionKey.attachment();
 				// 提交线程池处理
 				executor.execute(handler);
 			}

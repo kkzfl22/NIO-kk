@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor;
+package com.kk.nio.socket.multreactor.base;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -14,6 +14,12 @@ public class TelnetIOHandler extends MultIOHandler {
 	 * 上一次写入的位置
 	 */
 	private int lastModPositon = 0;
+	
+	
+	/**
+	 * 换行符信息
+	 */
+	private static final String LINE = "\r\n";
 
 	public TelnetIOHandler(Selector select, SocketChannel socket) throws IOException {
 		super(select, socket);
@@ -23,9 +29,9 @@ public class TelnetIOHandler extends MultIOHandler {
 	protected void doConnection() throws IOException {
 		StringBuilder msg = new StringBuilder();
 
-		msg.append("welcome come to kk telnet server,please input command !\n");
-		msg.append("1,input command \n");
-		msg.append("2,exit \n");
+		msg.append("welcome come to kk telnet server,please input command !").append(LINE);
+		msg.append("1,input command ").append(LINE);
+		msg.append("2,exit ").append(LINE);
 
 		this.writeData(msg.toString().getBytes());
 	}

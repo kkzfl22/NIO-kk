@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor;
+package com.kk.nio.socket.multreactor.procchain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -13,7 +13,7 @@ import java.nio.channels.SocketChannel;
  * @version 0.0.1
  * @author liujun
  */
-public abstract class MultChainIOHandler implements Runnable {
+public abstract class ChainMultIOHandler implements Runnable {
 
 	/**
 	 * 选择器信息
@@ -30,7 +30,19 @@ public abstract class MultChainIOHandler implements Runnable {
 	 */
 	protected SocketChannel socketChannel;
 
-	public MultChainIOHandler(Selector select, SocketChannel socket) throws IOException {
+	/**
+	 * 分配的读取的readerbuffer信息
+	 */
+	protected ByteBuffer readerBuffer;
+
+	/**
+	 * 进行写入的buffer信息
+	 */
+	protected volatile ByteBuffer writeBuffer;
+	
+	
+
+	public ChainMultIOHandler(Selector select, SocketChannel socket) throws IOException {
 		super();
 		this.select = select;
 		this.socketChannel = socket;
@@ -89,6 +101,16 @@ public abstract class MultChainIOHandler implements Runnable {
 	protected abstract void writeData() throws IOException;
 
 	/**
+	 * 进行数据的写入
+	 * 
+	 * @param data
+	 *            写的数据
+	 * @throws IOException
+	 *             异常信息
+	 */
+	protected abstract void writeData(byte[] data) throws IOException;
+
+	/**
 	 * 进行具体的事件的错误处理
 	 * 
 	 * @throws IOException
@@ -102,4 +124,21 @@ public abstract class MultChainIOHandler implements Runnable {
 	 */
 	protected abstract void onClose();
 
+	public ByteBuffer getReaderBuffer() {
+		return readerBuffer;
+	}
+
+	public void setReaderBuffer(ByteBuffer readerBuffer) {
+		this.readerBuffer = readerBuffer;
+	}
+
+	public ByteBuffer getWriteBuffer() {
+		return writeBuffer;
+	}
+
+	public void setWriteBuffer(ByteBuffer writeBuffer) {
+		this.writeBuffer = writeBuffer;
+	}
+	
+	
 }
