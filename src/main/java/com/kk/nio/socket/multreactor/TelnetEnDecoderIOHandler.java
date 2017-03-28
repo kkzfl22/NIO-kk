@@ -5,28 +5,40 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
+import com.kk.nio.socket.multreactor.endecoder.CoderProcess;
+import com.kk.nio.socket.multreactor.endecoder.EnDecoderBean;
+import com.kk.nio.socket.multreactor.endecoder.LineMsgCoderProcess;
 import com.kk.nio.socket.reactor.command.CommandRun;
 import com.kk.nio.socket.util.CmdUtils;
 
-public class TelnetIOHandler extends MultIOHandler {
+/**
+ * 带消息编解处理的实现
+ * 
+ * @since 2017年3月28日 下午5:06:56
+ * @version 0.0.1
+ * @author liujun
+ */
+public class TelnetEnDecoderIOHandler extends MultIOHandler {
 
 	/**
 	 * 上一次写入的位置
 	 */
 	private int lastModPositon = 0;
 
-	public TelnetIOHandler(Selector select, SocketChannel socket) throws IOException {
+	private CoderProcess<String> process = new LineMsgCoderProcess();
+
+	public TelnetEnDecoderIOHandler(Selector select, SocketChannel socket) throws IOException {
 		super(select, socket);
 	}
 
 	@Override
 	protected void doConnection() throws IOException {
 		StringBuilder msg = new StringBuilder();
-		
-		msg.append("welcome come to kk telnet server,please input command !\n");
-		msg.append("1,input command \n");
-		msg.append("2,exit \n");
-		
+
+		msg.append("welcome come to kk telnet server,please input command !\r\n");
+		msg.append("1,input command \r\n");
+		msg.append("2,exit \r\n");
+
 		this.writeData(msg.toString().getBytes());
 	}
 
@@ -36,27 +48,12 @@ public class TelnetIOHandler extends MultIOHandler {
 		// 1,首先从将数据加载到bytebuffer中
 		socketChannel.read(readerBuffer);
 
-		// 取得当前的位置
-		int readOpts = readerBuffer.position();
+		// 首先进行消息的解码
+		EnDecoderBean decodeBean = new EnDecoderBean(readerBuffer, lastModPositon);
+		String line = process.decoder(decodeBean);
 
-		String line = null;
-
-		// 2,将数据按行进行分隔,得到一行记录
-		for (int i = lastModPositon; i < readOpts; i++) {
-			// 找到换行符
-			if (readerBuffer.get(i) == 13) {
-				byte[] byteValue = new byte[i - lastModPositon];
-				// 标识位置，然后开始读取
-				readerBuffer.position(lastModPositon);
-				readerBuffer.get(byteValue);
-
-				lastModPositon = i;
-
-				line = new String(byteValue);
-				System.out.println("收到msg :" + line);
-				break;
-			}
-		}
+		// 重新设置最后的位置
+		this.lastModPositon = decodeBean.getLastModPositon();
 
 		// 3,检查是否需要执行命令,将数据写入返回
 		if (null != line && !"".equals(line)) {

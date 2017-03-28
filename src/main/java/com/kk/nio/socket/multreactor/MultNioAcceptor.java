@@ -68,6 +68,7 @@ public class MultNioAcceptor implements Runnable {
 						ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();
 						// 接收到socket连接
 						SocketChannel socket = channel.accept();
+						
 						System.out.println("curr connection event :" + socket.getRemoteAddress());
 						int index = ThreadLocalRandom.current().nextInt(0, this.reactor.length);
 						// 注册新连接

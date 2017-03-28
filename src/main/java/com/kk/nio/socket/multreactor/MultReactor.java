@@ -40,7 +40,8 @@ public class MultReactor extends Thread {
 	public void rigisterNewConn(SocketChannel socket) throws IOException {
 
 		System.out.println("register conn :" + socket);
-		new TelnetIOHandler(select, socket);
+		//new TelnetIOHandler(select, socket);
+		new TelnetEnDecoderIOHandler(select, socket);
 	}
 
 	@Override
