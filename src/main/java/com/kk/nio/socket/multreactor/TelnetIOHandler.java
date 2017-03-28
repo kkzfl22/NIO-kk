@@ -22,11 +22,11 @@ public class TelnetIOHandler extends MultIOHandler {
 	@Override
 	protected void doConnection() throws IOException {
 		StringBuilder msg = new StringBuilder();
-		
+
 		msg.append("welcome come to kk telnet server,please input command !\n");
 		msg.append("1,input command \n");
 		msg.append("2,exit \n");
-		
+
 		this.writeData(msg.toString().getBytes());
 	}
 
@@ -60,7 +60,7 @@ public class TelnetIOHandler extends MultIOHandler {
 
 		// 3,检查是否需要执行命令,将数据写入返回
 		if (null != line && !"".equals(line)) {
-			// 取消事件注册
+			// 取消事件注册，因为要应答数据
 			selectKey.interestOps(selectKey.interestOps() & ~SelectionKey.OP_READ);
 
 			// 执行命令
@@ -85,6 +85,21 @@ public class TelnetIOHandler extends MultIOHandler {
 			lastModPositon = 0;
 		}
 
+	}
+
+	@Override
+	protected void onError() {
+		System.out.println("curr hander process error :");
+	}
+
+	@Override
+	protected void onClose() {
+		this.selectKey.cancel();
+		try {
+			this.selectKey.channel().close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

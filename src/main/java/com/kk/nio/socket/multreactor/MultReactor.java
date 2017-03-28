@@ -40,8 +40,9 @@ public class MultReactor extends Thread {
 	public void rigisterNewConn(SocketChannel socket) throws IOException {
 
 		System.out.println("register conn :" + socket);
-		//new TelnetIOHandler(select, socket);
-		new TelnetEnDecoderIOHandler(select, socket);
+		// new TelnetIOHandler(select, socket);
+		// new TelnetEnDecoderIOHandler(select, socket);
+		new TelnetChainIOHandler(select, socket);
 	}
 
 	@Override
@@ -59,7 +60,9 @@ public class MultReactor extends Thread {
 
 			for (SelectionKey selectionKey : selectKey) {
 				// 从attach对象中获取处理对象信息
-				MultIOHandler handler = (MultIOHandler) selectionKey.attachment();
+				// MultIOHandler handler = (MultIOHandler)
+				// selectionKey.attachment();
+				MultChainIOHandler handler = (MultChainIOHandler) selectionKey.attachment();
 				// 提交线程池处理
 				executor.execute(handler);
 			}

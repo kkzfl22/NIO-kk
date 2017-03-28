@@ -8,7 +8,7 @@ public class MainMultReactor {
 
 	public static void main(String[] args) throws IOException {
 		// 生成线程池
-		ExecutorService executeService = Executors.newCachedThreadPool();
+		ExecutorService executeService = Executors.newFixedThreadPool(8);
 
 		// 获取计算机的核数
 		int coreNum = Runtime.getRuntime().availableProcessors() / 2;

@@ -1,36 +1,38 @@
-package com.kk.nio.socket.multreactor;
+package com.kk.nio.socket.multreactor.procchain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 所有Iohandler操作
+ * 用来进行流程执行上下文对象信息
  * 
- * @since 2017年3月28日 下午2:45:41
+ * @since 2017年3月28日 下午7:02:27
  * @version 0.0.1
  * @author liujun
  */
-public abstract class MultIOHandler implements Runnable {
+public class ContextChain {
 
 	/**
-	 * 选择器信息
+	 * 用来存放流程的容器
 	 */
-	protected final Selector select;
+	private List<MsgProcessInf> chainInvoke = new LinkedList<MsgProcessInf>();
 
 	/**
-	 * socket通道信息
+	 * 用来存放参数的集合
 	 */
-	protected final SelectionKey selectKey;
+	private Map<String, Object> param = new HashMap<String, Object>();
 
 	/**
 	 * 通道信息
 	 */
-	protected SocketChannel socketChannel;
+	private final SocketChannel socketChannel;
 
 	/**
 	 * 进行写入的buffer信息
@@ -50,76 +52,114 @@ public abstract class MultIOHandler implements Runnable {
 	/**
 	 * 分配的读取的readerbuffer信息
 	 */
-	protected ByteBuffer readerBuffer;
+	private ByteBuffer readerBuffer;
 
-	public MultIOHandler(Selector select, SocketChannel socket) throws IOException {
-		super();
-		this.select = select;
-		this.socketChannel = socket;
+	/**
+	 * socket通道信息
+	 */
+	protected SelectionKey selectKey;
 
-		// 设置为非阻塞模式
-		socket.configureBlocking(false);
+	/**
+	 * 最后的位置信息
+	 */
+	private int lastModPositon;
 
-		// 注册当前为reader事件感兴趣
-		selectKey = socketChannel.register(select, SelectionKey.OP_READ);
-
-		readerBuffer = ByteBuffer.allocateDirect(1024);
-
-		// 将当前对象信息附加到通道上
-		selectKey.attach(this);
-
-		// 进行数据的首次写入
-		this.doConnection();
+	public ContextChain(SocketChannel socketChannel, SelectionKey selectKey) {
+		this.socketChannel = socketChannel;
+		this.readerBuffer = ByteBuffer.allocate(1024);
+		this.selectKey = selectKey;
 	}
 
-	@Override
-	public void run() {
-		try {
-			// 进行写入操作
-			if (selectKey.isWritable()) {
-				this.writeData();
-			}
-			// 进行读取数据处理操作
-			else if (selectKey.isReadable()) {
-				this.doHandler();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			// 发生错误，调用onerror方法
-			this.onError();
-			// 将当前通道关闭
-			this.onClose();
+	/**
+	 * 添加流程代码
+	 * 
+	 * @param serviceExec
+	 */
+	public void addExec(MsgProcessInf serviceExec) {
+		this.chainInvoke.add(serviceExec);
+	}
 
+	/**
+	 * 添加流程代码
+	 * 
+	 * @param serviceExec
+	 *            [] 流程执行数组
+	 */
+	public void addExec(MsgProcessInf[] serviceExec) {
+		if (null != serviceExec) {
+			for (int i = 0; i < serviceExec.length; i++) {
+				this.chainInvoke.add(serviceExec[i]);
+			}
 		}
 	}
 
-	/**
-	 * 连接处理
-	 * 
-	 * @throws IOException
-	 */
-	protected abstract void doConnection() throws IOException;
+	public void putParam(String key, Object value) {
+		this.param.put(key, value);
+	}
+
+	public Object getValue(String key) {
+		return param.get(key);
+	}
+
+	public Map<String, Object> getParam() {
+		return param;
+	}
 
 	/**
-	 * 进行具体的事件的数据处理
+	 * 执行下一个流程代码
 	 * 
-	 * @throws IOException
+	 * @return
+	 * @throws Exception
 	 */
-	protected abstract void doHandler() throws IOException;
+	public boolean nextDoInvoke() throws IOException {
 
-	/**
-	 * 进行具体的事件的错误处理
-	 * 
-	 * @throws IOException
-	 */
-	protected abstract void onError();
+		if (null != chainInvoke && chainInvoke.size() > 0) {
 
-	/**
-	 * 进行具体的
-	 * 
-	 * @throws IOException
-	 */
-	protected abstract void onClose();
+			MsgProcessInf servExec = chainInvoke.remove(0);
+
+			return servExec.invoke(this);
+		} else {
+			// 运行完毕，索引结束
+			return true;
+		}
+
+	}
+
+	public List<MsgProcessInf> getChainInvoke() {
+		return chainInvoke;
+	}
+
+	public SocketChannel getSocketChannel() {
+		return socketChannel;
+	}
+
+	public ByteBuffer getWriteBuffer() {
+		return writeBuffer;
+	}
+
+	public LinkedList<ByteBuffer> getWriteQueue() {
+		return writeQueue;
+	}
+
+	public AtomicBoolean getWriteFlag() {
+		return writeFlag;
+	}
+
+	public ByteBuffer getReaderBuffer() {
+		return readerBuffer;
+	}
+
+	public SelectionKey getSelectKey() {
+		return selectKey;
+	}
+
+	public int getLastModPositon() {
+		return lastModPositon;
+	}
+
+	public void setLastModPositon(int lastModPositon) {
+		this.lastModPositon = lastModPositon;
+	}
 
 	/**
 	 * 进行数据的写入
@@ -153,6 +193,11 @@ public abstract class MultIOHandler implements Runnable {
 		}
 	}
 
+	/**
+	 * 进行数据写入
+	 * 
+	 * @throws IOException
+	 */
 	public void writeData() throws IOException {
 		// 多次检查，当前仅一个进行发送数据
 		while (this.writeFlag.compareAndSet(false, true)) {
@@ -167,6 +212,12 @@ public abstract class MultIOHandler implements Runnable {
 		}
 	}
 
+	/**
+	 * 将数据写入通道
+	 * 
+	 * @param writeBufferinfo
+	 * @throws IOException
+	 */
 	private void doWriteToChannel(ByteBuffer writeBufferinfo) throws IOException {
 		int writeLength = socketChannel.write(writeBufferinfo);
 		System.out.println("curr write length :" + writeLength);

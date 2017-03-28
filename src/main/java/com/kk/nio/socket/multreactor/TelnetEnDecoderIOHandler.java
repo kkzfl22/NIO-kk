@@ -59,7 +59,6 @@ public class TelnetEnDecoderIOHandler extends MultIOHandler {
 		if (null != line && !"".equals(line)) {
 			// 取消事件注册
 			selectKey.interestOps(selectKey.interestOps() & ~SelectionKey.OP_READ);
-
 			// 执行命令
 			String msg = CmdUtils.runCmd(line);
 			try {
@@ -82,6 +81,18 @@ public class TelnetEnDecoderIOHandler extends MultIOHandler {
 			lastModPositon = 0;
 		}
 
+	}
+
+	@Override
+	protected void onError() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onClose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
