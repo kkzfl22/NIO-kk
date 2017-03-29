@@ -2,11 +2,16 @@ package com.kk.nio.socket.multreactor.procchain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.kk.nio.socket.multreactor.procchain.chain.Context;
+import com.kk.nio.socket.multreactor.procchain.chain.MsgBaseInf;
+import com.kk.nio.socket.multreactor.procchain.chain.MsgDataServiceInf;
+import com.kk.nio.socket.multreactor.procchain.chain.MsgEnDecodeInf;
+import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgEnDecodeHandler;
+import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgHandlerBase;
+import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgServiceHandler;
 
 /**
  * 使用链式处理
@@ -23,22 +28,46 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 	private static final String LINE = "\r\n";
 
 	/**
-	 * 写的入队列信息
+	 * 消息最基本的操作接口,用来发送与接收数据
 	 */
-	private volatile LinkedList<ByteBuffer> writeQueue = new LinkedList<>();
+	protected MsgBaseInf msgBase = new ReactorMsgHandlerBase();
 
 	/**
-	 * 写入标识
+	 * 进行消息的编解码信息
 	 */
-	private AtomicBoolean writeFlag = new AtomicBoolean(false);
+	protected MsgEnDecodeInf<String> msgEnDecode = new ReactorMsgEnDecodeHandler(msgBase);
+
+	/**
+	 * 进行消息的业务处理
+	 */
+	protected MsgDataServiceInf msgDataService = new ReactorMsgServiceHandler(msgEnDecode);
+
+	/**
+	 * 数据读取的buffer
+	 */
+	private ByteBuffer readBuffer;
+
+	/**
+	 * 数据写入的 buffer
+	 */
+	private ByteBuffer writeBuffer;
+
+	/**
+	 * 上下文对象信息
+	 */
+	private final Context context;
 
 	public ChainTelnetIOHandler(Selector select, SocketChannel socket) throws IOException {
-
 		super(select, socket);
+
+		this.readBuffer = ByteBuffer.allocateDirect(256);
+
+		this.writeBuffer = ByteBuffer.allocateDirect(4096);
+
+		context = new Context(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
 
 		// 进行数据的首次写入
 		this.doConnection();
-
 	}
 
 	@Override
@@ -49,12 +78,25 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 		msg.append("1,input command ").append(LINE);
 		msg.append("2,exit ").append(LINE);
 
-		this.writeData(msg.toString().getBytes());
+		// 设置需要发送的消息信息
+		context.setWriteData(msg.toString());
+
+		// 进行消息的发送
+		msgDataService.writeData(context);
+
 	}
 
 	@Override
 	protected void doHandler() throws IOException {
-		System.out.println("当前读取操作");
+		// System.out.println("当前读取操作");
+		// Context context = new Context(this.socketChannel, this.selectKey,
+		// this.writeBuffer, this.readBuffer);
+		// context.setLastModPositon(lastPosition);
+
+		msgDataService.readData(context);
+
+		// lastPosition = context.getLastModPositon();
+
 	}
 
 	@Override
@@ -72,92 +114,12 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 		}
 	}
 
-	/**
-	 * 进行数据的写入
-	 * 
-	 * @param data
-	 *            写的数据
-	 * @throws IOException
-	 *             异常信息
-	 */
-	public void writeData(byte[] data) throws IOException {
-		// 多次检查，当前仅一个进行发送数据
-		while (this.writeFlag.compareAndSet(false, true)) {
+	@Override
+	protected void writeData() throws IOException {
+		Context context = new Context(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
 
-		}
-		try {
-			ByteBuffer theWriteBuffer = writeBuffer;
-
-			// 所有待发送的数据都为空，则直接发送
-			if (theWriteBuffer == null && writeQueue.isEmpty()) {
-				this.doWriteToChannel(ByteBuffer.wrap(data));
-			}
-			// 否则将数据加入到待发送的队列中
-			else {
-				this.writeQueue.add(ByteBuffer.wrap(data));
-				// 继续发送当前待发送的数据
-				this.doWriteToChannel(theWriteBuffer);
-			}
-		} finally {
-			// release
-			writeFlag.lazySet(true);
-		}
-	}
-
-	/**
-	 * 进行数据写入
-	 * 
-	 * @throws IOException
-	 */
-	public void writeData() throws IOException {
-		// 多次检查，当前仅一个进行发送数据
-		while (this.writeFlag.compareAndSet(false, true)) {
-
-		}
-		try {
-			// 直接写入writebuffer信息
-			ByteBuffer theWriteBuffer = writeBuffer;
-			this.doWriteToChannel(theWriteBuffer);
-		} finally {
-			this.writeFlag.lazySet(true);
-		}
-	}
-
-	/**
-	 * 将数据写入通道
-	 * 
-	 * @param writeBufferinfo
-	 * @throws IOException
-	 */
-	private void doWriteToChannel(ByteBuffer writeBufferinfo) throws IOException {
-		int writeLength = socketChannel.write(writeBufferinfo);
-		System.out.println("curr write length :" + writeLength);
-
-		// 如果当前还有未发送的完成的数据,则继续保持对当前写事件的兴趣
-		if (writeBufferinfo.hasRemaining()) {
-			selectKey.interestOps(selectKey.interestOps() | SelectionKey.OP_WRITE);
-			// 检查当前的buffer是否与发送的buffer是同一个
-			if (writeBufferinfo != writeBuffer) {
-				this.writeBuffer = writeBufferinfo;
-			}
-		}
-		// 写入完成，则取消写事件
-		else {
-			System.out.println("data write finish!");
-			// 检查当前队列是否已经完成,完成取取消写事件，注册读取事件
-			if (this.writeQueue.isEmpty()) {
-				System.out.println("wite over ,queue is null,cancel wirte event!");
-				selectKey.interestOps(selectKey.interestOps() & ~SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-			}
-			// 如果未完成，则遍历队列进行写入
-			else {
-				ByteBuffer buffer = writeQueue.removeFirst();
-				buffer.flip();
-				// 进行递归的数据写入
-				this.doWriteToChannel(buffer);
-			}
-
-		}
+		// 进行消息的发送
+		msgDataService.writeData(context);
 	}
 
 }

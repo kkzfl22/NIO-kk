@@ -6,6 +6,13 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
+import com.kk.nio.socket.multreactor.procchain.chain.MsgBaseInf;
+import com.kk.nio.socket.multreactor.procchain.chain.MsgDataServiceInf;
+import com.kk.nio.socket.multreactor.procchain.chain.MsgEnDecodeInf;
+import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgEnDecodeHandler;
+import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgHandlerBase;
+import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgServiceHandler;
+
 /**
  * 所有Iohandler操作
  * 
@@ -39,8 +46,7 @@ public abstract class ChainMultIOHandler implements Runnable {
 	 * 进行写入的buffer信息
 	 */
 	protected volatile ByteBuffer writeBuffer;
-	
-	
+
 
 	public ChainMultIOHandler(Selector select, SocketChannel socket) throws IOException {
 		super();
@@ -55,6 +61,8 @@ public abstract class ChainMultIOHandler implements Runnable {
 
 		// 将当前对象信息附加到通道上
 		selectKey.attach(this);
+
+		
 
 	}
 
@@ -101,16 +109,6 @@ public abstract class ChainMultIOHandler implements Runnable {
 	protected abstract void writeData() throws IOException;
 
 	/**
-	 * 进行数据的写入
-	 * 
-	 * @param data
-	 *            写的数据
-	 * @throws IOException
-	 *             异常信息
-	 */
-	protected abstract void writeData(byte[] data) throws IOException;
-
-	/**
 	 * 进行具体的事件的错误处理
 	 * 
 	 * @throws IOException
@@ -139,6 +137,5 @@ public abstract class ChainMultIOHandler implements Runnable {
 	public void setWriteBuffer(ByteBuffer writeBuffer) {
 		this.writeBuffer = writeBuffer;
 	}
-	
-	
+
 }

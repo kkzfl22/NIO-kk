@@ -12,6 +12,7 @@ public class ChainMain {
 
 		// 获取计算机的核数
 		int coreNum = Runtime.getRuntime().availableProcessors() / 2;
+		// int coreNum = 1;
 		ChainMultReactor[] multReactor = new ChainMultReactor[coreNum];
 
 		for (int i = 0; i < multReactor.length; i++) {
