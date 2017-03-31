@@ -61,7 +61,12 @@ public class ChainMultNioAcceptor implements Runnable {
 			try {
 				acceptorSelect.select(100);
 				selectKey = acceptorSelect.selectedKeys();
+			} catch (IOException e) {
+				e.printStackTrace();
+				continue;
+			}
 
+			try {
 				for (SelectionKey selectionKey : selectKey) {
 					// 如果为连接事件则注册到具体的某个reactor处理
 					if (selectionKey.isAcceptable()) {
@@ -78,10 +83,10 @@ public class ChainMultNioAcceptor implements Runnable {
 						reactor[index].rigisterNewConn(socket);
 					}
 				}
-
-				selectKey.clear();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				selectKey.clear();
 			}
 
 		}
