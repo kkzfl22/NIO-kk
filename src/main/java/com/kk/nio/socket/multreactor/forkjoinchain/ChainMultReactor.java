@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain;
+package com.kk.nio.socket.multreactor.forkjoinchain;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -49,7 +49,7 @@ public class ChainMultReactor extends Thread {
 		Set<SelectionKey> selectKey = null;
 		while (true) {
 			try {
-				select.select(100);
+				select.select(200);
 				selectKey = select.selectedKeys();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -62,7 +62,7 @@ public class ChainMultReactor extends Thread {
 				// 提交线程池处理
 				executor.execute(handler);
 			}
-			selectKey.clear();
+
 		}
 
 	}

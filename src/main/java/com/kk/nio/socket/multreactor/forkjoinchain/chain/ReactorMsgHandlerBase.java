@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain.chain;
+package com.kk.nio.socket.multreactor.forkjoinchain.chain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -81,6 +81,7 @@ public class ReactorMsgHandlerBase implements MsgBaseInf {
 		// 如果当前还有未发送的完成的数据,则继续保持对当前写事件的兴趣
 		if (writeBufferinfo.hasRemaining()) {
 			context.getSelectKey().interestOps(context.getSelectKey().interestOps() | SelectionKey.OP_WRITE);
+			context.getSelectKey().selector().wakeup();
 			// 检查当前的buffer是否与发送的buffer是同一个
 			if (writeBufferinfo != writeBuffer) {
 				this.writeBuffer = writeBufferinfo;
@@ -89,12 +90,12 @@ public class ReactorMsgHandlerBase implements MsgBaseInf {
 		// 写入完成，则取消写事件
 		else {
 			System.out.println("data write finish!");
-			writeBufferinfo.clear();
 			// 检查当前队列是否已经完成,完成取取消写事件，注册读取事件
 			if (this.writeQueue.isEmpty()) {
 				System.out.println("wite over ,queue is null,cancel wirte event!");
 				context.getSelectKey().interestOps(
 						context.getSelectKey().interestOps() & ~SelectionKey.OP_WRITE | SelectionKey.OP_READ);
+				context.getSelectKey().selector().wakeup();
 			}
 			// 如果未完成，则遍历队列进行写入
 			else {

@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain.chain;
+package com.kk.nio.socket.multreactor.forkjoinchain.chain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -40,6 +40,7 @@ public class ReactorMsgEnDecodeHandler implements MsgEnDecodeInf<String> {
 		// 进行消息的发送
 		msgBase.writeData(context);
 
+		context.getWriteBuffer().clear();
 	}
 
 	@Override

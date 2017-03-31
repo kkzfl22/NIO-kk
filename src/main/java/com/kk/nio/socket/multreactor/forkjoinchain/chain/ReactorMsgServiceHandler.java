@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain.chain;
+package com.kk.nio.socket.multreactor.forkjoinchain.chain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -52,19 +52,16 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 
 			if (msg.contains("2")) {
 				context.getSelectKey().cancel();
-				context.getSelectKey().channel().close();
 			} else {
-				// 执行命令
-				String cmdRsp = CmdUtils.runCmd(msg);
+				
 				// 设置数据响应结果
-				context.setWriteData(cmdRsp);
+				context.setWriteData(msg);
 
 				// 将结果进行写入
 				this.writeData(context);
 			}
 
 		}
-
 	}
 
 	@Override

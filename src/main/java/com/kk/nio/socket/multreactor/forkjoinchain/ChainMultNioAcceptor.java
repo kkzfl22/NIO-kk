@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain;
+package com.kk.nio.socket.multreactor.forkjoinchain;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -40,11 +40,10 @@ public class ChainMultNioAcceptor implements Runnable {
 		acceptorSelect = Selector.open();
 		// 绑定到端口信息
 		serverChannel = ServerSocketChannel.open();
-		// 绑定到端口
-		serverChannel.bind(new InetSocketAddress(port));
-
 		// 最开始设置为阻塞模式,改为非阻塞模式
 		serverChannel.configureBlocking(false);
+		// 绑定到端口
+		serverChannel.bind(new InetSocketAddress(port));
 
 		// 注册观察连接事件
 		serverChannel.register(acceptorSelect, SelectionKey.OP_ACCEPT);
@@ -65,8 +64,6 @@ public class ChainMultNioAcceptor implements Runnable {
 				for (SelectionKey selectionKey : selectKey) {
 					// 如果为连接事件则注册到具体的某个reactor处理
 					if (selectionKey.isAcceptable()) {
-
-						TimeColltion.addTime("1_accept", System.currentTimeMillis());
 
 						// 交给其他的任务线程去处理
 						ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();

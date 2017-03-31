@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain;
+package com.kk.nio.socket.multreactor.forkjoinchain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -58,24 +58,18 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 	private final Context context;
 
 	public ChainTelnetIOHandler(Selector select, SocketChannel socket) throws IOException {
-		
+
 		super(select, socket);
-		
-		TimeColltion.addTime("2_reactor_start",System.currentTimeMillis());
-		
+
 		this.readBuffer = ByteBuffer.allocateDirect(256);
 
-		this.writeBuffer = ByteBuffer.allocateDirect(1024*1024*3);
+		this.writeBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 3);
 
 		context = new Context(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
 
 		// 进行数据的首次写入
 		this.doConnection();
-		
-		TimeColltion.addTime("3_reactor_over",System.currentTimeMillis());
-		
-		TimeColltion.print();
-		
+
 	}
 
 	@Override
@@ -83,8 +77,8 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 		StringBuilder msg = new StringBuilder();
 
 		msg.append("welcome come to kk telnet server,please input command !").append(LINE);
-		msg.append("1,input command ").append(LINE);
-		msg.append("2,exit ").append(LINE);
+		msg.append("1: find keyword in files ").append(LINE);
+		msg.append("2, quit ").append(LINE);
 
 		// 设置需要发送的消息信息
 		context.setWriteData(msg.toString());
@@ -114,11 +108,13 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 
 	@Override
 	protected void onClose() {
-		//this.selectKey.cancel();
-		try {
-			this.selectKey.channel().close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (null != this.selectKey) {
+			try {
+				this.selectKey.channel().close();
+				this.selectKey.cancel();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

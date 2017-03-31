@@ -1,4 +1,4 @@
-package com.kk.nio.socket.multreactor.procchain;
+package com.kk.nio.socket.multreactor.forkjoinchain;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -40,9 +40,9 @@ public abstract class ChainMultIOHandler implements Runnable {
 	 */
 	protected volatile ByteBuffer writeBuffer;
 
+
 	public ChainMultIOHandler(Selector select, SocketChannel socket) throws IOException {
 		super();
-		long time2 = System.currentTimeMillis();
 		this.select = select;
 		this.socketChannel = socket;
 
@@ -55,30 +55,28 @@ public abstract class ChainMultIOHandler implements Runnable {
 		// 将当前对象信息附加到通道上
 		selectKey.attach(this);
 
-		long tim3 = System.currentTimeMillis();
+		
 
-		System.out.println("用时:" + (tim3 - time2));
 	}
 
 	@Override
 	public void run() {
 		try {
-			if (selectKey.isValid()) {
-				// 进行写入操作
-				if (selectKey.isWritable()) {
-					this.writeData();
-				}
-				// 进行读取数据处理操作
-				else if (selectKey.isReadable()) {
-					this.doHandler();
-				}
+			// 进行写入操作
+			if (selectKey.isWritable()) {
+				this.writeData();
 			}
-		} catch (Exception e) {
+			// 进行读取数据处理操作
+			else if (selectKey.isReadable()) {
+				this.doHandler();
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 			// 发生错误，调用onerror方法
 			this.onError();
 			// 将当前通道关闭
 			this.onClose();
+
 		}
 	}
 
