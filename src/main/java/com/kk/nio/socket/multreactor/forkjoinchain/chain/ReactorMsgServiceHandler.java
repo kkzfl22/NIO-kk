@@ -33,11 +33,6 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 	private ForkJoinPool forjoin = new ForkJoinPool();;
 
 	/**
-	 * 时间信息
-	 */
-	private ForkjoinTextCount count;
-
-	/**
 	 * 缓存 队列
 	 */
 	private final ConcurrentMap<String, Future<Map<String, Integer>>> CACHE_FUTURE = new ConcurrentHashMap<String, Future<Map<String, Integer>>>();
@@ -78,37 +73,31 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 			// 使用forkjoin进行单词的统计
 			else if (msg.contains("1")) {
 				// 进行文本的单词统计
-				String dir = msg.substring(msg.indexOf(" ")+1);
+				String dir = msg.substring(msg.indexOf(" ") + 1);
+
+				System.out.println("当前key:" + dir);
 
 				File filedir = new File(dir);
 
 				if (filedir.exists() && filedir.isDirectory()) {
+
 					Future<Map<String, Integer>> forkRsp = CACHE_FUTURE.get(dir);
 
 					if (null == forkRsp) {
 
-						// 构建异步计算的并获取结果的框架
-						FutureTask<Map<String, Integer>> ft = new FutureTask<>(() -> {
-							File[] pathArray = filedir.listFiles();
-							// 进行计算
-							count = new ForkjoinTextCount(pathArray, 1, pathArray.length);
-							Future<Map<String, Integer>> futureCount = forjoin.submit(count);
+						// 构建异步计算的并获取结果的缓存数据
+						File[] pathArray = filedir.listFiles();
+						// 进行计算
+						ForkjoinTextCount count = new ForkjoinTextCount(pathArray, 1, pathArray.length);
+						Future<Map<String, Integer>> futureCount = forjoin.submit(count);
 
-							try {
-								// 异步获取结果
-								return futureCount.get();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (ExecutionException e) {
-								e.printStackTrace();
-							}
+						forkRsp = CACHE_FUTURE.put(dir, futureCount);
 
-							return null;
-						});
+						// 最终只能一个放入成功
+						if (null == forkRsp) {
+							// 仅能执行一次，后面都会直接获取结果
+							forkRsp = futureCount;
 
-						if (null != ft) {
-							forkRsp = ft;
-							ft.run();
 						}
 					}
 					Map<String, Integer> result = null;
@@ -126,11 +115,13 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 						e.printStackTrace();
 					}
 
-					// 设置数据响应结果
-					context.setWriteData(String.valueOf(result));
+					if (null != result) {
+						// 设置数据响应结果
+						context.setWriteData(String.valueOf(result));
 
-					// 将结果进行写入
-					this.writeData(context);
+						// 将结果进行写入
+						this.writeData(context);
+					}
 				}
 			}
 
