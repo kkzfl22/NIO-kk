@@ -90,6 +90,7 @@ public class ReactorMsgHandlerBase implements MsgBaseInf {
 		// 写入完成，则取消写事件
 		else {
 			System.out.println("data write finish!");
+			writeBufferinfo.clear();
 			// 检查当前队列是否已经完成,完成取取消写事件，注册读取事件
 			if (this.writeQueue.isEmpty()) {
 				System.out.println("wite over ,queue is null,cancel wirte event!");

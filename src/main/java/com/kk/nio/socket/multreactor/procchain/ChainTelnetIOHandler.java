@@ -58,24 +58,23 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 	private final Context context;
 
 	public ChainTelnetIOHandler(Selector select, SocketChannel socket) throws IOException {
-		
 		super(select, socket);
-		
-		TimeColltion.addTime("2_reactor_start",System.currentTimeMillis());
-		
+
+		TimeColltion.addTime("2_reactor_start", System.currentTimeMillis());
+
 		this.readBuffer = ByteBuffer.allocateDirect(256);
 
-		this.writeBuffer = ByteBuffer.allocateDirect(1024*1024*3);
+		this.writeBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 3);
 
 		context = new Context(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
 
 		// 进行数据的首次写入
 		this.doConnection();
-		
-		TimeColltion.addTime("3_reactor_over",System.currentTimeMillis());
-		
+
+		TimeColltion.addTime("3_reactor_over", System.currentTimeMillis());
+
 		TimeColltion.print();
-		
+
 	}
 
 	@Override
@@ -96,25 +95,18 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 
 	@Override
 	protected void doHandler() throws IOException {
-		// System.out.println("当前读取操作");
-		// Context context = new Context(this.socketChannel, this.selectKey,
-		// this.writeBuffer, this.readBuffer);
-		// context.setLastModPositon(lastPosition);
-
 		msgDataService.readData(context);
-
-		// lastPosition = context.getLastModPositon();
-
 	}
 
 	@Override
-	protected void onError() {
+	protected void onError(Exception e) {
 		System.out.println("curr handler process error");
+		e.printStackTrace();
 	}
 
 	@Override
 	protected void onClose() {
-		//this.selectKey.cancel();
+		// this.selectKey.cancel();
 		try {
 			this.selectKey.channel().close();
 		} catch (IOException e) {

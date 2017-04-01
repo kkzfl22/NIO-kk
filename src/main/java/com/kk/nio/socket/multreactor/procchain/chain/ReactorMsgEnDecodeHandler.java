@@ -26,8 +26,7 @@ public class ReactorMsgEnDecodeHandler implements MsgEnDecodeInf<String> {
 	public void msgEncode(Context context) throws IOException {
 		// 取得当前数据，对消息进行编码
 		String msg = String.valueOf(context.getWriteData());
-		
-		
+
 		byte[] value = msg.getBytes("GBK");
 
 		String rsponse = "HTTP/1.1 200 OK\r\n";
@@ -36,7 +35,7 @@ public class ReactorMsgEnDecodeHandler implements MsgEnDecodeInf<String> {
 
 		context.getWriteBuffer().put(rsponse.getBytes());
 		context.getWriteBuffer().put(value);
-		
+
 		// 进行消息的发送
 		msgBase.writeData(context);
 
@@ -48,31 +47,34 @@ public class ReactorMsgEnDecodeHandler implements MsgEnDecodeInf<String> {
 		// 进行消息的解码操作,首先进行消息的读取
 		ByteBuffer readerBuffer = msgBase.readData(context);
 
-		int lastModPositon = context.getLastModPositon();
-
-		int readOpts = readerBuffer.position();
-
 		String line = null;
 
-		// System.out.println("lastModPositon:" + lastModPositon +
-		// ",readerBuffer.position():" + readerBuffer.position());
-		// 对消息按回车进行解码操作
-		// 2,将数据按行进行分隔,得到一行记录
-		for (int i = lastModPositon; i < readOpts; i++) {
-			// 找到换行符
-			if (readerBuffer.get(i) == 13) {
-				byte[] byteValue = new byte[i - lastModPositon];
-				// 标识位置，然后开始读取
-				readerBuffer.position(lastModPositon);
-				readerBuffer.get(byteValue);
+		if (null != readerBuffer) {
 
-				lastModPositon = i;
-				context.setLastModPositon(i);
+			int lastModPositon = context.getLastModPositon();
 
-				line = new String(byteValue);
-				System.out.println("收到解码后的数据msg :" + line);
+			int readOpts = readerBuffer.position();
 
-				break;
+			// System.out.println("lastModPositon:" + lastModPositon +
+			// ",readerBuffer.position():" + readerBuffer.position());
+			// 对消息按回车进行解码操作
+			// 2,将数据按行进行分隔,得到一行记录
+			for (int i = lastModPositon; i < readOpts; i++) {
+				// 找到换行符
+				if (readerBuffer.get(i) == 13) {
+					byte[] byteValue = new byte[i - lastModPositon];
+					// 标识位置，然后开始读取
+					readerBuffer.position(lastModPositon);
+					readerBuffer.get(byteValue);
+
+					lastModPositon = i;
+					context.setLastModPositon(i);
+
+					line = new String(byteValue);
+					System.out.println("收到解码后的数据msg :" + line);
+
+					break;
+				}
 			}
 		}
 

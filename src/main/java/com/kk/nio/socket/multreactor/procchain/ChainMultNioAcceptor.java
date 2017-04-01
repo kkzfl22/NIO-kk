@@ -58,6 +58,7 @@ public class ChainMultNioAcceptor implements Runnable {
 		Set<SelectionKey> selectKey = null;
 
 		while (true) {
+			// 连接的异常与处理连接的异常分开处理
 			try {
 				acceptorSelect.select(100);
 				selectKey = acceptorSelect.selectedKeys();
@@ -66,11 +67,10 @@ public class ChainMultNioAcceptor implements Runnable {
 				continue;
 			}
 
-			try {
-				for (SelectionKey selectionKey : selectKey) {
-					// 如果为连接事件则注册到具体的某个reactor处理
-					if (selectionKey.isAcceptable()) {
-
+			for (SelectionKey selectionKey : selectKey) {
+				// 如果为连接事件则注册到具体的某个reactor处理
+				if (selectionKey.isAcceptable()) {
+					try {
 						TimeColltion.addTime("1_accept", System.currentTimeMillis());
 
 						// 交给其他的任务线程去处理
@@ -81,13 +81,14 @@ public class ChainMultNioAcceptor implements Runnable {
 						int index = ThreadLocalRandom.current().nextInt(0, this.reactor.length);
 						// 注册新连接
 						reactor[index].rigisterNewConn(socket);
+					} catch (IOException e) {
+						e.printStackTrace();
+						selectionKey.cancel();
 					}
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				selectKey.clear();
 			}
+
+			selectKey.clear();
 
 		}
 

@@ -3,6 +3,10 @@ package com.kk.nio.socket.multreactor.forkjoinchain.chain;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 
 import com.kk.nio.socket.util.CmdUtils;
 
@@ -19,6 +23,16 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 	 * 消息编解码对象信息
 	 */
 	private final MsgEnDecodeInf<String> msgEndecode;
+
+	/**
+	 * forkjoin时间
+	 */
+	private ForkJoinPool forjoin = new ForkJoinPool();;
+
+	/**
+	 * 时间信息
+	 */
+	private ForkjoinTextCount count;
 
 	public ReactorMsgServiceHandler(MsgEnDecodeInf<String> msgEndecode) {
 		super();
@@ -52,8 +66,25 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 
 			if (msg.contains("2")) {
 				context.getSelectKey().cancel();
-			} else {
-				
+			}
+			// 使用forkjoin进行单词的统计
+			else if (msg.contains("1")) {
+				// 进行文本的单词统计
+
+				ForkjoinTextCount forkCount = new ForkjoinTextCount(files, 1, files.length);
+
+				Future<Map<String, Integer>> forkRsp = forjoin.submit(count);
+
+				Map<String, Integer> result = null;
+
+				try {
+					result = forkRsp.get();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
+
 				// 设置数据响应结果
 				context.setWriteData(msg);
 

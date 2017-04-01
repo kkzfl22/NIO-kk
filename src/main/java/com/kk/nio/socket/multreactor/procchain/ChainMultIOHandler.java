@@ -76,7 +76,7 @@ public abstract class ChainMultIOHandler implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 			// 发生错误，调用onerror方法
-			this.onError();
+			this.onError(e);
 			// 将当前通道关闭
 			this.onClose();
 		}
@@ -108,7 +108,7 @@ public abstract class ChainMultIOHandler implements Runnable {
 	 * 
 	 * @throws IOException
 	 */
-	protected abstract void onError();
+	protected abstract void onError(Exception e);
 
 	/**
 	 * 进行具体的

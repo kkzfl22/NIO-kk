@@ -59,8 +59,10 @@ public class ChainMultReactor extends Thread {
 			for (SelectionKey selectionKey : selectKey) {
 				// 从attach对象中获取处理对象信息
 				ChainMultIOHandler handler = (ChainMultIOHandler) selectionKey.attachment();
-				// 提交线程池处理
-				executor.execute(handler);
+				if (null != handler) {
+					// 提交线程池处理
+					executor.execute(handler);
+				}
 			}
 
 		}

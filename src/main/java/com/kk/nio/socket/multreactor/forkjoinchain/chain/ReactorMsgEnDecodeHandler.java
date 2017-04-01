@@ -26,21 +26,14 @@ public class ReactorMsgEnDecodeHandler implements MsgEnDecodeInf<String> {
 	public void msgEncode(Context context) throws IOException {
 		// 取得当前数据，对消息进行编码
 		String msg = String.valueOf(context.getWriteData());
-		
-		
+
 		byte[] value = msg.getBytes("GBK");
 
-		String rsponse = "HTTP/1.1 200 OK\r\n";
-		rsponse += "Server: kk server/1.0\r\n";
-		rsponse += "Content-Length:" + (value.length - 4) + "\r\n";
-
-		context.getWriteBuffer().put(rsponse.getBytes());
 		context.getWriteBuffer().put(value);
-		
+
 		// 进行消息的发送
 		msgBase.writeData(context);
 
-		context.getWriteBuffer().clear();
 	}
 
 	@Override

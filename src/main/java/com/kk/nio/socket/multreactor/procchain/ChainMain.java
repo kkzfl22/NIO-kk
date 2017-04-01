@@ -8,7 +8,7 @@ public class ChainMain {
 
 	public static void main(String[] args) throws IOException {
 		// 生成线程池
-		ExecutorService executeService = Executors.newFixedThreadPool(2);
+		ExecutorService executeService = Executors.newFixedThreadPool(1);
 
 		// 获取计算机的核数
 		int coreNum = Runtime.getRuntime().availableProcessors() / 2;

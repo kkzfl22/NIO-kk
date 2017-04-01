@@ -107,9 +107,10 @@ public class ReactorMsgHandlerBase implements MsgBaseInf {
 
 	@Override
 	public ByteBuffer readData(Context context) throws IOException {
-
-		// 进行数据读取操作
-		context.getSocketChannel().read(context.getReadBuffer());
+		if (null != context.getReadBuffer()) {
+			// 进行数据读取操作
+			context.getSocketChannel().read(context.getReadBuffer());
+		}
 
 		return context.getReadBuffer();
 	}
