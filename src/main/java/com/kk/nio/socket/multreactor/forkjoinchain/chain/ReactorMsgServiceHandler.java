@@ -1,14 +1,17 @@
 package com.kk.nio.socket.multreactor.forkjoinchain.chain;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
-
-import com.kk.nio.socket.util.CmdUtils;
+import java.util.concurrent.FutureTask;
 
 /**
  * 进行消息的业务处理
@@ -33,6 +36,11 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 	 * 时间信息
 	 */
 	private ForkjoinTextCount count;
+
+	/**
+	 * 缓存 队列
+	 */
+	private final ConcurrentMap<String, Future<Map<String, Integer>>> CACHE_FUTURE = new ConcurrentHashMap<String, Future<Map<String, Integer>>>();
 
 	public ReactorMsgServiceHandler(MsgEnDecodeInf<String> msgEndecode) {
 		super();
@@ -70,26 +78,60 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 			// 使用forkjoin进行单词的统计
 			else if (msg.contains("1")) {
 				// 进行文本的单词统计
+				String dir = msg.substring(msg.indexOf(" ")+1);
 
-				ForkjoinTextCount forkCount = new ForkjoinTextCount(files, 1, files.length);
+				File filedir = new File(dir);
 
-				Future<Map<String, Integer>> forkRsp = forjoin.submit(count);
+				if (filedir.exists() && filedir.isDirectory()) {
+					Future<Map<String, Integer>> forkRsp = CACHE_FUTURE.get(dir);
 
-				Map<String, Integer> result = null;
+					if (null == forkRsp) {
 
-				try {
-					result = forkRsp.get();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
+						// 构建异步计算的并获取结果的框架
+						FutureTask<Map<String, Integer>> ft = new FutureTask<>(() -> {
+							File[] pathArray = filedir.listFiles();
+							// 进行计算
+							count = new ForkjoinTextCount(pathArray, 1, pathArray.length);
+							Future<Map<String, Integer>> futureCount = forjoin.submit(count);
+
+							try {
+								// 异步获取结果
+								return futureCount.get();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (ExecutionException e) {
+								e.printStackTrace();
+							}
+
+							return null;
+						});
+
+						if (null != ft) {
+							forkRsp = ft;
+							ft.run();
+						}
+					}
+					Map<String, Integer> result = null;
+
+					try {
+						result = forkRsp.get();
+					}
+					// 如果计算取消
+					catch (CancellationException e1) {
+						e1.printStackTrace();
+						CACHE_FUTURE.remove(dir);
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					// 设置数据响应结果
+					context.setWriteData(String.valueOf(result));
+
+					// 将结果进行写入
+					this.writeData(context);
 				}
-
-				// 设置数据响应结果
-				context.setWriteData(msg);
-
-				// 将结果进行写入
-				this.writeData(context);
 			}
 
 		}

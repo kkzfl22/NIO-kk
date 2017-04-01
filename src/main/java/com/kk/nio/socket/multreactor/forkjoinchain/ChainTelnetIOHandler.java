@@ -5,13 +5,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-import com.kk.nio.socket.multreactor.procchain.chain.Context;
-import com.kk.nio.socket.multreactor.procchain.chain.MsgBaseInf;
-import com.kk.nio.socket.multreactor.procchain.chain.MsgDataServiceInf;
-import com.kk.nio.socket.multreactor.procchain.chain.MsgEnDecodeInf;
-import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgEnDecodeHandler;
-import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgHandlerBase;
-import com.kk.nio.socket.multreactor.procchain.chain.ReactorMsgServiceHandler;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.Context;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.MsgBaseInf;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.MsgDataServiceInf;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.MsgEnDecodeInf;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.ReactorMsgEnDecodeHandler;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.ReactorMsgHandlerBase;
+import com.kk.nio.socket.multreactor.forkjoinchain.chain.ReactorMsgServiceHandler;
 
 /**
  * 使用链式处理

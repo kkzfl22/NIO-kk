@@ -1,6 +1,7 @@
 package com.kk.nio.socket.multreactor.forkjoinchain.chain;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class ForkjoinTextCount extends RecursiveTask<Map<String, Integer>> {
 	/**
 	 * 文件列目录列表
 	 */
-	private String[] fileList;
+	private File[] fileList;
 
 	/**
 	 * 开始搜索索引号
@@ -49,7 +50,7 @@ public class ForkjoinTextCount extends RecursiveTask<Map<String, Integer>> {
 	 */
 	private int endIndex;
 
-	public ForkjoinTextCount(String[] fileList, int startIndex, int endIndex) {
+	public ForkjoinTextCount(File[] fileList, int startIndex, int endIndex) {
 		this.fileList = fileList;
 		this.startIndex = startIndex;
 		this.endIndex = endIndex;
@@ -140,7 +141,7 @@ public class ForkjoinTextCount extends RecursiveTask<Map<String, Integer>> {
 	 * @param index
 	 * @return
 	 */
-	private Map<String, Integer> fileMargeCount(String[] fileList, int index) {
+	private Map<String, Integer> fileMargeCount(File[] fileList, int index) {
 		Map<String, Integer> map = new HashMap<>();
 
 		FileReader read = null;
@@ -187,7 +188,7 @@ public class ForkjoinTextCount extends RecursiveTask<Map<String, Integer>> {
 
 		System.out.println("路径 :" + path);
 
-		String[] files = { path + "/1.txt", path + "/2.txt", path + "/3.txt" };
+		File[] files = { new File(path + "/1.txt"), new File(path + "/2.txt"), new File(path + "/3.txt") };
 
 		System.out.println(files.length);
 
