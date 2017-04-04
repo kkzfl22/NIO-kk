@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 /**
  * 进行消息的业务处理
@@ -69,6 +68,7 @@ public class ReactorMsgServiceHandler implements MsgDataServiceInf {
 
 			if (msg.contains("2")) {
 				context.getSelectKey().cancel();
+				context.getSocketChannel().socket().close();
 			}
 			// 使用forkjoin进行单词的统计
 			else if (msg.contains("1")) {

@@ -1,7 +1,6 @@
 package com.kk.nio.socket.multreactor.forkjoinchain;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -30,17 +29,6 @@ public abstract class ChainMultIOHandler implements Runnable {
 	 */
 	protected SocketChannel socketChannel;
 
-	/**
-	 * 分配的读取的readerbuffer信息
-	 */
-	protected ByteBuffer readerBuffer;
-
-	/**
-	 * 进行写入的buffer信息
-	 */
-	protected volatile ByteBuffer writeBuffer;
-
-
 	public ChainMultIOHandler(Selector select, SocketChannel socket) throws IOException {
 		super();
 		this.select = select;
@@ -54,8 +42,6 @@ public abstract class ChainMultIOHandler implements Runnable {
 
 		// 将当前对象信息附加到通道上
 		selectKey.attach(this);
-
-		
 
 	}
 
@@ -114,21 +100,5 @@ public abstract class ChainMultIOHandler implements Runnable {
 	 * @throws IOException
 	 */
 	protected abstract void onClose();
-
-	public ByteBuffer getReaderBuffer() {
-		return readerBuffer;
-	}
-
-	public void setReaderBuffer(ByteBuffer readerBuffer) {
-		this.readerBuffer = readerBuffer;
-	}
-
-	public ByteBuffer getWriteBuffer() {
-		return writeBuffer;
-	}
-
-	public void setWriteBuffer(ByteBuffer writeBuffer) {
-		this.writeBuffer = writeBuffer;
-	}
 
 }
