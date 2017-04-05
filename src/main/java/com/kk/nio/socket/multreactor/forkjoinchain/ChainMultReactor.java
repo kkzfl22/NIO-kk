@@ -49,6 +49,7 @@ public class ChainMultReactor extends Thread {
 		Set<SelectionKey> selectKey = null;
 		while (true) {
 			try {
+				//select.select(200);
 				select.select(200);
 				selectKey = select.selectedKeys();
 			} catch (IOException e) {

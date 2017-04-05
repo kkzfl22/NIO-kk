@@ -120,7 +120,6 @@ public class ChainTelnetIOHandler extends ChainMultIOHandler {
 
 	@Override
 	protected void writeData() throws IOException {
-		Context context = new Context(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
 		// 进行消息的发送
 		msgDataService.writeData(context);
 	}
