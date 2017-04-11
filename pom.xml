@@ -4,8 +4,8 @@
 	<groupId>com.kk.nio</groupId>
 	<artifactId>NIO-kk</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
-	
+
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -19,6 +19,24 @@
 			<version>1.4.9</version>
 		</dependency>
 
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.12</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.3</version>
+		</dependency>
 
 	</dependencies>
 
