@@ -28,7 +28,7 @@ public class QueryPackageCode implements MysqlDataPackageWriteInf<QueryPackageBe
 	}
 
 	@Override
-	public ByteBuffer PackageToBuffer(QueryPackageBean pkgBean) {
+	public ByteBuffer packageToBuffer(QueryPackageBean pkgBean) {
 
 		int pkgSize = this.getpackageSize(pkgBean);
 

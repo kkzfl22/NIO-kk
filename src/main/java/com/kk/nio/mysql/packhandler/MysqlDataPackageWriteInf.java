@@ -19,7 +19,7 @@ public interface MysqlDataPackageWriteInf<T extends PackageHeader> {
 	 * @param buffer
 	 * @创建日期 2016年12月9日
 	 */
-	public ByteBuffer PackageToBuffer(T msg);
+	public ByteBuffer packageToBuffer(T msg);
 
 	/**
 	 * 获取数据包大小 方法描述

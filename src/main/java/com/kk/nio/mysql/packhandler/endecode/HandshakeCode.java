@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
 import com.kk.nio.mysql.packhandler.bean.pkg.HandshakeBean;
+import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 
 /**
@@ -16,12 +17,12 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 public class HandshakeCode implements MysqlDataPackageReadInf<HandshakeBean> {
 
 	@Override
-	public HandshakeBean readPackage(ByteBuffer buffer) {
+	public HandshakeBean readPackage(PkgContext context) {
 
 		HandshakeBean bean = new HandshakeBean();
 
 		// 进行报文内容解析
-		MySQLMessage msg = new MySQLMessage(buffer);
+		MySQLMessage msg = new MySQLMessage(context.getBuffer());
 
 		// 1,首先读取长度
 		bean.setLength(msg.readUB3());
@@ -49,9 +50,9 @@ public class HandshakeCode implements MysqlDataPackageReadInf<HandshakeBean> {
 	}
 
 	@Override
-	public boolean checkpackageOver(ByteBuffer buffer) {
+	public boolean checkpackageOver(PkgContext context) {
 		// 进行包结束的检查
-		if (buffer.position() != 0 && buffer.get(buffer.position()) == 0x00) {
+		if (context.getBuffer().position() != 0 && context.getBuffer().get(context.getBuffer().position()) == 0x00) {
 			return true;
 		}
 

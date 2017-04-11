@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
 import com.kk.nio.mysql.packhandler.bean.pkg.OkPackageBean;
+import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 
 /**
@@ -16,11 +17,11 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 public class OkPackageCode implements MysqlDataPackageReadInf<OkPackageBean> {
 
 	@Override
-	public OkPackageBean readPackage(ByteBuffer buffer) {
+	public OkPackageBean readPackage(PkgContext context) {
 
 		OkPackageBean pkgBean = new OkPackageBean();
 
-		MySQLMessage mm = new MySQLMessage(buffer);
+		MySQLMessage mm = new MySQLMessage(context.getBuffer());
 
 		// 读取包大小
 		pkgBean.setLength(mm.readUB3());
@@ -45,7 +46,7 @@ public class OkPackageCode implements MysqlDataPackageReadInf<OkPackageBean> {
 	}
 
 	@Override
-	public boolean checkpackageOver(ByteBuffer buffer) {
+	public boolean checkpackageOver(PkgContext context) {
 		return false;
 	}
 

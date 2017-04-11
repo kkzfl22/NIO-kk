@@ -87,7 +87,7 @@ public class AuthPackageCode implements MysqlDataPackageWriteInf<AuthPackageBean
 	}
 
 	@Override
-	public ByteBuffer PackageToBuffer(AuthPackageBean packBean) {
+	public ByteBuffer packageToBuffer(AuthPackageBean packBean) {
 		// 设置当前的包顺序为1
 		packBean.setSeq((byte) 1);
 		// 设置客户端的标识
