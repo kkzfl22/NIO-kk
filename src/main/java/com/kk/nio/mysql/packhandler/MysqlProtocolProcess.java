@@ -12,8 +12,6 @@ public class MysqlProtocolProcess implements Runnable {
 	public MysqlProtocolProcess() {
 	}
 
-	private int index = 0;
-
 	@Override
 	public void run() {
 	}

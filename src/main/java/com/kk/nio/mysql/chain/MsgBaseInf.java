@@ -1,7 +1,6 @@
 package com.kk.nio.mysql.chain;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /**
  * 数据最基层的发送与接收操作
@@ -32,6 +31,6 @@ public interface MsgBaseInf {
 	 * @return 当前读取数据的结果
 	 * @throws IOException
 	 */
-	public ByteBuffer readData(MysqlContext context) throws IOException;
+	public void readData(MysqlContext context) throws IOException;
 
 }

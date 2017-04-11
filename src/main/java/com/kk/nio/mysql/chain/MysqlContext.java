@@ -4,6 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
+import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
+
 /**
  * 进行mysql处理的上下文信息
  * 
@@ -39,9 +42,9 @@ public class MysqlContext {
 	private Object writeData;
 
 	/**
-	 * 上一次操作的位置信息
+	 * 进行的数据处理
 	 */
-	private volatile int lastModPositon;
+	private MysqlDataPackageReadInf<PackageHeader> handlerProc;
 
 	public MysqlContext(SocketChannel socketChannel, SelectionKey selectKey, ByteBuffer writeBuffer,
 			ByteBuffer readBuffer) {
@@ -84,20 +87,20 @@ public class MysqlContext {
 		this.writeData = writeData;
 	}
 
-	public int getLastModPositon() {
-		return lastModPositon;
-	}
-
-	public void setLastModPositon(int lastModPositon) {
-		this.lastModPositon = lastModPositon;
-	}
-
 	public ByteBuffer getReadBuffer() {
 		return readBuffer;
 	}
 
 	public void setReadBuffer(ByteBuffer readBuffer) {
 		this.readBuffer = readBuffer;
+	}
+
+	public MysqlDataPackageReadInf<PackageHeader> getHandlerProc() {
+		return handlerProc;
+	}
+
+	public void setHandlerProc(MysqlDataPackageReadInf<PackageHeader> handlerProc) {
+		this.handlerProc = handlerProc;
 	}
 
 }

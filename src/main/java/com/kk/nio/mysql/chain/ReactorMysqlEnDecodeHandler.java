@@ -1,7 +1,8 @@
 package com.kk.nio.mysql.chain;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 
 /**
  * 进行消息的编码以及解码处理
@@ -10,7 +11,7 @@ import java.nio.ByteBuffer;
  * @version 0.0.1
  * @author liujun
  */
-public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<String> {
+public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<PackageHeader> {
 
 	/**
 	 * 消息处理的接口
@@ -24,12 +25,6 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<String> {
 
 	@Override
 	public void msgEncode(MysqlContext context) throws IOException {
-		// 取得当前数据，对消息进行编码
-		String msg = String.valueOf(context.getWriteData());
-
-		byte[] value = msg.getBytes("GBK");
-
-		context.getWriteBuffer().put(value);
 
 		// 进行消息的发送
 		msgBase.writeData(context);
@@ -37,40 +32,18 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<String> {
 	}
 
 	@Override
-	public String msgDecode(MysqlContext context) throws IOException {
-
+	public PackageHeader msgDecode(MysqlContext context) throws IOException {
 		// 进行消息的解码操作,首先进行消息的读取
-		ByteBuffer readerBuffer = msgBase.readData(context);
+		msgBase.readData(context);
 
-		int lastModPositon = context.getLastModPositon();
-
-		int readOpts = readerBuffer.position();
-
-		String line = null;
-
-		// System.out.println("lastModPositon:" + lastModPositon +
-		// ",readerBuffer.position():" + readerBuffer.position());
-		// 对消息按回车进行解码操作
-		// 2,将数据按行进行分隔,得到一行记录
-		for (int i = lastModPositon; i < readOpts; i++) {
-			// 找到换行符
-			if (readerBuffer.get(i) == 13) {
-				byte[] byteValue = new byte[i - lastModPositon];
-				// 标识位置，然后开始读取
-				readerBuffer.position(lastModPositon);
-				readerBuffer.get(byteValue);
-
-				lastModPositon = i;
-				context.setLastModPositon(i);
-
-				line = new String(byteValue);
-				System.out.println("收到解码后的数据msg :" + line);
-
-				break;
-			}
+		// 进行当前的包我检查
+		if (context.getHandlerProc().checkpackageOver(context.getReadBuffer())) {
+			// 如果检查完成，则进行包的解析,并返回
+			return context.getHandlerProc().readPackage(context.getReadBuffer());
 		}
 
-		return line;
+		return null;
+
 	}
 
 }

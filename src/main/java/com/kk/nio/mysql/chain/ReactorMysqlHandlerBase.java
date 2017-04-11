@@ -1,7 +1,6 @@
 package com.kk.nio.mysql.chain;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -60,12 +59,11 @@ public class ReactorMysqlHandlerBase implements MsgBaseInf {
 	}
 
 	@Override
-	public ByteBuffer readData(MysqlContext context) throws IOException {
+	public void readData(MysqlContext context) throws IOException {
 
 		// 进行数据读取操作
 		context.getSocketChannel().read(context.getReadBuffer());
 
-		return context.getReadBuffer();
 	}
 
 }
