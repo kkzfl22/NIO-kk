@@ -3,7 +3,6 @@ package com.kk.nio.mysql.chain;
 import java.io.IOException;
 
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
-import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
 
 /**
  * 进行消息的编码以及解码处理
@@ -26,7 +25,6 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<PackageHeader
 
 	@Override
 	public void msgEncode(MysqlContext context) throws IOException {
-
 		// 进行消息的发送
 		msgBase.writeData(context);
 
@@ -37,11 +35,10 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<PackageHeader
 		// 进行消息的解码操作,首先进行消息的读取
 		msgBase.readData(context);
 
-		PkgContext packContext = null;
 		// 进行当前的包我检查
-		if (context.getHandlerProc().checkpackageOver(packContext)) {
+		if (context.getHandlerProc().checkpackageOver(context)) {
 			// 如果检查完成，则进行包的解析,并返回
-			return context.getHandlerProc().readPackage(packContext);
+			return context.getHandlerProc().readPackage(context);
 		}
 
 		return null;

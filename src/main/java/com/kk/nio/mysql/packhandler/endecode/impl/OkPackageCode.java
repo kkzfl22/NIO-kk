@@ -1,11 +1,9 @@
-package com.kk.nio.mysql.packhandler.endecode;
+package com.kk.nio.mysql.packhandler.endecode.impl;
 
-import java.nio.ByteBuffer;
-
-import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.OkPackageBean;
-import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * 进行第一次的握手协议包
@@ -14,14 +12,14 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
  * @version 0.0.1
  * @author liujun
  */
-public class OkPackageCode implements MysqlDataPackageReadInf<OkPackageBean> {
+public class OkPackageCode implements MysqlPackageReadInf<OkPackageBean> {
 
 	@Override
-	public OkPackageBean readPackage(PkgContext context) {
+	public OkPackageBean readPackage(MysqlContext context) {
 
 		OkPackageBean pkgBean = new OkPackageBean();
 
-		MySQLMessage mm = new MySQLMessage(context.getBuffer());
+		MySQLMessage mm = new MySQLMessage(context.getReadBuffer());
 
 		// 读取包大小
 		pkgBean.setLength(mm.readUB3());
@@ -46,7 +44,7 @@ public class OkPackageCode implements MysqlDataPackageReadInf<OkPackageBean> {
 	}
 
 	@Override
-	public boolean checkpackageOver(PkgContext context) {
+	public boolean checkpackageOver(MysqlContext context) {
 		return false;
 	}
 

@@ -1,22 +1,22 @@
-package com.kk.nio.mysql.packhandler.endecode.result;
+package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 
-import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
-import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.EofPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * * MySQL 4.1 及之后的版本 结构 说明 [Result Set Header] 列数量 [Field] 列信息（多个） [EOF] 列结束
  * [Row Data] 行数据（多个） [EOF] 数据结束
  */
-public class EofPackageCode implements MysqlDataPackageReadInf<EofPackageBean> {
+public class EofPackageCode implements MysqlPackageReadInf<EofPackageBean> {
 
 	@Override
-	public EofPackageBean readPackage(PkgContext context) {
+	public EofPackageBean readPackage(MysqlContext context) {
 
 		EofPackageBean result = new EofPackageBean();
 
-		MySQLMessage mm = new MySQLMessage(context.getBuffer());
+		MySQLMessage mm = new MySQLMessage(context.getReadBuffer());
 		// 包大小
 		result.setLength(mm.readUB3());
 		// 序号
@@ -32,7 +32,7 @@ public class EofPackageCode implements MysqlDataPackageReadInf<EofPackageBean> {
 	}
 
 	@Override
-	public boolean checkpackageOver(PkgContext context) {
+	public boolean checkpackageOver(MysqlContext context) {
 		return false;
 	}
 

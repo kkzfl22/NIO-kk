@@ -1,11 +1,9 @@
-package com.kk.nio.mysql.packhandler.endecode;
+package com.kk.nio.mysql.packhandler.endecode.impl;
 
-import java.nio.ByteBuffer;
-
-import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.HandshakeBean;
-import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * 进行第一次的握手协议包 源文件名：
@@ -14,15 +12,15 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
  * @version 0.0.1
  * @author liujun
  */
-public class HandshakeCode implements MysqlDataPackageReadInf<HandshakeBean> {
+public class HandshakeCode implements MysqlPackageReadInf<HandshakeBean> {
 
 	@Override
-	public HandshakeBean readPackage(PkgContext context) {
+	public HandshakeBean readPackage(MysqlContext context) {
 
 		HandshakeBean bean = new HandshakeBean();
 
 		// 进行报文内容解析
-		MySQLMessage msg = new MySQLMessage(context.getBuffer());
+		MySQLMessage msg = new MySQLMessage(context.getReadBuffer());
 
 		// 1,首先读取长度
 		bean.setLength(msg.readUB3());
@@ -50,9 +48,10 @@ public class HandshakeCode implements MysqlDataPackageReadInf<HandshakeBean> {
 	}
 
 	@Override
-	public boolean checkpackageOver(PkgContext context) {
+	public boolean checkpackageOver(MysqlContext context) {
 		// 进行包结束的检查
-		if (context.getBuffer().position() != 0 && context.getBuffer().get(context.getBuffer().position()) == 0x00) {
+		if (context.getReadBuffer().position() != 0
+				&& context.getReadBuffer().get(context.getReadBuffer().position()) == 0x00) {
 			return true;
 		}
 

@@ -1,6 +1,6 @@
 package com.kk.nio.mysql.packhandler.bean.pkg;
 
-import java.nio.ByteBuffer;
+import com.kk.nio.mysql.chain.MysqlContext;
 
 /**
  * 进行数据解包及封包的上下对象信息
@@ -9,19 +9,6 @@ import java.nio.ByteBuffer;
  * @version 0.0.1
  * @author kk
  */
-public class PkgContext {
-
-	/**
-	 * buffer信息
-	 */
-	private ByteBuffer buffer;
-
-	public ByteBuffer getBuffer() {
-		return buffer;
-	}
-
-	public void setBuffer(ByteBuffer buffer) {
-		this.buffer = buffer;
-	}
+public class PkgContext extends MysqlContext {
 
 }

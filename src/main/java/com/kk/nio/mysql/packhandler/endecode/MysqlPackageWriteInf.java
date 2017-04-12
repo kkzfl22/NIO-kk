@@ -1,4 +1,4 @@
-package com.kk.nio.mysql.packhandler;
+package com.kk.nio.mysql.packhandler.endecode;
 
 import java.nio.ByteBuffer;
 
@@ -11,7 +11,7 @@ import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
  * @version 0.0.1
  * @author liujun
  */
-public interface MysqlDataPackageWriteInf<T extends PackageHeader> {
+public interface MysqlPackageWriteInf<T extends PackageHeader> {
 
 	/**
 	 * 得到数据写入的package 方法描述

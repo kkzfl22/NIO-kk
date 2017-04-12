@@ -1,8 +1,9 @@
 package com.kk.nio.mysql.chain;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
+
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 
 /**
  * 进行消息的业务处理
@@ -16,9 +17,9 @@ public class ReactorMysqlServiceHandler implements MsgDataServiceInf {
 	/**
 	 * 消息编解码对象信息
 	 */
-	private final MsgEnDecodeInf<String> msgEndecode;
+	private final MsgEnDecodeInf<PackageHeader> msgEndecode;
 
-	public ReactorMysqlServiceHandler(MsgEnDecodeInf<String> msgEndecode) {
+	public ReactorMysqlServiceHandler(MsgEnDecodeInf<PackageHeader> msgEndecode) {
 		super();
 		this.msgEndecode = msgEndecode;
 	}
@@ -26,7 +27,7 @@ public class ReactorMysqlServiceHandler implements MsgDataServiceInf {
 	@Override
 	public void readData(MysqlContext context) throws IOException {
 		// 进行消息的解码操作
-		String msg = this.msgEndecode.msgDecode(context);
+		PackageHeader msg = this.msgEndecode.msgDecode(context);
 
 	}
 

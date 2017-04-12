@@ -1,9 +1,9 @@
-package com.kk.nio.mysql.packhandler.endecode.result;
+package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 
-import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
-import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.ResultSetHanderBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * Result Set 消息体
@@ -12,13 +12,13 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
  * [Result Set Header]列数量 当前消息体 [Field]列信息（多个） [EOF]列结束 [Row Data]行数据（多个）
  * [EOF]数据结束
  */
-public class ResultSetHanderCode implements MysqlDataPackageReadInf<ResultSetHanderBean> {
+public class ResultSetHanderCode implements MysqlPackageReadInf<ResultSetHanderBean> {
 
 	@Override
-	public ResultSetHanderBean readPackage(PkgContext context) {
+	public ResultSetHanderBean readPackage(MysqlContext context) {
 		ResultSetHanderBean result = new ResultSetHanderBean();
 
-		MySQLMessage message = new MySQLMessage(context.getBuffer());
+		MySQLMessage message = new MySQLMessage(context.getReadBuffer());
 		// 包大小
 		result.setLength(message.readUB3());
 		// 序列
@@ -34,7 +34,7 @@ public class ResultSetHanderCode implements MysqlDataPackageReadInf<ResultSetHan
 	}
 
 	@Override
-	public boolean checkpackageOver(PkgContext context) {
+	public boolean checkpackageOver(MysqlContext context) {
 		return false;
 	}
 

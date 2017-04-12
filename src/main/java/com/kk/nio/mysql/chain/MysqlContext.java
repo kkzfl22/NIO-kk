@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
-import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * 进行mysql处理的上下文信息
@@ -44,7 +44,11 @@ public class MysqlContext {
 	/**
 	 * 进行的数据处理
 	 */
-	private MysqlDataPackageReadInf<PackageHeader> handlerProc;
+	private MysqlPackageReadInf<PackageHeader> handlerProc;
+
+	public MysqlContext() {
+
+	}
 
 	public MysqlContext(SocketChannel socketChannel, SelectionKey selectKey, ByteBuffer writeBuffer,
 			ByteBuffer readBuffer) {
@@ -95,11 +99,11 @@ public class MysqlContext {
 		this.readBuffer = readBuffer;
 	}
 
-	public MysqlDataPackageReadInf<PackageHeader> getHandlerProc() {
+	public MysqlPackageReadInf<PackageHeader> getHandlerProc() {
 		return handlerProc;
 	}
 
-	public void setHandlerProc(MysqlDataPackageReadInf<PackageHeader> handlerProc) {
+	public void setHandlerProc(MysqlPackageReadInf<PackageHeader> handlerProc) {
 		this.handlerProc = handlerProc;
 	}
 

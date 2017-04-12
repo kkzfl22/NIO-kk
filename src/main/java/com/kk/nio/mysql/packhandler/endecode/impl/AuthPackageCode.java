@@ -1,14 +1,14 @@
-package com.kk.nio.mysql.packhandler.endecode;
+package com.kk.nio.mysql.packhandler.endecode.impl;
 
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
-import com.kk.nio.mysql.packhandler.MysqlDataPackageWriteInf;
 import com.kk.nio.mysql.packhandler.bean.pkg.AuthPackageBean;
 import com.kk.nio.mysql.packhandler.bean.pkg.HandshakeBean;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
 import com.kk.nio.mysql.packhandler.common.SecurityUtil;
 import com.kk.nio.mysql.packhandler.console.Capabilities;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 
 /**
  * 进行握手的报文
@@ -17,7 +17,7 @@ import com.kk.nio.mysql.packhandler.console.Capabilities;
  * @version 0.0.1
  * @author liujun
  */
-public class AuthPackageCode implements MysqlDataPackageWriteInf<AuthPackageBean> {
+public class AuthPackageCode implements MysqlPackageWriteInf<AuthPackageBean> {
 
 	/**
 	 * 进行客户端的权能标识 方法描述

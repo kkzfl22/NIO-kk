@@ -1,9 +1,9 @@
-package com.kk.nio.mysql.packhandler.endecode.result;
+package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 
-import com.kk.nio.mysql.packhandler.MysqlDataPackageReadInf;
-import com.kk.nio.mysql.packhandler.bean.pkg.PkgContext;
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.RowDataPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * MySQL 4.1 及之后的版本 结构 说明 [Result Set Header] 列数量
@@ -13,14 +13,14 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
  * 
  * [Row Data] 行数据（多个） [EOF] 数据结束
  */
-public class RowDataPackageCode implements MysqlDataPackageReadInf<RowDataPackageBean> {
+public class RowDataPackageCode implements MysqlPackageReadInf<RowDataPackageBean> {
 
 	@Override
-	public RowDataPackageBean readPackage(PkgContext context) {
+	public RowDataPackageBean readPackage(MysqlContext context) {
 
 		RowDataPackageBean result = new RowDataPackageBean();
 
-		MySQLMessage mm = new MySQLMessage(context.getBuffer());
+		MySQLMessage mm = new MySQLMessage(context.getReadBuffer());
 		// 包大小
 		result.setLength(mm.readUB3());
 		// 序列值
@@ -36,7 +36,7 @@ public class RowDataPackageCode implements MysqlDataPackageReadInf<RowDataPackag
 	}
 
 	@Override
-	public boolean checkpackageOver(PkgContext context) {
+	public boolean checkpackageOver(MysqlContext context) {
 		// TODO Auto-generated method stub
 		return false;
 	}

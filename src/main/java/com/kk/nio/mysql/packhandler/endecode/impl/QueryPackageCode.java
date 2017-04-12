@@ -1,10 +1,10 @@
-package com.kk.nio.mysql.packhandler.endecode;
+package com.kk.nio.mysql.packhandler.endecode.impl;
 
 import java.nio.ByteBuffer;
 
-import com.kk.nio.mysql.packhandler.MysqlDataPackageWriteInf;
 import com.kk.nio.mysql.packhandler.bean.pkg.QueryPackageBean;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 
 /**
  * 进宪查询消息 的解码
@@ -13,7 +13,7 @@ import com.kk.nio.mysql.packhandler.common.BufferUtil;
  * @version 0.0.1
  * @author liujun
  */
-public class QueryPackageCode implements MysqlDataPackageWriteInf<QueryPackageBean> {
+public class QueryPackageCode implements MysqlPackageWriteInf<QueryPackageBean> {
 
 	@Override
 	public int getpackageSize(QueryPackageBean pkgBean) {
