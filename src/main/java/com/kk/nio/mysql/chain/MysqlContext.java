@@ -41,6 +41,7 @@ public class MysqlContext {
 	 * 待发送的数据信息
 	 */
 	private PackageHeader writeData;
+	
 
 	/**
 	 * 进行数据的读取处理
@@ -120,5 +121,8 @@ public class MysqlContext {
 	public void setWritePkgHandler(MysqlPackageWriteInf<PackageHeader> writePkgHandler) {
 		this.writePkgHandler = writePkgHandler;
 	}
+
+	
+	
 
 }
