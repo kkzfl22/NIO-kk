@@ -1,12 +1,9 @@
 package com.kk.nio.mysql.packhandler.endecode.impl;
 
 import java.nio.ByteBuffer;
-import java.security.NoSuchAlgorithmException;
 
 import com.kk.nio.mysql.packhandler.bean.pkg.AuthPackageBean;
-import com.kk.nio.mysql.packhandler.bean.pkg.HandshakeBean;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
-import com.kk.nio.mysql.packhandler.common.SecurityUtil;
 import com.kk.nio.mysql.packhandler.console.Capabilities;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 
@@ -52,19 +49,7 @@ public class AuthPackageCode implements MysqlPackageWriteInf<AuthPackageBean> {
 		return flag;
 	}
 
-	@SuppressWarnings("unused")
-	private static byte[] passwd(String pass, HandshakeBean hs) throws NoSuchAlgorithmException {
-		if (pass == null || pass.length() == 0) {
-			return null;
-		}
-		byte[] passwd = pass.getBytes();
-		int sl1 = hs.getChallengeRandom().length;
-		int sl2 = hs.getRestOfScrambleBuff().length;
-		byte[] seed = new byte[sl1 + sl2];
-		System.arraycopy(hs.getChallengeRandom(), 0, seed, 0, sl1);
-		System.arraycopy(hs.getRestOfScrambleBuff(), 0, seed, sl1, sl2);
-		return SecurityUtil.scramble411(passwd, seed);
-	}
+	
 
 	@Override
 	public int getpackageSize(AuthPackageBean bean) {
@@ -89,27 +74,9 @@ public class AuthPackageCode implements MysqlPackageWriteInf<AuthPackageBean> {
 	@Override
 	public ByteBuffer packageToBuffer(AuthPackageBean packBean) {
 		// 设置当前的包顺序为1
-		packBean.setSeq((byte) 1);
+		packBean.setSeq(packBean.getSeq());
 		// 设置客户端的标识
 		packBean.setClientFlag(initClientFlags());
-		// // 设置最大包,已经默认
-		// // this.maxPackageLong =
-		// // 字符编码
-		// this.charSetIndex = 0;
-		// // 设置用户
-		// this.userName = "root";
-		//
-		// if (packBean instanceof HandshakeBean) {
-		// HandshakeBean bean = (HandshakeBean) packBean;
-		// // 设置密码
-		// try {
-		// this.passwd = passwd("liujun", bean);
-		// } catch (NoSuchAlgorithmException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// // 设置数据库
-		// this.dataBase = "db1";
 
 		int pkgSize = this.getpackageSize(packBean);
 		// 4,字节为包头的大小

@@ -6,6 +6,7 @@ import java.nio.channels.SocketChannel;
 
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
+import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 
 /**
  * 进行mysql处理的上下文信息
@@ -39,12 +40,17 @@ public class MysqlContext {
 	/**
 	 * 待发送的数据信息
 	 */
-	private Object writeData;
+	private PackageHeader writeData;
 
 	/**
-	 * 进行的数据处理
+	 * 进行数据的读取处理
 	 */
-	private MysqlPackageReadInf<PackageHeader> handlerProc;
+	private MysqlPackageReadInf<PackageHeader> readPkgHandler;
+
+	/**
+	 * 进行数据的写入处理
+	 */
+	private MysqlPackageWriteInf<PackageHeader> writePkgHandler;
 
 	public MysqlContext() {
 
@@ -83,11 +89,11 @@ public class MysqlContext {
 		this.writeBuffer = writeBuffer;
 	}
 
-	public Object getWriteData() {
+	public PackageHeader getWriteData() {
 		return writeData;
 	}
 
-	public void setWriteData(Object writeData) {
+	public void setWriteData(PackageHeader writeData) {
 		this.writeData = writeData;
 	}
 
@@ -99,12 +105,20 @@ public class MysqlContext {
 		this.readBuffer = readBuffer;
 	}
 
-	public MysqlPackageReadInf<PackageHeader> getHandlerProc() {
-		return handlerProc;
+	public MysqlPackageReadInf<PackageHeader> getReadPkgHandler() {
+		return readPkgHandler;
 	}
 
-	public void setHandlerProc(MysqlPackageReadInf<PackageHeader> handlerProc) {
-		this.handlerProc = handlerProc;
+	public void setReadPkgHandler(MysqlPackageReadInf<PackageHeader> readPkgHandler) {
+		this.readPkgHandler = readPkgHandler;
+	}
+
+	public MysqlPackageWriteInf<PackageHeader> getWritePkgHandler() {
+		return writePkgHandler;
+	}
+
+	public void setWritePkgHandler(MysqlPackageWriteInf<PackageHeader> writePkgHandler) {
+		this.writePkgHandler = writePkgHandler;
 	}
 
 }
