@@ -11,7 +11,7 @@ import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
  * @version 0.0.1
  * @author liujun
  */
-public interface MysqlPackageWriteInf<T extends PackageHeader> {
+public interface MysqlPackageWriteInf {
 
 	/**
 	 * 得到数据写入的package 方法描述
@@ -19,7 +19,7 @@ public interface MysqlPackageWriteInf<T extends PackageHeader> {
 	 * @param buffer
 	 * @创建日期 2016年12月9日
 	 */
-	public ByteBuffer packageToBuffer(T msg);
+	public ByteBuffer packageToBuffer(PackageHeader msg);
 
 	/**
 	 * 获取数据包大小 方法描述
@@ -27,6 +27,6 @@ public interface MysqlPackageWriteInf<T extends PackageHeader> {
 	 * @return
 	 * @创建日期 2016年12月9日
 	 */
-	public int getpackageSize(T bean);
+	public int getpackageSize(PackageHeader bean);
 
 }

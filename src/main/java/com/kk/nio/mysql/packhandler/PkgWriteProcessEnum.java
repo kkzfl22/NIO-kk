@@ -1,6 +1,5 @@
 package com.kk.nio.mysql.packhandler;
 
-import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 import com.kk.nio.mysql.packhandler.endecode.impl.AuthPackageCode;
 
@@ -16,38 +15,24 @@ public enum PkgWriteProcessEnum {
 	/**
 	 * 鉴权消息，客户端向服务端发起
 	 */
-	PKG_WRITE_AUTH("pgk_write_auth", new AuthPackageCode()),
+	PKG_WRITE_AUTH(new AuthPackageCode()),
 
 	;
 
 	/**
-	 * 处理编号
-	 */
-	private String pkgString;
-
-	/**
 	 * 进行mysql包的写入
 	 */
-	private MysqlPackageWriteInf<? extends PackageHeader> pkgWrite;
+	private MysqlPackageWriteInf pkgWrite;
 
-	private PkgWriteProcessEnum(String pkgString, MysqlPackageWriteInf<? extends PackageHeader> pkgWrite) {
-		this.pkgString = pkgString;
+	private PkgWriteProcessEnum(MysqlPackageWriteInf pkgWrite) {
 		this.pkgWrite = pkgWrite;
 	}
 
-	public String getPkgString() {
-		return pkgString;
-	}
-
-	public void setPkgString(String pkgString) {
-		this.pkgString = pkgString;
-	}
-
-	public MysqlPackageWriteInf<? extends PackageHeader> getPkgWrite() {
+	public MysqlPackageWriteInf getPkgWrite() {
 		return pkgWrite;
 	}
 
-	public void setPkgWrite(MysqlPackageWriteInf<? extends PackageHeader> pkgWrite) {
+	public void setPkgWrite(MysqlPackageWriteInf pkgWrite) {
 		this.pkgWrite = pkgWrite;
 	}
 

@@ -1,39 +1,34 @@
-package com.kk.nio.mysql.servicehandler;
+package com.kk.nio.mysql.servicehandler.flow;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import com.kk.nio.mysql.chain.MsgEnDecodeInf;
 import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.console.PropertiesKeyEnum;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.PkgWriteProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.AuthPackageBean;
 import com.kk.nio.mysql.packhandler.bean.pkg.HandshakeBean;
-import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.common.SecurityUtil;
 import com.kk.nio.mysql.packhandler.console.Capabilities;
-import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
-import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 import com.kk.nio.mysql.util.PropertiesUtils;
 
 /**
- * 进行登录的消息处理
+ * 进行登录的状态的消息处理
  * 
  * @since 2017年3月29日 下午5:34:39
  * @version 0.0.1
  * @author liujun
  */
-public class LoginMysqlServiceHandler extends MysqlServerHandlerBase {
+public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements MysqlStateInf {
 
-	public LoginMysqlServiceHandler(MsgEnDecodeInf<PackageHeader> msgEndecode) {
-		super(msgEndecode);
-	}
+	public void pkgHandler(MysqlStateContext mysqlContext) throws IOException {
 
-	@Override
-	public void readData(MysqlContext context) throws IOException {
+		MysqlContext context = mysqlContext.getContext();
+
 		// 进行消息的解码操作,即为服务器首次写入的消息
-		HandshakeBean msg = (HandshakeBean) this.readDataBase(context);
+		HandshakeBean msg = (HandshakeBean) this.readDataDef(context);
 
 		// 组装用户消息
 		AuthPackageBean auth = new AuthPackageBean();
@@ -54,7 +49,10 @@ public class LoginMysqlServiceHandler extends MysqlServerHandlerBase {
 		context.setWriteData(auth);
 
 		// 进行消息的写入操作
-		this.writeData(context);
+		this.writeDataDef(context);
+
+		// 鉴权完成，进行设置状态为登录鉴权结果处理
+		mysqlContext.setCurrMysqlState(MysqlStateEnum.PGK_COMM.getState());
 	}
 
 	/**
@@ -119,15 +117,12 @@ public class LoginMysqlServiceHandler extends MysqlServerHandlerBase {
 	}
 
 	@Override
-	public MysqlPackageReadInf<? extends PackageHeader> getReadPackage() {
+	public void setRWPkgHandler(MysqlStateContext mysqlContext) {
+		MysqlContext context = mysqlContext.getContext();
 		// 首先接收到服务器端的握手包
-		return PkgReadProcessEnum.PKG_READ_HANDSHAKE.getPkgRead();
-	}
-
-	@Override
-	public MysqlPackageWriteInf<? extends PackageHeader> getWritePackage() {
-		// 进行组装第一次的授权
-		return PkgWriteProcessEnum.PKG_WRITE_AUTH.getPkgWrite();
+		context.setReadPkgHandler(PkgReadProcessEnum.PKG_READ_HANDSHAKE.getPkgRead());
+		// 设置向服务器的鉴权包
+		context.setWritePkgHandler(PkgWriteProcessEnum.PKG_WRITE_AUTH.getPkgWrite());
 	}
 
 }

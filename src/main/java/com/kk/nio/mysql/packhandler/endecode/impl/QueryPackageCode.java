@@ -2,6 +2,7 @@ package com.kk.nio.mysql.packhandler.endecode.impl;
 
 import java.nio.ByteBuffer;
 
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.bean.pkg.QueryPackageBean;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
@@ -13,10 +14,13 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
  * @version 0.0.1
  * @author liujun
  */
-public class QueryPackageCode implements MysqlPackageWriteInf<QueryPackageBean> {
+public class QueryPackageCode implements MysqlPackageWriteInf {
 
 	@Override
-	public int getpackageSize(QueryPackageBean pkgBean) {
+	public int getpackageSize(PackageHeader pkgParam) {
+
+		QueryPackageBean pkgBean = (QueryPackageBean) pkgParam;
+
 		int size = 0;
 
 		// 1,第1位，发送包的类型信息
@@ -28,7 +32,9 @@ public class QueryPackageCode implements MysqlPackageWriteInf<QueryPackageBean> 
 	}
 
 	@Override
-	public ByteBuffer packageToBuffer(QueryPackageBean pkgBean) {
+	public ByteBuffer packageToBuffer(PackageHeader pkgParam) {
+
+		QueryPackageBean pkgBean = (QueryPackageBean) pkgParam;
 
 		int pkgSize = this.getpackageSize(pkgBean);
 

@@ -5,13 +5,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.Context;
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.MsgBaseInf;
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.MsgDataServiceInf;
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.MsgEnDecodeInf;
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.ReactorMsgEnDecodeHandler;
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.ReactorMsgHandlerBase;
-import com.kk.nio.socket.multreactor.forkjoinchain.chain.ReactorMsgServiceHandler;
+import com.kk.nio.mysql.chain.MsgBaseInf;
+import com.kk.nio.mysql.chain.MsgEnDecodeInf;
+import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.chain.ReactorMysqlEnDecodeHandler;
+import com.kk.nio.mysql.chain.ReactorMysqlHandlerBase;
+import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 
 /**
  * 使用链式处理
@@ -27,20 +27,7 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	 */
 	private static final String LINE = "\r\n";
 
-	/**
-	 * 消息最基本的操作接口,用来发送与接收数据
-	 */
-	protected MsgBaseInf msgBase = new ReactorMsgHandlerBase();
-
-	/**
-	 * 进行消息的编解码信息
-	 */
-	protected MsgEnDecodeInf<String> msgEnDecode = new ReactorMsgEnDecodeHandler(msgBase);
-
-	/**
-	 * 进行消息的业务处理
-	 */
-	protected MsgDataServiceInf msgDataService = new ReactorMsgServiceHandler(msgEnDecode);
+	
 
 	/**
 	 * 数据读取的buffer
@@ -55,7 +42,7 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	/**
 	 * 上下文对象信息
 	 */
-	private final Context context;
+	private final MysqlContext context;
 
 	public MysqmidIOHandler(Selector select, SocketChannel socket) throws IOException {
 
@@ -65,26 +52,16 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 
 		this.writeBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 3);
 
-		context = new Context(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
-
-		// 进行数据的首次写入
-		this.doConnection();
-
+		context = new MysqlContext(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
 	}
 
 	@Override
 	protected void doConnection() throws IOException {
-		StringBuilder msg = new StringBuilder();
 
-		msg.append("welcome come to kk telnet server,please input command !").append(LINE);
-		msg.append("1: find keyword in files ").append(LINE);
-		msg.append("2, quit ").append(LINE);
+		context.setReadPkgHandler(PkgReadProcessEnum.PKG_READ_HANDSHAKE.getPkgRead());
 
-		// 设置需要发送的消息信息
-		context.setWriteData(msg.toString());
-
-		// 进行消息的发送
-		msgDataService.writeData(context);
+		// 进行握手消息的读取
+		// msgDataService.readData(context);
 
 	}
 
@@ -95,7 +72,7 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 		// this.writeBuffer, this.readBuffer);
 		// context.setLastModPositon(lastPosition);
 
-		msgDataService.readData(context);
+		//msgDataService.readData(context);
 
 		// lastPosition = context.getLastModPositon();
 
@@ -121,7 +98,7 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	@Override
 	protected void writeData() throws IOException {
 		// 进行消息的发送
-		msgDataService.writeData(context);
+		//msgDataService.writeData(context);
 	}
 
 }

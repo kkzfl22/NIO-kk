@@ -13,7 +13,7 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
  * 
  * [Row Data] 行数据（多个） [EOF] 数据结束
  */
-public class RowDataPackageCode implements MysqlPackageReadInf<RowDataPackageBean> {
+public class RowDataPackageCode implements MysqlPackageReadInf {
 
 	@Override
 	public RowDataPackageBean readPackage(MysqlContext context) {

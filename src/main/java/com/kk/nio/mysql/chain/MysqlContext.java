@@ -40,18 +40,17 @@ public class MysqlContext {
 	/**
 	 * 待发送的数据信息
 	 */
-	private PackageHeader writeData;
-	
+	private Object writeData;
 
 	/**
 	 * 进行数据的读取处理
 	 */
-	private MysqlPackageReadInf<PackageHeader> readPkgHandler;
+	private MysqlPackageReadInf readPkgHandler;
 
 	/**
 	 * 进行数据的写入处理
 	 */
-	private MysqlPackageWriteInf<PackageHeader> writePkgHandler;
+	private MysqlPackageWriteInf writePkgHandler;
 
 	public MysqlContext() {
 
@@ -90,7 +89,7 @@ public class MysqlContext {
 		this.writeBuffer = writeBuffer;
 	}
 
-	public PackageHeader getWriteData() {
+	public Object getWriteData() {
 		return writeData;
 	}
 
@@ -106,23 +105,20 @@ public class MysqlContext {
 		this.readBuffer = readBuffer;
 	}
 
-	public MysqlPackageReadInf<PackageHeader> getReadPkgHandler() {
+	public MysqlPackageReadInf getReadPkgHandler() {
 		return readPkgHandler;
 	}
 
-	public void setReadPkgHandler(MysqlPackageReadInf<PackageHeader> readPkgHandler) {
+	public void setReadPkgHandler(MysqlPackageReadInf readPkgHandler) {
 		this.readPkgHandler = readPkgHandler;
 	}
 
-	public MysqlPackageWriteInf<PackageHeader> getWritePkgHandler() {
+	public MysqlPackageWriteInf getWritePkgHandler() {
 		return writePkgHandler;
 	}
 
-	public void setWritePkgHandler(MysqlPackageWriteInf<PackageHeader> writePkgHandler) {
+	public void setWritePkgHandler(MysqlPackageWriteInf writePkgHandler) {
 		this.writePkgHandler = writePkgHandler;
 	}
-
-	
-	
 
 }

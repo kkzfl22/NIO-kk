@@ -26,8 +26,8 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<PackageHeader
 	@Override
 	public void msgEncode(MysqlContext context) throws IOException {
 		// 将消息进行编码再发送,将按 mysql的消息体进行组包
-		if (context.getWritePkgHandler().getpackageSize(context.getWriteData()) > 0) {
-			context.getWritePkgHandler().packageToBuffer(context.getWriteData());
+		if (context.getWritePkgHandler().getpackageSize((PackageHeader) context.getWriteData()) > 0) {
+			context.getWritePkgHandler().packageToBuffer((PackageHeader) context.getWriteData());
 		}
 
 		// 进行消息的发送

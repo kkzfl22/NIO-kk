@@ -6,13 +6,13 @@ import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
- * 进行第一次的握手协议包
+ * 鉴权成功的消息报文
  * 
  * @since 2017年4月11日 下午8:48:29
  * @version 0.0.1
  * @author liujun
  */
-public class OkPackageCode implements MysqlPackageReadInf<OkPackageBean> {
+public class OkPackageCode implements MysqlPackageReadInf {
 
 	@Override
 	public OkPackageBean readPackage(MysqlContext context) {

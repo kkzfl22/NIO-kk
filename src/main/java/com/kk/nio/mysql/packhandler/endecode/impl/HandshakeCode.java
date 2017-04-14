@@ -12,7 +12,7 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
  * @version 0.0.1
  * @author liujun
  */
-public class HandshakeCode implements MysqlPackageReadInf<HandshakeBean> {
+public class HandshakeCode implements MysqlPackageReadInf {
 
 	@Override
 	public HandshakeBean readPackage(MysqlContext context) {

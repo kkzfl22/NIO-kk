@@ -3,6 +3,7 @@ package com.kk.nio.mysql.packhandler.endecode.impl;
 import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.packhandler.bean.pkg.AuthPackageBean;
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
 import com.kk.nio.mysql.packhandler.console.Capabilities;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
@@ -14,7 +15,7 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
  * @version 0.0.1
  * @author liujun
  */
-public class AuthPackageCode implements MysqlPackageWriteInf<AuthPackageBean> {
+public class AuthPackageCode implements MysqlPackageWriteInf {
 
 	/**
 	 * 进行客户端的权能标识 方法描述
@@ -49,10 +50,11 @@ public class AuthPackageCode implements MysqlPackageWriteInf<AuthPackageBean> {
 		return flag;
 	}
 
-	
-
 	@Override
-	public int getpackageSize(AuthPackageBean bean) {
+	public int getpackageSize(PackageHeader param) {
+
+		AuthPackageBean bean = (AuthPackageBean) param;
+
 		int size = 0;
 		// 添加，客户端标识
 		size = size + 4;
@@ -72,7 +74,9 @@ public class AuthPackageCode implements MysqlPackageWriteInf<AuthPackageBean> {
 	}
 
 	@Override
-	public ByteBuffer packageToBuffer(AuthPackageBean packBean) {
+	public ByteBuffer packageToBuffer(PackageHeader param) {
+		AuthPackageBean packBean = (AuthPackageBean) param;
+
 		// 设置当前的包顺序为1
 		packBean.setSeq(packBean.getSeq());
 		// 设置客户端的标识

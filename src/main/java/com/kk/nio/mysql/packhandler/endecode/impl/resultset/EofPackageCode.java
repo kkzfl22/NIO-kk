@@ -9,7 +9,7 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
  * * MySQL 4.1 及之后的版本 结构 说明 [Result Set Header] 列数量 [Field] 列信息（多个） [EOF] 列结束
  * [Row Data] 行数据（多个） [EOF] 数据结束
  */
-public class EofPackageCode implements MysqlPackageReadInf<EofPackageBean> {
+public class EofPackageCode implements MysqlPackageReadInf {
 
 	@Override
 	public EofPackageBean readPackage(MysqlContext context) {

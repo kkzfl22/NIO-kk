@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * 
- * 进行第一次的握手协议包
+ * 成功响应包
  * 
  * @since 2017年4月11日 下午8:36:34
  * @version 0.0.1

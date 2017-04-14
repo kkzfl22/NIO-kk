@@ -1,8 +1,8 @@
 package com.kk.nio.mysql.packhandler;
 
-import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 import com.kk.nio.mysql.packhandler.endecode.impl.HandshakeCode;
+import com.kk.nio.mysql.packhandler.endecode.impl.OkPackageCode;
 
 /**
  * 进行程序包的处理
@@ -16,38 +16,29 @@ public enum PkgReadProcessEnum {
 	/**
 	 * 握手消息,即服务端向客户端写入消息
 	 */
-	PKG_READ_HANDSHAKE("pkg_shandshark", new HandshakeCode()),
+	PKG_READ_HANDSHAKE(new HandshakeCode()),
+
+	/**
+	 * 成功的报文处理
+	 */
+	PKG_READ_OK(new OkPackageCode())
 
 	;
 
 	/**
-	 * 处理编号
-	 */
-	private String pkgStr;
-
-	/**
 	 * 进行mysql包的读取
 	 */
-	private MysqlPackageReadInf<? extends PackageHeader> pkgRead;
+	private MysqlPackageReadInf pkgRead;
 
-	private PkgReadProcessEnum(String pkgStr, MysqlPackageReadInf<? extends PackageHeader> pkgRead) {
-		this.pkgStr = pkgStr;
+	private PkgReadProcessEnum(MysqlPackageReadInf pkgRead) {
 		this.pkgRead = pkgRead;
 	}
 
-	public String getPkgStr() {
-		return pkgStr;
-	}
-
-	public void setPkgStr(String pkgStr) {
-		this.pkgStr = pkgStr;
-	}
-
-	public MysqlPackageReadInf<? extends PackageHeader> getPkgRead() {
+	public MysqlPackageReadInf getPkgRead() {
 		return pkgRead;
 	}
 
-	public void setPkgRead(MysqlPackageReadInf<? extends PackageHeader> pkgRead) {
+	public void setPkgRead(MysqlPackageReadInf pkgRead) {
 		this.pkgRead = pkgRead;
 	}
 
