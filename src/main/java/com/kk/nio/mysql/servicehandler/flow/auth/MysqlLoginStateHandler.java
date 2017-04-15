@@ -1,4 +1,4 @@
-package com.kk.nio.mysql.servicehandler.flow;
+package com.kk.nio.mysql.servicehandler.flow.auth;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +12,9 @@ import com.kk.nio.mysql.packhandler.bean.pkg.AuthPackageBean;
 import com.kk.nio.mysql.packhandler.bean.pkg.HandshakeBean;
 import com.kk.nio.mysql.packhandler.common.SecurityUtil;
 import com.kk.nio.mysql.packhandler.console.Capabilities;
+import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
+import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
+import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 import com.kk.nio.mysql.util.PropertiesUtils;
 
 /**

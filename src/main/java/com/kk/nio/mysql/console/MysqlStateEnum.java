@@ -1,8 +1,8 @@
 package com.kk.nio.mysql.console;
 
 import com.kk.nio.mysql.servicehandler.flow.MysqlCommStateHandler;
-import com.kk.nio.mysql.servicehandler.flow.MysqlLoginStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
+import com.kk.nio.mysql.servicehandler.flow.auth.MysqlLoginStateHandler;
 
 /**
  * mysql的状态信息

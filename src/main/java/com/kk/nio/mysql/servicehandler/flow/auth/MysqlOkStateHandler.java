@@ -1,10 +1,13 @@
-package com.kk.nio.mysql.servicehandler.flow;
+package com.kk.nio.mysql.servicehandler.flow.auth;
 
 import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.OkPackageBean;
+import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
+import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
+import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 
 /**
  * 进行成功的报文处理

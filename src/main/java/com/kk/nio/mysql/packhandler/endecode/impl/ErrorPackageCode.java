@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.ErrorPackageBean;
-import com.kk.nio.mysql.packhandler.bean.pkg.OkPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 

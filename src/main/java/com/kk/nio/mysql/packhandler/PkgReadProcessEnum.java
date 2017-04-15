@@ -1,6 +1,7 @@
 package com.kk.nio.mysql.packhandler;
 
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
+import com.kk.nio.mysql.packhandler.endecode.impl.ErrorPackageCode;
 import com.kk.nio.mysql.packhandler.endecode.impl.HandshakeCode;
 import com.kk.nio.mysql.packhandler.endecode.impl.OkPackageCode;
 
@@ -21,7 +22,12 @@ public enum PkgReadProcessEnum {
 	/**
 	 * 成功的报文处理
 	 */
-	PKG_READ_OK(new OkPackageCode())
+	PKG_READ_OK(new OkPackageCode()),
+
+	/**
+	 * 失败的报文处理
+	 */
+	PKG_READ_ERROR(new ErrorPackageCode())
 
 	;
 
