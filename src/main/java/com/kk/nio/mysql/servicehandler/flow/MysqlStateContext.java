@@ -23,6 +23,11 @@ public class MysqlStateContext {
 	 */
 	private MysqlStateInf currMysqlState;
 
+	/**
+	 * 返回结果的数据
+	 */
+	private Object result;
+
 	public MysqlContext getContext() {
 		return context;
 	}
@@ -39,6 +44,14 @@ public class MysqlStateContext {
 		this.currMysqlState = currMysqlState;
 	}
 
+	public Object getResult() {
+		return result;
+	}
+
+	public void setResult(Object result) {
+		this.result = result;
+	}
+
 	/**
 	 * 进行设置包的解析
 	 */
@@ -51,9 +64,20 @@ public class MysqlStateContext {
 	 * 
 	 * @throws IOException
 	 */
-	public void pkgHandler() throws IOException {
-		currMysqlState.pkgHandler(this);
+	public void pkgRead() throws IOException {
+		currMysqlState.pkgRead(this);
 
+	}
+	
+	
+	/**
+	 * 进行包的处理
+	 * 
+	 * @throws IOException
+	 */
+	public void pkgWrite() throws IOException {
+		currMysqlState.pkgWrite(this);
+		
 	}
 
 }

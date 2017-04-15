@@ -26,7 +26,7 @@ import com.kk.nio.mysql.util.PropertiesUtils;
  */
 public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements MysqlStateInf {
 
-	public void pkgHandler(MysqlStateContext mysqlContext) throws IOException {
+	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
 		MysqlContext context = mysqlContext.getContext();
 
@@ -52,10 +52,8 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 		context.setWriteData(auth);
 
 		// 进行消息的写入操作
-		this.writeDataDef(context);
+		this.pkgWrite(mysqlContext);
 
-		// 鉴权完成，进行设置状态为登录鉴权结果处理
-		mysqlContext.setCurrMysqlState(MysqlStateEnum.PGK_COMM.getState());
 	}
 
 	/**
@@ -126,6 +124,18 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 		context.setReadPkgHandler(PkgReadProcessEnum.PKG_READ_HANDSHAKE.getPkgRead());
 		// 设置向服务器的鉴权包
 		context.setWritePkgHandler(PkgWriteProcessEnum.PKG_WRITE_AUTH.getPkgWrite());
+	}
+
+	@Override
+	public void pkgWrite(MysqlStateContext mysqlContext) throws IOException {
+		// 进行数据写入
+		this.writeDataDef(mysqlContext.getContext());
+
+		// 如果当前待发送的数据已经发送完成，则当前状态为进行结果的鉴定
+		if (!mysqlContext.getContext().getWriteBuffer().hasRemaining()) {
+			// 鉴权完成，进行设置状态为登录鉴权结果处理
+			mysqlContext.setCurrMysqlState(MysqlStateEnum.PGK_COMM.getState());
+		}
 	}
 
 }

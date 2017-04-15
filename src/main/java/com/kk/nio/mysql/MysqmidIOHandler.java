@@ -5,13 +5,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
-import com.kk.nio.mysql.chain.MsgBaseInf;
-import com.kk.nio.mysql.chain.MsgEnDecodeInf;
 import com.kk.nio.mysql.chain.MysqlContext;
-import com.kk.nio.mysql.chain.ReactorMysqlEnDecodeHandler;
-import com.kk.nio.mysql.chain.ReactorMysqlHandlerBase;
-import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
-import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
+import com.kk.nio.mysql.connection.MysqlConnContext;
+import com.kk.nio.mysql.console.MysqlConnStateEnum;
 
 /**
  * 使用链式处理
@@ -21,13 +17,6 @@ import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
  * @author liujun
  */
 public class MysqmidIOHandler extends MysqlIOHandlerBase {
-
-	/**
-	 * 换行符
-	 */
-	private static final String LINE = "\r\n";
-
-	
 
 	/**
 	 * 数据读取的buffer
@@ -44,6 +33,11 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	 */
 	private final MysqlContext context;
 
+	/**
+	 * 初始化mysql连接的上下文信息
+	 */
+	private MysqlConnContext mysqlConnContext = new MysqlConnContext();
+
 	public MysqmidIOHandler(Selector select, SocketChannel socket) throws IOException {
 
 		super(select, socket);
@@ -53,12 +47,16 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 		this.writeBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 3);
 
 		context = new MysqlContext(this.socketChannel, this.selectKey, this.writeBuffer, this.readBuffer);
+
+		// 设置处理数据的上下文对象信息
+		mysqlConnContext.setContext(context);
+
+		// 初始化为连接为创建连接的状态处理
+		mysqlConnContext.setMysqlConnState(MysqlConnStateEnum.MYSQL_CONN_STATE_CREATE.getConnState());
 	}
 
 	@Override
 	protected void doConnection() throws IOException {
-
-		context.setReadPkgHandler(PkgReadProcessEnum.PKG_READ_HANDSHAKE.getPkgRead());
 
 		// 进行握手消息的读取
 		// msgDataService.readData(context);
@@ -68,13 +66,11 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	@Override
 	protected void doHandler() throws IOException {
 		// System.out.println("当前读取操作");
-		// Context context = new Context(this.socketChannel, this.selectKey,
-		// this.writeBuffer, this.readBuffer);
-		// context.setLastModPositon(lastPosition);
 
-		//msgDataService.readData(context);
+		// msgDataService.readData(context);
 
-		// lastPosition = context.getLastModPositon();
+		// 进行数据读取
+		mysqlConnContext.stateReadProcess();
 
 	}
 
@@ -98,7 +94,7 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	@Override
 	protected void writeData() throws IOException {
 		// 进行消息的发送
-		//msgDataService.writeData(context);
+		mysqlConnContext.stateWriteProcess();
 	}
 
 }

@@ -51,7 +51,7 @@ public class MysqlContext {
 	 * 进行数据的写入处理
 	 */
 	private MysqlPackageWriteInf writePkgHandler;
-
+	
 	public MysqlContext() {
 
 	}

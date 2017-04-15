@@ -17,6 +17,15 @@ public interface MysqlConnStateInf {
 	 * @param context 上下文对象信息
 	 * @exception 异常信息
 	 */
-	public void stateProcess(MysqlConnContext context) throws IOException;
+	public void stateReadProcess(MysqlConnContext context) throws IOException;
+	
+	
+	/**
+	 * 进行mysql的连接状态处理
+	 * 
+	 * @param context 上下文对象信息
+	 * @exception 异常信息
+	 */
+	public void stateWriteProcess(MysqlConnContext context) throws IOException;
 
 }

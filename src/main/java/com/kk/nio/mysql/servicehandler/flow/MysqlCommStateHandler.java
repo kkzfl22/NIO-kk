@@ -15,13 +15,19 @@ import com.kk.nio.mysql.console.MysqlStateEnum;
  */
 public class MysqlCommStateHandler extends MysqlHandlerStateBase implements MysqlStateInf {
 
-	public void pkgHandler(MysqlStateContext mysqlContext) throws IOException {
+	@Override
+	public void setRWPkgHandler(MysqlStateContext context) {
+
+	}
+
+	@Override
+	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
 		MysqlContext context = mysqlContext.getContext();
 
 		ByteBuffer buffer = context.getReadBuffer();
 
-		//取得消息响应的类型检查消息的类型
+		// 取得消息响应的类型检查消息的类型
 		byte flag = buffer.get(5);
 
 		// 从解析程序中找到运行的流程
@@ -32,13 +38,13 @@ public class MysqlCommStateHandler extends MysqlHandlerStateBase implements Mysq
 			// 设置数据的解析程序
 			mysqlContext.getCurrMysqlState().setRWPkgHandler(mysqlContext);
 			// 进行运行流程
-			mysqlContext.getCurrMysqlState().pkgHandler(mysqlContext);
+			mysqlContext.getCurrMysqlState().pkgRead(mysqlContext);
 		}
 
 	}
 
 	@Override
-	public void setRWPkgHandler(MysqlStateContext context) {
+	public void pkgWrite(MysqlStateContext context) throws IOException {
 
 	}
 

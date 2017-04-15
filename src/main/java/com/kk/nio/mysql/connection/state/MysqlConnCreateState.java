@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import com.kk.nio.mysql.connection.MysqlConnContext;
 import com.kk.nio.mysql.connection.MysqlConnStateInf;
+import com.kk.nio.mysql.console.MysqlStateEnum;
+import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 
 /**
- * 进行mysql的状态处理
+ * 进行mysql的连接的状态处理
  * 
  * @since 2017年4月15日 下午12:17:27
  * @version 0.0.1
@@ -14,8 +16,45 @@ import com.kk.nio.mysql.connection.MysqlConnStateInf;
  */
 public class MysqlConnCreateState implements MysqlConnStateInf {
 
+	/**
+	 * 上下文对象
+	 */
+	private MysqlStateContext mysqlContext = new MysqlStateContext();
+
 	@Override
-	public void stateProcess(MysqlConnContext context) throws IOException {
+	public void stateReadProcess(MysqlConnContext context) throws IOException {
+
+		// 设置mysql的上下文处理对象
+		mysqlContext.setContext(context.getContext());
+
+		// 如果当前是第一次处理，则指定为登录处理
+		if (mysqlContext.getCurrMysqlState() == null) {
+			// 指定默认的处理器
+			mysqlContext.setCurrMysqlState(MysqlStateEnum.LOGIN_AUTH.getState());
+		}
+
+		// 进行流程包的设置
+		mysqlContext.setRWPkgHandler();
+
+		// 进行指定的流程包处理
+		mysqlContext.pkgRead();
+
+		Boolean result = (Boolean) mysqlContext.getResult();
+
+		// 检查数据是否已经处理成功返回
+		if (null != result && result) {
+			// 当前已经成功处理，将当前的数据标识为SQl可以运行的状态
+			System.out.println("当前SQL可以运行");
+		}
+	}
+
+	@Override
+	public void stateWriteProcess(MysqlConnContext context) throws IOException {
+		// 设置mysql的上下文处理对象
+		mysqlContext.setContext(context.getContext());
+
+		// 继续进行数据的写入
+		mysqlContext.pkgWrite();
 
 	}
 

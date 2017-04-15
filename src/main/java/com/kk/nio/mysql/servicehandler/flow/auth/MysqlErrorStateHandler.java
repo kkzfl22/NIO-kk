@@ -18,7 +18,7 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
  */
 public class MysqlErrorStateHandler extends MysqlHandlerStateBase implements MysqlStateInf {
 
-	public void pkgHandler(MysqlStateContext mysqlContext) throws IOException {
+	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
 		MysqlContext context = mysqlContext.getContext();
 
@@ -35,6 +35,11 @@ public class MysqlErrorStateHandler extends MysqlHandlerStateBase implements Mys
 		MysqlContext context = mysqlContext.getContext();
 		// 首先接收到服务器端的握手包
 		context.setReadPkgHandler(PkgReadProcessEnum.PKG_READ_ERROR.getPkgRead());
+	}
+
+	@Override
+	public void pkgWrite(MysqlStateContext context) throws IOException {
+		
 	}
 
 }

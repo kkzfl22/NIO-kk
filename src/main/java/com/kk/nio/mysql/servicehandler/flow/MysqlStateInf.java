@@ -26,6 +26,16 @@ public interface MysqlStateInf {
 	 * @throws IOException
 	 *             异常
 	 */
-	public void pkgHandler(MysqlStateContext context) throws IOException;
+	public void pkgRead(MysqlStateContext context) throws IOException;
+
+	/**
+	 * 进行数据写入
+	 * 
+	 * @param context
+	 *            数据操作上下文对象
+	 * @throws IOException
+	 *             异常
+	 */
+	public void pkgWrite(MysqlStateContext context) throws IOException;
 
 }
