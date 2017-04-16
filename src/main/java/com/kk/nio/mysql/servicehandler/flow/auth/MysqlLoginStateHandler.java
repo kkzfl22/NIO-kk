@@ -135,6 +135,7 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 		if (mysqlContext.getContext().getWriteBuffer().position() == 0) {
 			// 鉴权完成，进行设置状态为登录鉴权结果处理
 			mysqlContext.setCurrMysqlState(MysqlStateEnum.PGK_COMM.getState());
+			
 		}
 	}
 

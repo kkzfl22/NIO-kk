@@ -41,10 +41,13 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf {
 		// 进行消息的解码操作,首先进行消息的读取
 		msgBase.readData(context);
 
-		// 进行当前的包我检查
-		if (context.getReadPkgHandler().checkpackageOver(context)) {
-			// 如果检查完成，则进行包的解析,并返回
-			return context.getReadPkgHandler().readPackage(context);
+		// 检查当前是否需要进行解码
+		if (context.isIsdecoder()) {
+			// 进行当前的包我检查
+			if (context.getReadPkgHandler().checkpackageOver(context)) {
+				// 如果检查完成，则进行包的解析,并返回
+				return context.getReadPkgHandler().readPackage(context);
+			}
 		}
 
 		return null;

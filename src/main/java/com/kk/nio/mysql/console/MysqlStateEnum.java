@@ -2,7 +2,9 @@ package com.kk.nio.mysql.console;
 
 import com.kk.nio.mysql.servicehandler.flow.MysqlCommStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
+import com.kk.nio.mysql.servicehandler.flow.auth.MysqlErrorStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlLoginStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.auth.MysqlOkStateHandler;
 
 /**
  * mysql的状态信息
@@ -16,13 +18,22 @@ public enum MysqlStateEnum {
 	/**
 	 * 进行mysql登录的状态处理
 	 */
-	LOGIN_AUTH((byte) 255, new MysqlLoginStateHandler()),
+	LOGIN_AUTH((byte) 1, new MysqlLoginStateHandler()),
 
 	/**
 	 * 进行mysql登录结果的处理
 	 */
-	PGK_COMM((byte) 255, new MysqlCommStateHandler()),
-	
+	PGK_COMM((byte) 1, new MysqlCommStateHandler()),
+
+	/**
+	 * 进行成功的状态的处理
+	 */
+	PKG_OK((byte) 0x00, new MysqlOkStateHandler()),
+
+	/**
+	 * 错误的处理
+	 */
+	PKG_ERROR((byte) 0xff, new MysqlErrorStateHandler())
 
 	;
 

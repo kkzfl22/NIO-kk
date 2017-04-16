@@ -128,7 +128,7 @@ public class MysqlMidMultNioAcceptor implements Runnable {
 					}
 				}
 				// 其他的数据处理则交给具体的线程去处理
-				else {
+				else if (selectionKey.isReadable()) {
 					try {
 						SocketChannel socket = (SocketChannel) selectionKey.channel();
 						// 交给其他的任务线程去处理
@@ -139,6 +139,8 @@ public class MysqlMidMultNioAcceptor implements Runnable {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					
+					selectionKey.cancel();
 				}
 			}
 

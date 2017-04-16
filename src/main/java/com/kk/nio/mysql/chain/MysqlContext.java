@@ -51,7 +51,12 @@ public class MysqlContext {
 	 * 进行数据的写入处理
 	 */
 	private MysqlPackageWriteInf writePkgHandler;
-	
+
+	/**
+	 * 是否需要进行消息的解码
+	 */
+	private boolean isdecoder = true;
+
 	public MysqlContext() {
 
 	}
@@ -119,6 +124,18 @@ public class MysqlContext {
 
 	public void setWritePkgHandler(MysqlPackageWriteInf writePkgHandler) {
 		this.writePkgHandler = writePkgHandler;
+	}
+
+	public boolean isIsdecoder() {
+		return isdecoder;
+	}
+
+	public void setIsdecoder(boolean isdecoder) {
+		this.isdecoder = isdecoder;
+	}
+
+	public void setWriteData(Object writeData) {
+		this.writeData = writeData;
 	}
 
 }
