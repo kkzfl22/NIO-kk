@@ -2,6 +2,7 @@ package com.kk.nio.mysql.packhandler.endecode.impl;
 
 import java.nio.ByteBuffer;
 
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.bean.pkg.QueryPackageBean;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
@@ -32,13 +33,13 @@ public class QueryPackageCode implements MysqlPackageWriteInf {
 	}
 
 	@Override
-	public ByteBuffer packageToBuffer(PackageHeader pkgParam) {
+	public void packageToBuffer(MysqlContext context) {
 
-		QueryPackageBean pkgBean = (QueryPackageBean) pkgParam;
+		QueryPackageBean pkgBean = (QueryPackageBean) context.getWriteData();
 
 		int pkgSize = this.getpackageSize(pkgBean);
 
-		ByteBuffer buffer = ByteBuffer.allocate(pkgSize + 4);
+		ByteBuffer buffer = context.getWriteBuffer();
 
 		// 进行包大小的数据写入
 		BufferUtil.writeUB3(buffer, pkgSize);
@@ -49,7 +50,6 @@ public class QueryPackageCode implements MysqlPackageWriteInf {
 		// 写入查询字符
 		buffer.put(pkgBean.getQueryStr());
 
-		return buffer;
 	}
 
 }

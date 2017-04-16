@@ -2,8 +2,8 @@ package com.kk.nio.mysql.connection;
 
 import java.io.IOException;
 
+import com.kk.nio.mysql.chain.MsgEnDecodeInf;
 import com.kk.nio.mysql.chain.MysqlContext;
-import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 
 /**
  * 上下文对象信息
@@ -24,6 +24,11 @@ public class MysqlConnContext {
 	 */
 	private MysqlConnStateInf mysqlConnState;
 
+	/**
+	 * 设置解码器对象
+	 */
+	private MsgEnDecodeInf msgEndecode;
+
 	public MysqlContext getContext() {
 		return context;
 	}
@@ -43,8 +48,17 @@ public class MysqlConnContext {
 	public void stateReadProcess() throws IOException {
 		mysqlConnState.stateReadProcess(this);
 	}
+
 	public void stateWriteProcess() throws IOException {
 		mysqlConnState.stateWriteProcess(this);
+	}
+
+	public MsgEnDecodeInf getMsgEndecode() {
+		return msgEndecode;
+	}
+
+	public void setMsgEndecode(MsgEnDecodeInf msgEndecode) {
+		this.msgEndecode = msgEndecode;
 	}
 
 }

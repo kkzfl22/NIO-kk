@@ -2,6 +2,7 @@ package com.kk.nio.mysql.packhandler.endecode.impl;
 
 import java.nio.ByteBuffer;
 
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.AuthPackageBean;
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.common.BufferUtil;
@@ -74,17 +75,18 @@ public class AuthPackageCode implements MysqlPackageWriteInf {
 	}
 
 	@Override
-	public ByteBuffer packageToBuffer(PackageHeader param) {
-		AuthPackageBean packBean = (AuthPackageBean) param;
+	public void packageToBuffer(MysqlContext context) {
+		AuthPackageBean packBean = (AuthPackageBean) context.getWriteData();
 
 		// 设置当前的包顺序为1
 		packBean.setSeq(packBean.getSeq());
 		// 设置客户端的标识
 		packBean.setClientFlag(initClientFlags());
 
+		// 读取包大小
 		int pkgSize = this.getpackageSize(packBean);
 		// 4,字节为包头的大小
-		ByteBuffer resultByte = ByteBuffer.allocate(pkgSize + 4);
+		ByteBuffer resultByte = context.getWriteBuffer();
 
 		// 进行包大小的数据写入
 		BufferUtil.writeUB3(resultByte, pkgSize);
@@ -120,8 +122,6 @@ public class AuthPackageCode implements MysqlPackageWriteInf {
 			byte[] dataBaseBytes = packBean.getDataBase().getBytes();
 			BufferUtil.writeWithNull(resultByte, dataBaseBytes);
 		}
-
-		return resultByte;
 
 	}
 

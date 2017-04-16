@@ -20,10 +20,9 @@ public class MysqlOkStateHandler extends MysqlHandlerStateBase implements MysqlS
 
 	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
-		MysqlContext context = mysqlContext.getContext();
 
 		// 解析出来成功的连接信息
-		OkPackageBean msg = (OkPackageBean) this.readDataDef(context);
+		OkPackageBean msg = (OkPackageBean) this.readDataDef(mysqlContext);
 		
 		if(null != msg)
 		{

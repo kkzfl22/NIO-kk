@@ -28,7 +28,7 @@ public class MysqlCommStateHandler extends MysqlHandlerStateBase implements Mysq
 		ByteBuffer buffer = context.getReadBuffer();
 
 		// 取得消息响应的类型检查消息的类型
-		byte flag = buffer.get(5);
+		byte flag = buffer.get(4);
 
 		// 从解析程序中找到运行的流程
 		MysqlStateInf mysqlState = MysqlStateEnum.getState(flag);

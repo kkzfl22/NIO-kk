@@ -11,7 +11,7 @@ import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
  * @version 0.0.1
  * @author liujun
  */
-public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<PackageHeader> {
+public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf {
 
 	/**
 	 * 消息处理的接口
@@ -27,7 +27,8 @@ public class ReactorMysqlEnDecodeHandler implements MsgEnDecodeInf<PackageHeader
 	public void msgEncode(MysqlContext context) throws IOException {
 		// 将消息进行编码再发送,将按 mysql的消息体进行组包
 		if (context.getWritePkgHandler().getpackageSize((PackageHeader) context.getWriteData()) > 0) {
-			context.getWritePkgHandler().packageToBuffer((PackageHeader) context.getWriteData());
+			// 将数据放入到buffer中
+			context.getWritePkgHandler().packageToBuffer(context);
 		}
 
 		// 进行消息的发送

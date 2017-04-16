@@ -28,10 +28,10 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 
 	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
-		MysqlContext context = mysqlContext.getContext();
+		// MysqlContext context = mysqlContext.getContext();
 
 		// 进行消息的解码操作,即为服务器首次写入的消息
-		HandshakeBean msg = (HandshakeBean) this.readDataDef(context);
+		HandshakeBean msg = (HandshakeBean) this.readDataDef(mysqlContext);
 
 		// 组装用户消息
 		AuthPackageBean auth = new AuthPackageBean();
@@ -49,7 +49,7 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 		auth.setDataBase(PropertiesUtils.getInstance().getValue(PropertiesKeyEnum.MYSQL_DATABASE));
 
 		// 设置写入数据库的信息
-		context.setWriteData(auth);
+		mysqlContext.getContext().setWriteData(auth);
 
 		// 进行消息的写入操作
 		this.pkgWrite(mysqlContext);
@@ -129,10 +129,10 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 	@Override
 	public void pkgWrite(MysqlStateContext mysqlContext) throws IOException {
 		// 进行数据写入
-		this.writeDataDef(mysqlContext.getContext());
+		this.writeDataDef(mysqlContext);
 
 		// 如果当前待发送的数据已经发送完成，则当前状态为进行结果的鉴定
-		if (!mysqlContext.getContext().getWriteBuffer().hasRemaining()) {
+		if (mysqlContext.getContext().getWriteBuffer().position() == 0) {
 			// 鉴权完成，进行设置状态为登录鉴权结果处理
 			mysqlContext.setCurrMysqlState(MysqlStateEnum.PGK_COMM.getState());
 		}

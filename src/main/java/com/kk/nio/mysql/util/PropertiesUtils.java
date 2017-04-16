@@ -47,7 +47,7 @@ public class PropertiesUtils {
 		Properties pro = new Properties();
 
 		try {
-			pro.load(PropertiesUtils.class.getResourceAsStream("/" + fileName));
+			pro.load(PropertiesUtils.class.getResourceAsStream(fileName));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			log.error("PropertiesUtils load properties not exception:", e);

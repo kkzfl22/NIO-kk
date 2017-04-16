@@ -20,10 +20,8 @@ public class MysqlErrorStateHandler extends MysqlHandlerStateBase implements Mys
 
 	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
-		MysqlContext context = mysqlContext.getContext();
-
 		// 解析出来成功的连接信息
-		ErrorPackageBean msg = (ErrorPackageBean) this.readDataDef(context);
+		ErrorPackageBean msg = (ErrorPackageBean) this.readDataDef(mysqlContext);
 
 		if (null != msg) {
 			// 标识当前连接为已经成功
@@ -39,7 +37,7 @@ public class MysqlErrorStateHandler extends MysqlHandlerStateBase implements Mys
 
 	@Override
 	public void pkgWrite(MysqlStateContext context) throws IOException {
-		
+
 	}
 
 }

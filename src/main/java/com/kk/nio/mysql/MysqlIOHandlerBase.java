@@ -34,9 +34,6 @@ public abstract class MysqlIOHandlerBase implements Runnable {
 		this.select = select;
 		this.socketChannel = socket;
 
-		// 设置为非阻塞模式
-		socket.configureBlocking(false);
-
 		// 注册当前为reader事件感兴趣
 		selectKey = socketChannel.register(select, SelectionKey.OP_READ);
 

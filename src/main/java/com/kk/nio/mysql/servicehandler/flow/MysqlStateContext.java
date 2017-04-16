@@ -2,6 +2,7 @@ package com.kk.nio.mysql.servicehandler.flow;
 
 import java.io.IOException;
 
+import com.kk.nio.mysql.chain.MsgEnDecodeInf;
 import com.kk.nio.mysql.chain.MysqlContext;
 
 /**
@@ -22,6 +23,11 @@ public class MysqlStateContext {
 	 * 当前的状态
 	 */
 	private MysqlStateInf currMysqlState;
+
+	/**
+	 * 设置解码器对象
+	 */
+	private MsgEnDecodeInf msgEndecode;
 
 	/**
 	 * 返回结果的数据
@@ -52,6 +58,14 @@ public class MysqlStateContext {
 		this.result = result;
 	}
 
+	public MsgEnDecodeInf getMsgEndecode() {
+		return msgEndecode;
+	}
+
+	public void setMsgEndecode(MsgEnDecodeInf msgEndecode) {
+		this.msgEndecode = msgEndecode;
+	}
+
 	/**
 	 * 进行设置包的解析
 	 */
@@ -68,8 +82,7 @@ public class MysqlStateContext {
 		currMysqlState.pkgRead(this);
 
 	}
-	
-	
+
 	/**
 	 * 进行包的处理
 	 * 
@@ -77,7 +90,7 @@ public class MysqlStateContext {
 	 */
 	public void pkgWrite() throws IOException {
 		currMysqlState.pkgWrite(this);
-		
+
 	}
 
 }

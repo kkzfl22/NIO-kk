@@ -2,6 +2,8 @@ package com.kk.nio.mysql.chain;
 
 import java.io.IOException;
 
+import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
+
 /**
  * 消息处理编解码接口
  * 
@@ -9,7 +11,7 @@ import java.io.IOException;
  * @version 0.0.1
  * @author liujun
  */
-public interface MsgEnDecodeInf<T> {
+public interface MsgEnDecodeInf {
 
 	/**
 	 * 进行消息编码操作
@@ -28,6 +30,6 @@ public interface MsgEnDecodeInf<T> {
 	 * @return 解码后的结果
 	 * @throws IOException
 	 */
-	public T msgDecode(MysqlContext context) throws IOException;
+	public PackageHeader msgDecode(MysqlContext context) throws IOException;
 
 }

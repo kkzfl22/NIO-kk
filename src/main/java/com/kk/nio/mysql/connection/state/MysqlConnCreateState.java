@@ -27,6 +27,9 @@ public class MysqlConnCreateState implements MysqlConnStateInf {
 		// 设置mysql的上下文处理对象
 		mysqlContext.setContext(context.getContext());
 
+		// 设置解码器信息
+		mysqlContext.setMsgEndecode(context.getMsgEndecode());
+
 		// 如果当前是第一次处理，则指定为登录处理
 		if (mysqlContext.getCurrMysqlState() == null) {
 			// 指定默认的处理器

@@ -1,7 +1,6 @@
 package com.kk.nio.mysql.packhandler.endecode;
 
-import java.nio.ByteBuffer;
-
+import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 
 /**
@@ -19,7 +18,7 @@ public interface MysqlPackageWriteInf {
 	 * @param buffer
 	 * @创建日期 2016年12月9日
 	 */
-	public ByteBuffer packageToBuffer(PackageHeader msg);
+	public void packageToBuffer(MysqlContext context);
 
 	/**
 	 * 获取数据包大小 方法描述
