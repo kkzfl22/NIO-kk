@@ -2,6 +2,7 @@ package com.kk.nio.mysql.packhandler;
 
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageWriteInf;
 import com.kk.nio.mysql.packhandler.endecode.impl.AuthPackageCode;
+import com.kk.nio.mysql.packhandler.endecode.impl.QueryPackageCode;
 
 /**
  * 进行程序包的处理
@@ -17,7 +18,10 @@ public enum PkgWriteProcessEnum {
 	 */
 	PKG_WRITE_AUTH(new AuthPackageCode()),
 
-	;
+	/**
+	 * 查询请求报文
+	 */
+	PKG_WRITE_QUERY(new QueryPackageCode()),;
 
 	/**
 	 * 进行mysql包的写入

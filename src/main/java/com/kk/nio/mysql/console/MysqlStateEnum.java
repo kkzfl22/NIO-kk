@@ -33,7 +33,9 @@ public enum MysqlStateEnum {
 	/**
 	 * 错误的处理
 	 */
-	PKG_ERROR((byte) 0xff, new MysqlErrorStateHandler())
+	PKG_ERROR((byte) 0xff, new MysqlErrorStateHandler()),
+	
+	
 
 	;
 

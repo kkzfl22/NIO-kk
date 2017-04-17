@@ -133,6 +133,8 @@ public class MysqlLoginStateHandler extends MysqlHandlerStateBase implements Mys
 
 		// 如果当前待发送的数据已经发送完成，则当前状态为进行结果的鉴定
 		if (mysqlContext.getContext().getWriteBuffer().position() == 0) {
+			//读取的数据也需要清理
+			mysqlContext.getContext().getReadBuffer().clear();
 			// 鉴权完成，进行设置状态为登录鉴权结果处理
 			mysqlContext.setCurrMysqlState(MysqlStateEnum.PGK_COMM.getState());
 			

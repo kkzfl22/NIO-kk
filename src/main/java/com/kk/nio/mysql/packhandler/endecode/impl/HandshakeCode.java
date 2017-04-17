@@ -19,6 +19,9 @@ public class HandshakeCode implements MysqlPackageReadInf {
 
 		HandshakeBean bean = new HandshakeBean();
 
+		// 设置为0开始解析
+		context.getReadBuffer().position(0);
+
 		// 进行报文内容解析
 		MySQLMessage msg = new MySQLMessage(context.getReadBuffer());
 

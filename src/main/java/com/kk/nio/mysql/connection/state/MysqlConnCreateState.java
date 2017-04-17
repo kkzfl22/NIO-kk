@@ -46,8 +46,7 @@ public class MysqlConnCreateState implements MysqlConnStateInf {
 
 		// 检查数据是否已经处理成功返回
 		if (null != result && result) {
-			// 当前已经成功处理，将当前的数据标识为SQl可以运行的状态
-			System.out.println("当前SQL可以运行");
+			// 当前已经成功连接，状态切换为使用SQL状态
 		}
 	}
 

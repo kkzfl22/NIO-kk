@@ -45,7 +45,7 @@ public class OkPackageCode implements MysqlPackageReadInf {
 
 	@Override
 	public boolean checkpackageOver(MysqlContext context) {
-		return false;
+		return true;
 	}
 
 }
