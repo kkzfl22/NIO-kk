@@ -3,9 +3,9 @@ package com.kk.nio.mysql.servicehandler.flow.query;
 import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
-import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.PkgWriteProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.OkPackageBean;
+import com.kk.nio.mysql.packhandler.bean.pkg.QueryPackageBean;
 import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
@@ -35,14 +35,31 @@ public class MysqlQueryReqStateHandler extends MysqlHandlerStateBase implements 
 	@Override
 	public void setRWPkgHandler(MysqlStateContext mysqlContext) {
 		MysqlContext context = mysqlContext.getContext();
-		//进行向服务器编码的包设置
+		// 进行向服务器编码的包设置
 		context.setWritePkgHandler(PkgWriteProcessEnum.PKG_WRITE_QUERY.getPkgWrite());
 	}
 
 	@Override
 	public void pkgWrite(MysqlStateContext context) throws IOException {
-		//设置查询的报文
+
+		// 组装查询包
+		QueryPackageBean queryPkg = new QueryPackageBean();
+
+		queryPkg.setSeq((byte) 1);
+		queryPkg.setFlag((byte) 0x03);
+		queryPkg.setQueryStr("select * from userinfo".getBytes());
+
+		// 交给对应的流程去发送
+		context.getContext().setWriteData(queryPkg);
+
+		// 进行发送的流程
+		this.writeDataDef(context);
 		
+		//检查是否已经发送完成,如果发送完成，则设置查询的解析的结果解析程序
+		if (context.getContext().getWriteBuffer().position() == 0) {
+			
+		}
+
 	}
 
 }

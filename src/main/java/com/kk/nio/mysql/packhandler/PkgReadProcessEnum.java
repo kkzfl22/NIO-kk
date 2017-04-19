@@ -4,7 +4,7 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 import com.kk.nio.mysql.packhandler.endecode.impl.ErrorPackageCode;
 import com.kk.nio.mysql.packhandler.endecode.impl.HandshakeCode;
 import com.kk.nio.mysql.packhandler.endecode.impl.OkPackageCode;
-import com.kk.nio.mysql.packhandler.endecode.impl.QueryPackageCode;
+import com.kk.nio.mysql.packhandler.endecode.impl.resultset.ResultSetHeaderCode;
 
 /**
  * 进行程序包的处理
@@ -30,6 +30,10 @@ public enum PkgReadProcessEnum {
 	 */
 	PKG_READ_ERROR(new ErrorPackageCode()),
 
+	/**
+	 * 查询结果的响应头报文处理
+	 */
+	PKG_RUERY_RSP_HEADER(new ResultSetHeaderCode()),
 
 	;
 

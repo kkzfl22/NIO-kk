@@ -12,7 +12,7 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
  * [Result Set Header]列数量 当前消息体 [Field]列信息（多个） [EOF]列结束 [Row Data]行数据（多个）
  * [EOF]数据结束
  */
-public class ResultSetHanderCode implements MysqlPackageReadInf {
+public class ResultSetHeaderCode implements MysqlPackageReadInf {
 
 	@Override
 	public ResultSetHanderBean readPackage(MysqlContext context) {
