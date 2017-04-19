@@ -35,7 +35,9 @@ public class ResultSetHeaderCode implements MysqlPackageReadInf {
 
 	@Override
 	public boolean checkpackageOver(MysqlContext context) {
-		return false;
+
+		// 首先只是返回的列数量，直接进行读取
+		return true;
 	}
 
 }
