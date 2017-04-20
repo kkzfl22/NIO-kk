@@ -33,7 +33,10 @@ public class EofPackageCode implements MysqlPackageReadInf {
 
 	@Override
 	public boolean checkpackageOver(MysqlContext context) {
-		return false;
+
+		// 在进行列读取时，已经检查到了eof包，故此可直接进行读取
+
+		return true;
 	}
 
 }

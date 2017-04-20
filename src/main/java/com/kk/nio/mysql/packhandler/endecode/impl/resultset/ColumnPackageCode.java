@@ -1,5 +1,7 @@
 package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 
+import java.nio.ByteBuffer;
+
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.ColumnPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
@@ -57,6 +59,21 @@ public class ColumnPackageCode implements MysqlPackageReadInf {
 
 	@Override
 	public boolean checkpackageOver(MysqlContext context) {
+
+		// 检查是否已经读取到eof包信息，如果检查到，则开始读取，否则继续读取流
+		ByteBuffer readBuff = context.getReadBuffer();
+
+		long oldPositon = readBuff.position();
+
+		long currLimit = readBuff.limit();
+
+		for (int i = (int) oldPositon; i < currLimit; i++) {
+			// 当前检查到第一个列结束的eof包，则开始读取列的数据
+			if (readBuff.get(i) == ((byte) 0xfe)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 

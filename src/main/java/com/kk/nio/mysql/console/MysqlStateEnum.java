@@ -5,6 +5,9 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlErrorStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlLoginStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlOkStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryReqStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateColumnHandler;
+import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateHearderHandler;
 
 /**
  * mysql的状态信息
@@ -34,8 +37,21 @@ public enum MysqlStateEnum {
 	 * 错误的处理
 	 */
 	PKG_ERROR((byte) 0xff, new MysqlErrorStateHandler()),
-	
-	
+
+	/**
+	 * 查询请求和状态处理
+	 */
+	PKG_QUERY_REQ((byte) 1, new MysqlQueryReqStateHandler()),
+
+	/**
+	 * 查询响应的状态头处理
+	 */
+	PKG_QUERY_RSP_HEADER((byte) 1, new MysqlQueryRspStateHearderHandler()),
+
+	/**
+	 * 查询响应的消息列处理
+	 */
+	PKG_QUERY_RSP_COLUMN((byte) 1, new MysqlQueryRspStateColumnHandler()),
 
 	;
 

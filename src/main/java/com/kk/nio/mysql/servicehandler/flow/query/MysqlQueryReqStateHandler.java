@@ -3,6 +3,7 @@ package com.kk.nio.mysql.servicehandler.flow.query;
 import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.packhandler.PkgWriteProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.OkPackageBean;
 import com.kk.nio.mysql.packhandler.bean.pkg.QueryPackageBean;
@@ -55,9 +56,9 @@ public class MysqlQueryReqStateHandler extends MysqlHandlerStateBase implements 
 		// 进行发送的流程
 		this.writeDataDef(context);
 		
-		//检查是否已经发送完成,如果发送完成，则设置查询的解析的结果解析程序
+		//检查是否已经发送完成,如果发送完成，则设置查询结果的头解析
 		if (context.getContext().getWriteBuffer().position() == 0) {
-			
+			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_HEADER.getState());
 		}
 
 	}
