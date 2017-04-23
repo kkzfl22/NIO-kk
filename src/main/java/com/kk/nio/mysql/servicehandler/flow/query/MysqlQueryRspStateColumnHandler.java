@@ -3,6 +3,7 @@ package com.kk.nio.mysql.servicehandler.flow.query;
 import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.console.FlowKeyEnum;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.ColumnPackageBean;
 import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
@@ -21,7 +22,9 @@ public class MysqlQueryRspStateColumnHandler extends MysqlHandlerStateBase imple
 	@Override
 	public void pkgRead(MysqlStateContext context) throws IOException {
 
-		int colNum = (int) context.getResult();
+		// 获得列数
+		int colNum = (int) context.getContext().getMapData(FlowKeyEnum.QUERY_RSP_HEADER_COUNT.getKey());
+
 		ColumnPackageBean[] columnArray = new ColumnPackageBean[colNum];
 
 		ColumnPackageBean item = null;
@@ -42,6 +45,10 @@ public class MysqlQueryRspStateColumnHandler extends MysqlHandlerStateBase imple
 
 		// 列读取完成，则继续下一个流程，即为进行eof包的读取
 		if (readOk) {
+
+			// 将列信息记录到流程中
+			context.getContext().setMapData(FlowKeyEnum.QUERY_RSP_COLUMN_MSG.getKey(), columnArray);
+
 			context.setCurrMysqlState(null);
 		}
 

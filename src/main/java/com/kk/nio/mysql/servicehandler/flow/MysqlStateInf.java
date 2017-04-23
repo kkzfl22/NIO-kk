@@ -16,7 +16,7 @@ public interface MysqlStateInf {
 	 * 
 	 * @return
 	 */
-	public void setRWPkgHandler(MysqlStateContext context);
+	public void setRWPkgHandler(MysqlStateContext mysqlContext);
 
 	/**
 	 * 进行数据读取
@@ -26,7 +26,7 @@ public interface MysqlStateInf {
 	 * @throws IOException
 	 *             异常
 	 */
-	public void pkgRead(MysqlStateContext context) throws IOException;
+	public void pkgRead(MysqlStateContext mysqlContext) throws IOException;
 
 	/**
 	 * 进行数据写入
@@ -36,6 +36,6 @@ public interface MysqlStateInf {
 	 * @throws IOException
 	 *             异常
 	 */
-	public void pkgWrite(MysqlStateContext context) throws IOException;
+	public void pkgWrite(MysqlStateContext mysqlContext) throws IOException;
 
 }

@@ -3,6 +3,8 @@ package com.kk.nio.mysql.chain;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.kk.nio.mysql.packhandler.bean.pkg.PackageHeader;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
@@ -56,6 +58,16 @@ public class MysqlContext {
 	 * 是否需要进行消息的解码
 	 */
 	private boolean isdecoder = true;
+
+	/**
+	 * 数据解析或者编码的部分数据
+	 */
+	private Map<String, Object> dataMap = new HashMap<>();
+	
+	/**
+	 * 上一次最后验证的位置
+	 */
+	private int lastPosition;
 
 	public MysqlContext() {
 
@@ -137,5 +149,22 @@ public class MysqlContext {
 	public void setWriteData(Object writeData) {
 		this.writeData = writeData;
 	}
+
+	public Object getMapData(String key) {
+		return dataMap;
+	}
+
+	public void setMapData(String key, Object value) {
+		this.dataMap.put(key, value);
+	}
+
+	public int getLastPosition() {
+		return lastPosition;
+	}
+
+	public void setLastPosition(int lastPosition) {
+		this.lastPosition = lastPosition;
+	}
+	
 
 }

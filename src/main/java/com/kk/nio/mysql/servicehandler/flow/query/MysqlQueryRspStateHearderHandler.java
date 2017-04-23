@@ -3,6 +3,7 @@ package com.kk.nio.mysql.servicehandler.flow.query;
 import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.console.FlowKeyEnum;
 import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.ResultSetHanderBean;
@@ -31,7 +32,7 @@ public class MysqlQueryRspStateHearderHandler extends MysqlHandlerStateBase impl
 		if (0 != fieldcount) {
 
 			// 将读取结果设置到上下文中，以供列读取使用
-			context.setResult(fieldcount);
+			context.getContext().setMapData(FlowKeyEnum.QUERY_RSP_HEADER_COUNT.getKey(), fieldcount);
 
 			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_COLUMN.getState());
 		}

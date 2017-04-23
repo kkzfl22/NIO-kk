@@ -47,6 +47,8 @@ public class RowDataPackageBean extends PackageHeader {
 	public List<byte[]> getFieldValue() {
 		return fieldValue;
 	}
+	
+	
 
 	@Override
 	public String toString() {

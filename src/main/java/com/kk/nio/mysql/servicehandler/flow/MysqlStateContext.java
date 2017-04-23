@@ -33,7 +33,8 @@ public class MysqlStateContext {
 	 * 返回结果的数据
 	 */
 	private Object result;
-
+	
+	
 	public MysqlContext getContext() {
 		return context;
 	}
