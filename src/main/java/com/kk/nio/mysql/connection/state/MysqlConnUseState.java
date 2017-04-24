@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.kk.nio.mysql.connection.MysqlConnContext;
 import com.kk.nio.mysql.connection.MysqlConnStateInf;
 import com.kk.nio.mysql.console.MysqlStateEnum;
-import com.kk.nio.mysql.packhandler.bean.pkg.QueryPackageBean;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 
 /**
@@ -24,6 +23,23 @@ public class MysqlConnUseState implements MysqlConnStateInf {
 
 	@Override
 	public void stateReadProcess(MysqlConnContext context) throws IOException {
+		// 进行响应数据的读取
+		// 设置mysql的上下文处理对象
+		mysqlContext.setContext(context.getContext());
+
+		context.getContext().getReadBuffer().clear();
+
+		// 设置当前的状态为连接请求状态
+		mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_HEADER.getState());
+
+		// 设置编码码器信息
+		mysqlContext.setMsgEndecode(context.getMsgEndecode());
+
+		// 进行流程包的设置
+		mysqlContext.setRWPkgHandler();
+
+		// 进行消息的读取
+		mysqlContext.pkgRead();
 
 	}
 
@@ -31,10 +47,15 @@ public class MysqlConnUseState implements MysqlConnStateInf {
 	public void stateWriteProcess(MysqlConnContext context) throws IOException {
 		// 设置mysql的上下文处理对象
 		mysqlContext.setContext(context.getContext());
-		
-		//进行当前的mysql查询的请求
-		QueryPackageBean queryReq = new QueryPackageBean();
-		
+
+		// 设置当前的状态为连接请求状态
+		mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_REQ.getState());
+
+		// 设置编码码器信息
+		mysqlContext.setMsgEndecode(context.getMsgEndecode());
+
+		// 进行流程包的设置
+		mysqlContext.setRWPkgHandler();
 
 		// 继续进行数据的写入
 		mysqlContext.pkgWrite();

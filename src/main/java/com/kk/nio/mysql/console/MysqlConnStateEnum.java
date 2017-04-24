@@ -2,6 +2,7 @@ package com.kk.nio.mysql.console;
 
 import com.kk.nio.mysql.connection.MysqlConnStateInf;
 import com.kk.nio.mysql.connection.state.MysqlConnCreateState;
+import com.kk.nio.mysql.connection.state.MysqlConnUseState;
 
 /**
  * mysql的连接的状态信息
@@ -15,7 +16,13 @@ public enum MysqlConnStateEnum {
 	/**
 	 * 创建连接状态
 	 */
-	MYSQL_CONN_STATE_CREATE(new MysqlConnCreateState())
+	MYSQL_CONN_STATE_CREATE(new MysqlConnCreateState()),
+	
+	
+	/**
+	 * 使用连接的状态 
+	 */
+	MYSQL_CONN_STATE_USE(new MysqlConnUseState()),
 
 	;
 

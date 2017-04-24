@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.kk.nio.mysql.connection.MysqlConnContext;
 import com.kk.nio.mysql.connection.MysqlConnStateInf;
+import com.kk.nio.mysql.console.MysqlConnStateEnum;
 import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 
@@ -47,6 +48,9 @@ public class MysqlConnCreateState implements MysqlConnStateInf {
 		// 检查数据是否已经处理成功返回
 		if (null != result && result) {
 			// 当前已经成功连接，状态切换为使用SQL状态
+			context.setMysqlConnState(MysqlConnStateEnum.MYSQL_CONN_STATE_USE.getConnState());
+			//并且操作为发送SQL
+			context.stateWriteProcess();
 		}
 	}
 

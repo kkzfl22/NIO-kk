@@ -22,7 +22,7 @@ public class MysqlConnContext {
 	/**
 	 * 当前连接的状态处理
 	 */
-	private MysqlConnStateInf mysqlConnState;
+	private volatile MysqlConnStateInf mysqlConnState;
 
 	/**
 	 * 设置解码器对象
