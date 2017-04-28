@@ -46,11 +46,15 @@ public class MysqlConnContext {
 	}
 
 	public void stateReadProcess() throws IOException {
-		mysqlConnState.stateReadProcess(this);
+		if (null != mysqlConnState) {
+			mysqlConnState.stateReadProcess(this);
+		}
 	}
 
 	public void stateWriteProcess() throws IOException {
-		mysqlConnState.stateWriteProcess(this);
+		if (null != mysqlConnState) {
+			mysqlConnState.stateWriteProcess(this);
+		}
 	}
 
 	public MsgEnDecodeInf getMsgEndecode() {

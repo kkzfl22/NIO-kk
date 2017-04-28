@@ -62,7 +62,8 @@ public class MysqlMultReactor extends Thread {
 				MysqlIOHandlerBase handler = (MysqlIOHandlerBase) selectionKey.attachment();
 				if (null != handler) {
 					// 提交线程池处理
-					executor.execute(handler);
+					handler.run();
+					// executor.execute(handler);
 				}
 			}
 

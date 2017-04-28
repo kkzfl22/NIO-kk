@@ -27,10 +27,7 @@ public class MysqlConnUseState implements MysqlConnStateInf {
 		// 设置mysql的上下文处理对象
 		mysqlContext.setContext(context.getContext());
 
-		context.getContext().getReadBuffer().clear();
-
-		// 设置当前的状态为连接请求状态
-		mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_HEADER.getState());
+		//context.getContext().getReadBuffer().clear();
 
 		// 设置编码码器信息
 		mysqlContext.setMsgEndecode(context.getMsgEndecode());

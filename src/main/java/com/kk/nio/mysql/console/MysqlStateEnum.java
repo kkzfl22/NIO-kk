@@ -5,10 +5,12 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlErrorStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlLoginStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlOkStateHandler;
-import com.kk.nio.mysql.servicehandler.flow.comm.MysqlQueryRspStateEofHandler;
 import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryReqStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspCommStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateColumnHandler;
+import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateEofHandler;
 import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateHearderHandler;
+import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryStateRspRowDataHandler;
 
 /**
  * mysql的状态信息
@@ -45,6 +47,11 @@ public enum MysqlStateEnum {
 	PKG_QUERY_REQ((byte) 1, new MysqlQueryReqStateHandler()),
 
 	/**
+	 * 响应的正确性进行验证
+	 */
+	PKG_QUERY_RSP_CHECK((byte) 1, new MysqlQueryRspCommStateHandler()),
+
+	/**
 	 * 查询响应的状态头处理
 	 */
 	PKG_QUERY_RSP_HEADER((byte) 1, new MysqlQueryRspStateHearderHandler()),
@@ -53,12 +60,16 @@ public enum MysqlStateEnum {
 	 * 查询响应的消息列处理
 	 */
 	PKG_QUERY_RSP_COLUMN((byte) 1, new MysqlQueryRspStateColumnHandler()),
-	
-	
+
 	/**
 	 * 进行消息响应的eof包的处理
 	 */
-	PKG_RSP_EOF((byte)0xfe,new MysqlQueryRspStateEofHandler()),
+	PKG_RSP_EOF((byte) 0xfe, new MysqlQueryRspStateEofHandler()),
+
+	/**
+	 * 进行消息的解码
+	 */
+	PKG_QUERY_RSP_ROWDATA_MSG((byte) 1, new MysqlQueryStateRspRowDataHandler()),
 
 	;
 

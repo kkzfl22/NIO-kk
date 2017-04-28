@@ -37,28 +37,26 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 	 */
 	private final MysqlContext context;
 
-	
 	/**
 	 * mysql消息最基本的发送与接收对象
 	 */
 	private MsgBaseInf msgBase = new ReactorMysqlHandlerBase();
-	
-	
+
 	/**
 	 * 编码与解码过程
 	 */
 	private MsgEnDecodeInf msgEnDecode = new ReactorMysqlEnDecodeHandler(msgBase);
-	
+
 	/**
 	 * 初始化mysql连接的上下文信息
 	 */
-	private MysqlConnContext mysqlConnContext = new MysqlConnContext();
+	private final MysqlConnContext mysqlConnContext = new MysqlConnContext();
 
 	public MysqmidIOHandler(Selector select, SocketChannel socket) throws IOException {
 
 		super(select, socket);
 
-		this.readBuffer = ByteBuffer.allocateDirect(256);
+		this.readBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 16);
 
 		this.writeBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 3);
 
@@ -66,12 +64,13 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 
 		// 设置处理数据的上下文对象信息
 		mysqlConnContext.setContext(context);
-		
-		//设置编码与解码器信息
+
+		// 设置编码与解码器信息
 		mysqlConnContext.setMsgEndecode(msgEnDecode);
 
 		// 初始化为连接为创建连接的状态处理
 		mysqlConnContext.setMysqlConnState(MysqlConnStateEnum.MYSQL_CONN_STATE_CREATE.getConnState());
+
 	}
 
 	@Override
@@ -88,8 +87,10 @@ public class MysqmidIOHandler extends MysqlIOHandlerBase {
 
 		// msgDataService.readData(context);
 
-		// 进行数据读取
-		mysqlConnContext.stateReadProcess();
+		if (null != mysqlConnContext) {
+			// 进行数据读取
+			mysqlConnContext.stateReadProcess();
+		}
 
 	}
 

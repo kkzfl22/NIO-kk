@@ -26,6 +26,12 @@ public enum FlowKeyEnum {
 	 */
 	QUERY_RSP_ROWDATA_MSG("query_rsp_rowdata_msg"),
 	
+	
+	/**
+	 * 列检查标识
+	 */
+	QUERY_RSP_COLUMN_CHECK_FLAG("query_rsp_column_check_flag"),
+	
 	;
 	
 	

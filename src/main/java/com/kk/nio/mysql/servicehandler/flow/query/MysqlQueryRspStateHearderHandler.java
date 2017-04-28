@@ -30,7 +30,6 @@ public class MysqlQueryRspStateHearderHandler extends MysqlHandlerStateBase impl
 
 		// 当前已经读取成功，则可以切换状态到读取消息列信息
 		if (0 != fieldcount) {
-
 			// 将读取结果设置到上下文中，以供列读取使用
 			context.getContext().setMapData(FlowKeyEnum.QUERY_RSP_HEADER_COUNT.getKey(), fieldcount);
 

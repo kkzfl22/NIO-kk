@@ -1,8 +1,9 @@
-package com.kk.nio.mysql.servicehandler.flow.comm;
+package com.kk.nio.mysql.servicehandler.flow.query;
 
 import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.EofPackageBean;
 import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
@@ -26,7 +27,7 @@ public class MysqlQueryRspStateEofHandler extends MysqlHandlerStateBase implemen
 		
 		//eof包解析完成，解析下一个数据信息
 		if (null != bean) {
-			context.setCurrMysqlState(null);
+			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_ROWDATA_MSG.getState());
 		}
 
 	}

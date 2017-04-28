@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.console.FlowKeyEnum;
+import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.ColumnPackageBean;
 import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
@@ -49,7 +50,8 @@ public class MysqlQueryRspStateColumnHandler extends MysqlHandlerStateBase imple
 			// 将列信息记录到流程中
 			context.getContext().setMapData(FlowKeyEnum.QUERY_RSP_COLUMN_MSG.getKey(), columnArray);
 
-			context.setCurrMysqlState(null);
+			// 列读取完成，进行eof消息读取
+			context.setCurrMysqlState(MysqlStateEnum.PKG_RSP_EOF.getState());
 		}
 
 	}

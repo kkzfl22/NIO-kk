@@ -1,22 +1,28 @@
 package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 
+import java.nio.ByteBuffer;
+
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.EofPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.BaseCode;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * * MySQL 4.1 及之后的版本 结构 说明 [Result Set Header] 列数量 [Field] 列信息（多个） [EOF] 列结束
  * [Row Data] 行数据（多个） [EOF] 数据结束
  */
-public class EofPackageCode implements MysqlPackageReadInf {
+public class EofPackageCode extends BaseCode implements MysqlPackageReadInf {
 
 	@Override
 	public EofPackageBean readPackage(MysqlContext context) {
 
 		EofPackageBean result = new EofPackageBean();
 
-		MySQLMessage mm = new MySQLMessage(context.getReadBuffer());
+		// eof消息
+		ByteBuffer buffEof = this.readLength(context.getReadBuffer());
+
+		MySQLMessage mm = new MySQLMessage(buffEof);
 		// 包大小
 		result.setLength(mm.readUB3());
 		// 序号

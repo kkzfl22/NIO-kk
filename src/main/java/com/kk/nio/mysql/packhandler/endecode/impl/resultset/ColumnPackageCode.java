@@ -3,22 +3,27 @@ package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.chain.MysqlContext;
+import com.kk.nio.mysql.console.FlowKeyEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.ColumnPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.BaseCode;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
  * MySQL 4.1 及之后的版本 结构 说明 [Result Set Header] 列数量 [Field] 列信息（多个） [EOF] 列结束 [Row
  * Data] 行数据（多个） [EOF] 数据结束 源文件名：
  */
-public class ColumnPackageCode implements MysqlPackageReadInf {
+public class ColumnPackageCode extends BaseCode implements MysqlPackageReadInf {
 
 	@Override
 	public ColumnPackageBean readPackage(MysqlContext context) {
 
 		ColumnPackageBean result = new ColumnPackageBean();
 
-		MySQLMessage mm = new MySQLMessage(context.getReadBuffer());
+		// 读取消息头
+		ByteBuffer buffColumn = this.readLength(context.getReadBuffer());
+
+		MySQLMessage mm = new MySQLMessage(buffColumn);
 		// 包大小
 		result.setLength(mm.readUB3());
 		// 序列值
@@ -60,21 +65,31 @@ public class ColumnPackageCode implements MysqlPackageReadInf {
 	@Override
 	public boolean checkpackageOver(MysqlContext context) {
 
-		// 检查是否已经读取到eof包信息，如果检查到，则开始读取，否则继续读取流
-		ByteBuffer readBuff = context.getReadBuffer();
+		Boolean check = (Boolean) context.getMapData(FlowKeyEnum.QUERY_RSP_COLUMN_CHECK_FLAG.getKey());
 
-		long oldPositon = readBuff.position();
+		if (null == check || !check) {
 
-		long currLimit = readBuff.limit();
+			check = false;
 
-		for (int i = (int) oldPositon; i < currLimit; i++) {
-			// 当前检查到第一个列结束的eof包，则开始读取列的数据
-			if (readBuff.get(i) == ((byte) 0xfe)) {
-				return true;
+			// 检查是否已经读取到eof包信息，如果检查到，则开始读取，否则继续读取流
+			ByteBuffer readBuff = context.getReadBuffer();
+
+			long oldPositon = readBuff.position();
+
+			long currLimit = readBuff.limit();
+
+			for (int i = (int) oldPositon; i < currLimit; i++) {
+				// 当前检查到第一个列结束的eof包，则开始读取列的数据
+				if (readBuff.get(i) == ((byte) 0xfe)) {
+					check = true;
+				}
 			}
+
+			context.setMapData(FlowKeyEnum.QUERY_RSP_COLUMN_CHECK_FLAG.getKey(), check);
 		}
 
-		return false;
+		return check;
+
 	}
 
 }

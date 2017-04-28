@@ -30,16 +30,18 @@ public abstract class MysqlIOHandlerBase implements Runnable {
 	protected SocketChannel socketChannel;
 
 	public MysqlIOHandlerBase(Selector select, SocketChannel socket) throws IOException {
-		super();
-		this.select = select;
-		this.socketChannel = socket;
 
-		// 注册当前为reader事件感兴趣
-		selectKey = socketChannel.register(select, SelectionKey.OP_READ);
+		synchronized (this) {
 
-		// 将当前对象信息附加到通道上
-		selectKey.attach(this);
+			this.select = select;
+			this.socketChannel = socket;
 
+			// 注册当前为reader事件感兴趣
+			selectKey = socketChannel.register(select, SelectionKey.OP_READ);
+
+			// 将当前对象信息附加到通道上
+			selectKey.attach(this);
+		}
 	}
 
 	@Override

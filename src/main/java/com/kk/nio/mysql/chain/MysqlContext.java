@@ -151,7 +151,7 @@ public class MysqlContext {
 	}
 
 	public Object getMapData(String key) {
-		return dataMap;
+		return dataMap.get(key);
 	}
 
 	public void setMapData(String key, Object value) {

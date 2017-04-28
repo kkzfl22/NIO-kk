@@ -1,13 +1,12 @@
 package com.kk.nio.mysql.packhandler.endecode.impl.resultset;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.console.FlowKeyEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.RowDataPackageBean;
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
+import com.kk.nio.mysql.packhandler.endecode.BaseCode;
 import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
 
 /**
@@ -18,48 +17,43 @@ import com.kk.nio.mysql.packhandler.endecode.MysqlPackageReadInf;
  * 
  * [Row Data] 行数据（多个） [EOF] 数据结束
  */
-public class RowDataPackageCode implements MysqlPackageReadInf {
+public class RowDataPackageCode extends BaseCode implements MysqlPackageReadInf {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public RowDataPackageBean readPackage(MysqlContext context) {
 
-		// 提取列数量
-		RowDataPackageBean result = new RowDataPackageBean(
-				(int) context.getMapData(FlowKeyEnum.QUERY_RSP_HEADER_COUNT.getKey()));
+		RowDataPackageBean result = null;
 
-		MySQLMessage mm = new MySQLMessage(context.getReadBuffer());
+		// 读取消息头
+		ByteBuffer buffRow = this.readLength(context.getReadBuffer());
 
-		try {
+		// 如果当前不为eof消息结束，则进行读取
+		if (!checkEofAackage(buffRow)) {
 
-			// 包大小
-			result.setLength(mm.readUB3());
-			// 序列值
-			result.setSeq(mm.read());
+			int columnNum = (int) context.getMapData(FlowKeyEnum.QUERY_RSP_HEADER_COUNT.getKey());
 
-			// 从前面的结果中提取已经得到的查询列的信息
-			int columnNum = 0;
+			// 提取列数量
+			result = new RowDataPackageBean(columnNum);
 
-			// 填充列数据的值信息
-			for (int i = 0; i < columnNum; i++) {
-				result.getFieldValue().add(mm.readBytesWithLength());
+			MySQLMessage mm = new MySQLMessage(buffRow);
+
+			try {
+
+				// 包大小
+				result.setLength(mm.readUB3());
+				// 序列值
+				result.setSeq(mm.read());
+
+				// 从前面的结果中提取已经得到的查询列的信息
+
+				// 填充列数据的值信息
+				for (int i = 0; i < columnNum; i++) {
+					result.getFieldValue().add(mm.readBytesWithLength());
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-			// 将解析的行数据放入到map中
-			List<RowDataPackageBean> listRow = (List<RowDataPackageBean>) context
-					.getMapData(FlowKeyEnum.QUERY_RSP_ROWDATA_MSG.getKey());
-
-			// 设置填充信息
-			if (null != listRow) {
-				listRow = new ArrayList<>();
-			}
-
-			listRow.add(result);
-
-			context.setMapData(FlowKeyEnum.QUERY_RSP_ROWDATA_MSG.getKey(), listRow);
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 		return result;

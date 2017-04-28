@@ -46,19 +46,19 @@ public class MysqlQueryReqStateHandler extends MysqlHandlerStateBase implements 
 		// 组装查询包
 		QueryPackageBean queryPkg = new QueryPackageBean();
 
-		queryPkg.setSeq((byte) 1);
+		queryPkg.setSeq((byte) 0);
 		queryPkg.setFlag((byte) 0x03);
-		queryPkg.setQueryStr("select * from userinfo".getBytes());
+		queryPkg.setQueryStr("select * from user;".getBytes());
 
 		// 交给对应的流程去发送
 		context.getContext().setWriteData(queryPkg);
 
 		// 进行发送的流程
 		this.writeDataDef(context);
-		
-		//检查是否已经发送完成,如果发送完成，则设置查询结果的头解析
+
+		// 检查是否已经发送完成,如果发送完成，则设置查询结果的头解析
 		if (context.getContext().getWriteBuffer().position() == 0) {
-			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_HEADER.getState());
+			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_CHECK.getState());
 		}
 
 	}

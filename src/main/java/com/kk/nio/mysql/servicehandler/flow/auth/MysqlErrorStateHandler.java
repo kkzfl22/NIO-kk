@@ -24,7 +24,8 @@ public class MysqlErrorStateHandler extends MysqlHandlerStateBase implements Mys
 		ErrorPackageBean msg = (ErrorPackageBean) this.readDataDef(mysqlContext);
 
 		if (null != msg) {
-			// 标识当前连接为已经成功
+			System.out.println("error msg:"+new String(msg.getServerStatus()));
+			System.out.println("error msg:"+new String(msg.getMessage(),"UTF-8"));
 		}
 	}
 
