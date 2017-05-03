@@ -1,0 +1,38 @@
+
+begin;
+
+
+insert into usermsg (name)
+values('zz4');
+
+update usermsg
+set name='cc3'
+where userid=5;
+
+
+commit;
+
+
+
+
+begin;
+
+
+insert into usermsg (name)
+values('zz4');
+
+update usermsg
+set name='cc6'
+where userid>5;
+
+
+rollback;
+
+
+
+
+
+
+tcpdump tcp -i eth0  port 3306  -w ./mysql_pkg_commit.cap
+
+tcpdump tcp -i eth0  port 3306  -w ./mysql_pkg_rollback.cap
