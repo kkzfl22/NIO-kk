@@ -1,4 +1,4 @@
-package com.kk.nio.mysql.servicehandler.flow.query;
+package com.kk.nio.mysql.servicehandler.flow.queryResultSet;
 
 import java.io.IOException;
 

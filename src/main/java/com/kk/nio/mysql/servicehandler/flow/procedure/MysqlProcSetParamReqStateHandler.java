@@ -1,4 +1,4 @@
-package com.kk.nio.mysql.servicehandler.flow.query;
+package com.kk.nio.mysql.servicehandler.flow.procedure;
 
 import java.io.IOException;
 
@@ -12,13 +12,13 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 
 /**
- * 进行成功的报文处理
+ * 进行mysql的存储过程的参数设置的协议的解析
  * 
  * @since 2017年3月29日 下午5:34:39
  * @version 0.0.1
  * @author liujun
  */
-public class MysqlQueryReqStateHandler extends MysqlHandlerStateBase implements MysqlStateInf {
+public class MysqlProcSetParamReqStateHandler extends MysqlHandlerStateBase implements MysqlStateInf {
 
 	public void pkgRead(MysqlStateContext mysqlContext) throws IOException {
 
@@ -48,7 +48,7 @@ public class MysqlQueryReqStateHandler extends MysqlHandlerStateBase implements 
 
 		queryPkg.setSeq((byte) 0);
 		queryPkg.setFlag((byte) 0x03);
-		queryPkg.setQueryStr("select * from user;".getBytes());
+		queryPkg.setQueryStr("SET @p_in=0;".getBytes());
 
 		// 交给对应的流程去发送
 		context.getContext().setWriteData(queryPkg);
@@ -58,7 +58,7 @@ public class MysqlQueryReqStateHandler extends MysqlHandlerStateBase implements 
 
 		// 检查是否已经发送完成,如果发送完成，则设置查询结果的头解析
 		if (context.getContext().getWriteBuffer().position() == 0) {
-			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_CHECK.getState());
+			context.setCurrMysqlState(MysqlStateEnum.PKG_PROC_PARAM_SET_RSP.getState());
 		}
 
 	}

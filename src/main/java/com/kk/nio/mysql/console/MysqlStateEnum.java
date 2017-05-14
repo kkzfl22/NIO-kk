@@ -5,12 +5,13 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlErrorStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlLoginStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlOkStateHandler;
-import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryReqStateHandler;
-import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspCommStateHandler;
-import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateColumnHandler;
-import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateEofHandler;
-import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryRspStateHearderHandler;
-import com.kk.nio.mysql.servicehandler.flow.query.MysqlQueryStateRspRowDataHandler;
+import com.kk.nio.mysql.servicehandler.flow.procedure.MysqlProcSetParamRspStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryReqStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspCommStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateColumnHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateEofHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateHearderHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryStateRspRowDataHandler;
 
 /**
  * mysql的状态信息
@@ -70,6 +71,13 @@ public enum MysqlStateEnum {
 	 * 进行消息的解码
 	 */
 	PKG_QUERY_RSP_ROWDATA_MSG((byte) 1, new MysqlQueryStateRspRowDataHandler()),
+	
+	
+	
+	/**
+	 * 存储过程中首要的参数设置结果解析
+	 */
+	PKG_PROC_PARAM_SET_RSP((byte)1,new MysqlProcSetParamRspStateHandler())
 
 	;
 

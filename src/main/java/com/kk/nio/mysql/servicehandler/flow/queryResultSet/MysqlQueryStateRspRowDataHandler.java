@@ -1,4 +1,4 @@
-package com.kk.nio.mysql.servicehandler.flow.query;
+package com.kk.nio.mysql.servicehandler.flow.queryResultSet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +46,7 @@ public class MysqlQueryStateRspRowDataHandler extends MysqlHandlerStateBase impl
 
 			mysqlContext.getContext().setMapData(FlowKeyEnum.QUERY_RSP_ROWDATA_MSG.getKey(), list);
 		}
+		
 	}
 
 	@Override
