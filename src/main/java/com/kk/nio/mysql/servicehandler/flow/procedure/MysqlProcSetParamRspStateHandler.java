@@ -88,7 +88,7 @@ public class MysqlProcSetParamRspStateHandler extends MysqlHandlerStateBase impl
 
 		// 检查是否已经发送完成,如果发送完成，则设置查询结果的头解析程序
 		if (context.getContext().getWriteBuffer().position() == 0) {
-			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_HEADER.getState());
+			context.setCurrMysqlState(MysqlStateEnum.PKG_PROC_RSP_OK_CHECK.getState());
 		}
 	}
 

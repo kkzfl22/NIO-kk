@@ -12,28 +12,27 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateContext;
 import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 
 /**
- * 进行eof包的解析处理
+ * 进行eof包的解析处理,代表当前的行结束
  * 
  * @since 2017年4月20日 上午12:09:41
  * @version 0.0.1
  * @author kk
  */
-public class MysqlQueryRspStateEofHandler extends MysqlHandlerStateBase implements MysqlStateInf {
+public class MysqlQueryRspStateEofRowOverHandler extends MysqlHandlerStateBase implements MysqlStateInf {
 
 	@Override
 	public void pkgRead(MysqlStateContext context) throws IOException {
 
-		
 		EofPackageBean bean = (EofPackageBean) this.readDataDef(context);
-		
-		//eof包解析完成，解析下一个数据信息
-		if (null != bean) {
-			
-			//针对eof包的结果进行检查
-			if(ServerStatusEnum.StatusCheck(bean.getStatusFlag(), status))
-			context.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_ROWDATA_MSG.getState());
-		}
 
+		// eof包解析完成，解析下一个数据信息
+		if (null != bean) {
+			// 如果当前的状态中，标识出还有更多的查询结果集，则进行下一次的解析
+			if (ServerStatusEnum.StatusCheck(bean.getStatusFlag(), ServerStatusEnum.MULT_QUERY)) {
+				// 将进行下一次的结果解析
+				context.setCurrMysqlState(MysqlStateEnum.PKG_PROC_RSP_OK_CHECK.getState());
+			}
+		}
 	}
 
 	@Override
