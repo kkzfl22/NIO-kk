@@ -6,11 +6,13 @@ import com.kk.nio.mysql.servicehandler.flow.MysqlStateInf;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlErrorStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlLoginStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.auth.MysqlOkStateHandler;
+import com.kk.nio.mysql.servicehandler.flow.procedure.MysqlProcSetParamReqStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.procedure.MysqlProcSetParamRspStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryReqStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspCommStateHandler;
 import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateColumnHandler;
 import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateEofColomOverHandler;
+import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateEofRowOverHandler;
 import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryRspStateHearderHandler;
 import com.kk.nio.mysql.servicehandler.flow.queryResultSet.MysqlQueryStateRspRowDataHandler;
 
@@ -72,7 +74,18 @@ public enum MysqlStateEnum {
 	 * 进行消息的解码
 	 */
 	PKG_QUERY_RSP_ROWDATA_MSG((byte) 1, new MysqlQueryStateRspRowDataHandler()),
+	
+	
+	/**
+	 * 进行eof行数据结束处理
+	 */
+	PKG_QUERY_RSP_EOF_ROW_OVER((byte)1,new MysqlQueryRspStateEofRowOverHandler()),
 
+	/**
+	 * 存储过程中首要的参数设置结果解析
+	 */
+	PKG_PROC_PARAM_SET_REQ((byte) 1, new MysqlProcSetParamReqStateHandler()),
+	
 	/**
 	 * 存储过程中首要的参数设置结果解析
 	 */

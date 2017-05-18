@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.console.FlowKeyEnum;
+import com.kk.nio.mysql.console.MysqlStateEnum;
 import com.kk.nio.mysql.packhandler.PkgReadProcessEnum;
 import com.kk.nio.mysql.packhandler.bean.pkg.resultset.RowDataPackageBean;
 import com.kk.nio.mysql.servicehandler.flow.MysqlHandlerStateBase;
@@ -45,8 +46,11 @@ public class MysqlQueryStateRspRowDataHandler extends MysqlHandlerStateBase impl
 			list.add(dataMsg);
 
 			mysqlContext.getContext().setMapData(FlowKeyEnum.QUERY_RSP_ROWDATA_MSG.getKey(), list);
+
+			// 设置下一个处理结果检查
+			mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_EOF_ROW_OVER.getState());
 		}
-		
+
 	}
 
 	@Override

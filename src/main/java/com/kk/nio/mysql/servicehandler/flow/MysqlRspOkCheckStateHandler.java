@@ -27,7 +27,11 @@ public class MysqlRspOkCheckStateHandler extends MysqlHandlerStateBase implement
 		MysqlContext context = mysqlContext.getContext();
 
 		// 进行清理
-		mysqlContext.getContext().getReadBuffer().clear();
+		if (mysqlContext.getContext().getReadBuffer().limit() == mysqlContext.getContext().getReadBuffer().capacity()
+				|| mysqlContext.getContext().getReadBuffer().position() == mysqlContext.getContext().getReadBuffer()
+						.limit()) {
+			mysqlContext.getContext().getReadBuffer().clear();
+		}
 
 		// 设置上下文处理时不需要进行消息的解码,在当前操作完成，
 		// 需要将解码器设置为true ,以上下一次可以进行解码,仅临时使用
@@ -49,14 +53,13 @@ public class MysqlRspOkCheckStateHandler extends MysqlHandlerStateBase implement
 		}
 		// 否则进行数据的查询结果解析
 		else {
-			//进行查询结果头的解析操作
+			// 进行查询结果头的解析操作
 			mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_RSP_HEADER.getState());
 			// 设置数据的解析程序
 			mysqlContext.getCurrMysqlState().setRWPkgHandler(mysqlContext);
 			// 进行运行流程
 			mysqlContext.getCurrMysqlState().pkgRead(mysqlContext);
-			
-			
+
 		}
 
 	}

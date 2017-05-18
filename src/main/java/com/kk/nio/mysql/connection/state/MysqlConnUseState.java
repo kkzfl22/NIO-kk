@@ -46,7 +46,8 @@ public class MysqlConnUseState implements MysqlConnStateInf {
 		mysqlContext.setContext(context.getContext());
 
 		// 设置当前的状态为连接请求状态
-		mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_REQ.getState());
+		//mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_QUERY_REQ.getState());
+		mysqlContext.setCurrMysqlState(MysqlStateEnum.PKG_PROC_PARAM_SET_REQ.getState());
 
 		// 设置编码码器信息
 		mysqlContext.setMsgEndecode(context.getMsgEndecode());
