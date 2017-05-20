@@ -24,9 +24,12 @@ public class MysqlQueryRspStateHearderHandler extends MysqlHandlerStateBase impl
 	public void pkgRead(MysqlStateContext context) throws IOException {
 		// 进行读取查询的响应结果头
 		ResultSetHanderBean handler = (ResultSetHanderBean) this.readDataDef(context);
+		
 
 		// 检查列头是否已经读取完整如果完整，则继教读取
 		int fieldcount = handler.getFieldCount();
+		
+		System.out.println();
 
 		// 当前已经读取成功，则可以切换状态到读取消息列信息
 		if (0 != fieldcount) {

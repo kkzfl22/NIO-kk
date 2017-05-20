@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.chain.MysqlContext;
 import com.kk.nio.mysql.console.MysqlStateEnum;
-import com.kk.nio.mysql.util.BufferPrint;
 
 /**
  * 进行存储过程的响应的解析
@@ -26,12 +25,11 @@ public class MysqlRspOkCheckStateHandler extends MysqlHandlerStateBase implement
 
 		MysqlContext context = mysqlContext.getContext();
 
-		// 进行清理
-		if (mysqlContext.getContext().getReadBuffer().limit() == mysqlContext.getContext().getReadBuffer().capacity()
-				|| mysqlContext.getContext().getReadBuffer().position() == mysqlContext.getContext().getReadBuffer()
-						.limit()) {
-			mysqlContext.getContext().getReadBuffer().clear();
-		}
+		// // 进行清理
+		// if (mysqlContext.getContext().getReadBuffer().limit() ==
+		// mysqlContext.getContext().getReadBuffer().capacity()) {
+		// mysqlContext.getContext().getReadBuffer().clear();
+		// }
 
 		// 设置上下文处理时不需要进行消息的解码,在当前操作完成，
 		// 需要将解码器设置为true ,以上下一次可以进行解码,仅临时使用
@@ -40,6 +38,12 @@ public class MysqlRspOkCheckStateHandler extends MysqlHandlerStateBase implement
 		mysqlContext.getMsgEndecode().msgDecode(context);
 		// 解码完成，下次设置为需要解码
 		mysqlContext.getContext().setIsdecoder(true);
+
+		// if (mysqlContext.getContext().getReadBuffer().position() > 0) {
+		// mysqlContext.getContext().getReadBuffer().compact();
+		// // 再次从零开始读取
+		// mysqlContext.getContext().getReadBuffer().position(0);
+		// }
 
 		ByteBuffer buffer = context.getReadBuffer();
 
