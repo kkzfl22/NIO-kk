@@ -62,7 +62,8 @@ public class ReactorMysqlHandlerBase implements MsgBaseInf {
 	public void readData(MysqlContext context) throws IOException {
 
 		// 进行数据读取操作
-		context.getSocketChannel().read(context.getReadBuffer());
+		int readSize = context.getSocketChannel().read(context.getReadBuffer());
+		context.setReadSize(readSize);
 
 	}
 

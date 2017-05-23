@@ -47,8 +47,15 @@ public class MysqlRspOkCheckStateHandler extends MysqlHandlerStateBase implement
 
 		ByteBuffer buffer = context.getReadBuffer();
 
-		// 取得消息响应的类型检查消息的类型
-		byte flag = buffer.get(4);
+		byte flag;
+
+		// 首次进行解析时
+		if (buffer.limit() == buffer.capacity()) {
+			flag = buffer.get(4);
+		} else {
+			// 取得消息响应的类型检查消息的类型
+			flag = buffer.get(buffer.position() + 4);
+		}
 
 		// 如果当前是成功响应包，则进行数据解析完毕操作
 		if (MysqlStateEnum.PKG_OK.getFlag() == flag) {

@@ -38,6 +38,12 @@ public class MysqlContext {
 	 * 当前待读取的数据的buffer
 	 */
 	private volatile ByteBuffer readBuffer;
+	
+	
+	/**
+	 * 当前读取的字节数 
+	 */
+	private volatile int readSize;
 
 	/**
 	 * 待发送的数据信息
@@ -165,6 +171,15 @@ public class MysqlContext {
 	public void setLastPosition(int lastPosition) {
 		this.lastPosition = lastPosition;
 	}
+
+	public int getReadSize() {
+		return readSize;
+	}
+
+	public void setReadSize(int readSize) {
+		this.readSize = readSize;
+	}
+	
 	
 
 }

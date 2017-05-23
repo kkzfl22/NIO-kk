@@ -21,8 +21,11 @@ public class ResultSetHeaderCode extends BaseCode implements MysqlPackageReadInf
 	public ResultSetHanderBean readPackage(MysqlContext context) {
 		ResultSetHanderBean result = new ResultSetHanderBean();
 
-		// 将标识打为0，即为从0开始读取
-		context.getReadBuffer().flip();
+		//仅在首次读取到的时候，需要进行flip方法
+		if (context.getReadBuffer().limit() == context.getReadBuffer().capacity()) {
+			// 将标识打为0，即为从0开始读取
+			context.getReadBuffer().flip();
+		}
 
 		// 读取消息头
 		ByteBuffer headBuff = this.readLength(context.getReadBuffer());
