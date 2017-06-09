@@ -62,6 +62,7 @@ public class MysqlClientMultReactor extends Thread {
 				if (null != handler) {
 					// 提交线程池处理
 					handler.run();
+					// executor.execute(handler);
 				}
 			}
 

@@ -26,6 +26,9 @@ public class MysqClientMidIOHandler extends MysqlClientIOHandlerBase {
 	 * 数据读取的buffer
 	 */
 	private ByteBuffer pkgBuffer;
+	
+	
+	
 
 	public MysqClientMidIOHandler(Selector select, SocketChannel socket) throws IOException {
 
