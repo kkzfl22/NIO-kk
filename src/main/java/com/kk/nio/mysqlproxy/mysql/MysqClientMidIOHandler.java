@@ -1,17 +1,8 @@
 package com.kk.nio.mysqlproxy.mysql;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-
-import com.kk.nio.mysql.chain.MsgBaseInf;
-import com.kk.nio.mysql.chain.MsgEnDecodeInf;
-import com.kk.nio.mysql.chain.MysqlContext;
-import com.kk.nio.mysql.chain.ReactorMysqlEnDecodeHandler;
-import com.kk.nio.mysql.chain.ReactorMysqlHandlerBase;
-import com.kk.nio.mysql.connection.MysqlConnContext;
-import com.kk.nio.mysql.console.MysqlConnStateEnum;
 
 /**
  * 使用链式处理
@@ -22,26 +13,12 @@ import com.kk.nio.mysql.console.MysqlConnStateEnum;
  */
 public class MysqClientMidIOHandler extends MysqlClientIOHandlerBase {
 
-	/**
-	 * 数据读取的buffer
-	 */
-	private ByteBuffer pkgBuffer;
-	
-	
-	
-
 	public MysqClientMidIOHandler(Selector select, SocketChannel socket) throws IOException {
-
 		super(select, socket);
-
-		// 传输公用此空间进行传输操作
-		this.pkgBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 1);
-
 	}
 
 	@Override
 	protected void doConnection() throws IOException {
-
 		// 进行握手消息的读取
 		// msgDataService.readData(context);
 

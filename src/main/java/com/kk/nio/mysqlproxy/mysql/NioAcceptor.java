@@ -18,7 +18,7 @@ import com.kk.nio.mysql.bean.MysqlConnBean;
  * @version 0.0.1
  * @author liujun
  */
-public class MysqlClientMidMultNioAcceptor implements Runnable {
+public class NioAcceptor implements Runnable {
 
 	/**
 	 * socket连接通道
@@ -45,7 +45,7 @@ public class MysqlClientMidMultNioAcceptor implements Runnable {
 	 */
 	private static ArrayBlockingQueue<MysqlConnBean> CONNQUEUE = new ArrayBlockingQueue<>(maxQueueSize);
 
-	public MysqlClientMidMultNioAcceptor(MysqlClientMultReactor[] reactor) throws IOException {
+	public NioAcceptor(MysqlClientMultReactor[] reactor) throws IOException {
 		this.reactor = reactor;
 		acceptorSelect = Selector.open();
 
@@ -139,7 +139,7 @@ public class MysqlClientMidMultNioAcceptor implements Runnable {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					
+
 					selectionKey.cancel();
 				}
 			}

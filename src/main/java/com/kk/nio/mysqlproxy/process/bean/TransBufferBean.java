@@ -31,4 +31,36 @@ public class TransBufferBean {
 	 */
 	private int state;
 
+	public int getReadPosition() {
+		return readPosition;
+	}
+
+	public void setReadPosition(int readPosition) {
+		this.readPosition = readPosition;
+	}
+
+	public int getWritePosition() {
+		return writePosition;
+	}
+
+	public void setWritePosition(int writePosition) {
+		this.writePosition = writePosition;
+	}
+
+	public ByteBuffer getBuffer() {
+		return buffer;
+	}
+
+	public void setBuffer(ByteBuffer buffer) {
+		this.buffer = buffer;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
 }

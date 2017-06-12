@@ -1,4 +1,4 @@
-package com.kk.nio.mysqlproxy.mysql;
+package com.kk.nio.mysqlproxy;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import com.kk.nio.mysql.bean.MysqlConnBean;
 import com.kk.nio.mysql.console.PropertiesKeyEnum;
 import com.kk.nio.mysql.util.PropertiesUtils;
+import com.kk.nio.mysqlproxy.mysql.NioAcceptor;
+import com.kk.nio.mysqlproxy.mysql.MysqlClientMultReactor;
 
 public class MysqlClientMidMain {
 
@@ -26,7 +28,7 @@ public class MysqlClientMidMain {
 		}
 
 		// 进行连接的修改
-		Thread acceptor = new Thread(new MysqlClientMidMultNioAcceptor(multReactor));
+		Thread acceptor = new Thread(new NioAcceptor(multReactor));
 		acceptor.start();
 
 		MysqlConnBean conn = new MysqlConnBean();
@@ -35,7 +37,7 @@ public class MysqlClientMidMain {
 		conn.setPort(Integer.parseInt(PropertiesUtils.getInstance().getValue(PropertiesKeyEnum.MYSQL_SERVER_PORT)));
 
 		// 进行连接的注册
-		MysqlClientMidMultNioAcceptor.AddConnection(conn);
+		NioAcceptor.AddConnection(conn);
 	}
 
 }

@@ -29,19 +29,21 @@ public abstract class MysqlClientIOHandlerBase implements Runnable {
 	 */
 	protected SocketChannel socketChannel;
 
+	/**
+	 * 当前的连接的编号
+	 */
+	private long currId;
+
 	public MysqlClientIOHandlerBase(Selector select, SocketChannel socket) throws IOException {
 
-		synchronized (this) {
+		this.select = select;
+		this.socketChannel = socket;
 
-			this.select = select;
-			this.socketChannel = socket;
+		// 注册当前为reader事件感兴趣
+		selectKey = socketChannel.register(select, SelectionKey.OP_READ);
 
-			// 注册当前为reader事件感兴趣
-			selectKey = socketChannel.register(select, SelectionKey.OP_READ);
-
-			// 将当前对象信息附加到通道上
-			selectKey.attach(this);
-		}
+		// 将当前对象信息附加到通道上
+		selectKey.attach(this);
 	}
 
 	@Override
@@ -99,5 +101,13 @@ public abstract class MysqlClientIOHandlerBase implements Runnable {
 	 * @throws IOException
 	 */
 	protected abstract void onClose();
+
+	public long getCurrId() {
+		return currId;
+	}
+
+	public void setCurrId(long currId) {
+		this.currId = currId;
+	}
 
 }
