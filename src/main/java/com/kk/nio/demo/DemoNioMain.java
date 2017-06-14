@@ -8,7 +8,7 @@ public class DemoNioMain {
 
 	public static void main(String[] args) throws IOException {
 
-		ExecutorService execut = Executors.newFixedThreadPool(2);
+		ExecutorService execut = Executors.newFixedThreadPool(4);
 
 		RectorNio[] reactor = new RectorNio[4];
 

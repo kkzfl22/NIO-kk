@@ -44,7 +44,6 @@ public class NioAcctor implements Runnable {
 
 		serverChannel.bind(new InetSocketAddress(port));
 
-		
 		connSelect = Selector.open();
 		// 注册观察连接事件
 		serverChannel.register(connSelect, SelectionKey.OP_ACCEPT);
@@ -68,6 +67,8 @@ public class NioAcctor implements Runnable {
 			}
 
 			for (SelectionKey selKey : key) {
+
+				System.out.println("连接事件处理中");
 
 				if (selKey.isAcceptable()) {
 					// 当服务器收到连接之后
