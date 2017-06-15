@@ -1,4 +1,4 @@
-package com.kk.nio.demo;
+package com.kk.nio.demo.server;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -17,7 +17,7 @@ public class DemoNioMain {
 			reactor[i].start();
 		}
 
-		// 启动连接线程
+		// 启动连接处理线程
 		new Thread(new NioAcctor(210, reactor)).start();
 	}
 

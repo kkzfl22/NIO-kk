@@ -1,4 +1,4 @@
-package com.kk.nio.demo;
+package com.kk.nio.demo.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -49,6 +49,8 @@ public class NioAcctor implements Runnable {
 		serverChannel.register(connSelect, SelectionKey.OP_ACCEPT);
 
 		System.out.println("start success port is :" + port);
+		
+		//进行连接
 
 	}
 
@@ -67,8 +69,6 @@ public class NioAcctor implements Runnable {
 			}
 
 			for (SelectionKey selKey : key) {
-
-				System.out.println("连接事件处理中");
 
 				if (selKey.isAcceptable()) {
 					// 当服务器收到连接之后

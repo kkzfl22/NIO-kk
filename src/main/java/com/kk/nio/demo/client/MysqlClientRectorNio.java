@@ -1,4 +1,4 @@
-package com.kk.nio.demo;
+package com.kk.nio.demo.client;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -7,7 +7,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-public class RectorNio extends Thread {
+public class MysqlClientRectorNio extends Thread {
 
 	/**
 	 * 选择器对象
@@ -19,13 +19,13 @@ public class RectorNio extends Thread {
 	 */
 	private final ExecutorService executor;
 
-	public RectorNio(ExecutorService executor) throws IOException {
+	public MysqlClientRectorNio(ExecutorService executor) throws IOException {
 		this.executor = executor;
 		select = Selector.open();
 	}
 
 	public void regectServerChannel(SocketChannel channel) throws IOException {
-		new IOHandlerBase(select, channel);
+		new MysqlClientIoHandler(select, channel);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class RectorNio extends Thread {
 
 			if (null != selKeys) {
 				for (SelectionKey selectionKey : selKeys) {
-					IOHandlerBase ioHandler = (IOHandlerBase) selectionKey.attachment();
+					MysqlClientIOHandlerBase ioHandler = (MysqlClientIOHandlerBase) selectionKey.attachment();
 
 					// 将当前的任务提交线程池处理
 					executor.submit(ioHandler);
