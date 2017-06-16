@@ -2,7 +2,6 @@ package com.kk.nio.demo.midd;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -41,10 +40,11 @@ public class MysqlMidAcctor implements Runnable {
 	 *            ip信息
 	 * @param port
 	 *            端口信息
+	 * @return 返回通道信息
 	 * @throws IOException
 	 *             异常
 	 */
-	public void regictBlackMysqlConn(String ip, int port) throws IOException {
+	public SocketChannel regictBlackMysqlConn(String ip, int port) throws IOException {
 		// 客户端的连接信息
 		SocketChannel socketChannel = SocketChannel.open();
 		// 开启异步模式
@@ -54,6 +54,8 @@ public class MysqlMidAcctor implements Runnable {
 
 		// 注册连接事件
 		socketChannel.register(connSelect, SelectionKey.OP_CONNECT);
+
+		return socketChannel;
 	}
 
 	/**
@@ -84,7 +86,6 @@ public class MysqlMidAcctor implements Runnable {
 			}
 
 			for (SelectionKey selKey : key) {
-
 				// 进行客户端连接服务端的处理
 				if (selKey.isConnectable()) {
 					try {
@@ -98,12 +99,12 @@ public class MysqlMidAcctor implements Runnable {
 						// 当服务器收到连接之后
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 注册连接事件
-						rectors[index].regectServerChannel(channel);
+						rectors[index].registBlackMysqlConnChannel(channel);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				} 
-				//进行服务器端面消息进行处理
+				}
+				// 进行服务器端面消息进行处理
 				else if (selKey.isAcceptable()) {
 					// 当服务器收到连接之后
 					try {
@@ -113,7 +114,7 @@ public class MysqlMidAcctor implements Runnable {
 						channel.configureBlocking(false);
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 注册连接事件
-						rectors[index].regectServerChannel(channel);
+						rectors[index].registMultMidConnChannel(channel);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

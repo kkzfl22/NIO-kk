@@ -6,6 +6,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
+import com.kk.nio.demo.client.queue.RegBean;
+
 /**
  * 进行io事情处理的基本类
  * 
@@ -15,10 +17,6 @@ import java.nio.channels.SocketChannel;
  */
 public abstract class MysqlClientIOHandlerBase implements Runnable {
 
-	/**
-	 * 通道信息
-	 */
-	protected SocketChannel channel;
 
 	/**
 	 * 当前注册的key信息
@@ -40,20 +38,38 @@ public abstract class MysqlClientIOHandlerBase implements Runnable {
 	 */
 	protected int readOption = 0;
 
-	public MysqlClientIOHandlerBase(Selector select, SocketChannel channel) throws IOException {
-		super();
-		this.channel = channel;
-
-		// 设置为非阻塞模式
-		channel.configureBlocking(false);
-
-		// 首先注册读取事件
-		currSelectKey = channel.register(select, SelectionKey.OP_READ, this);
-
+	public MysqlClientIOHandlerBase() {
 		// 定义一个512字节大小的缓冲区
 		writeBuffer = ByteBuffer.allocate(1024 * 512);
 		readBuffer = ByteBuffer.allocate(1024 * 512);
+	}
 
+	public void setSelectKey(SelectionKey currSelectKey) {
+		this.currSelectKey = currSelectKey;
+	}
+
+	/**
+	 * 注册连接对象信息
+	 * 
+	 * @param select
+	 * @param channel
+	 * @throws IOException
+	 */
+	public RegBean registObj(Selector select, SocketChannel channel) throws IOException {
+
+		return new RegBean(channel, select, this);
+
+		// his.channel = channel;
+		// // 设置为非阻塞模式
+		// channel.configureBlocking(false);
+		// // 开始注册
+		// System.out.println("开始注册读取事件...");
+		// long startTime = System.currentTimeMillis();
+		// // 首先注册读取事件
+		// currSelectKey = channel.register(select, SelectionKey.OP_READ, this);
+		// System.out.println("结束注册读取事件...");
+		// long end = System.currentTimeMillis();
+		// System.out.println("用时:" + (end - startTime));
 	}
 
 	@Override

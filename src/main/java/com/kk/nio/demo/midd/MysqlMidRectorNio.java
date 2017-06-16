@@ -7,6 +7,10 @@ import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import com.kk.nio.demo.midd.blackmysqlconn.BlackmysqlConnHandler;
+import com.kk.nio.demo.midd.blackmysqlconn.BlackmysqlConnHandlerBase;
+import com.kk.nio.demo.midd.multmidconn.MultMidConnHandler;
+
 public class MysqlMidRectorNio extends Thread {
 
 	/**
@@ -24,8 +28,24 @@ public class MysqlMidRectorNio extends Thread {
 		select = Selector.open();
 	}
 
-	public void regectServerChannel(SocketChannel channel) throws IOException {
-		new MysqlMidIoHandler(select, channel);
+	/**
+	 * 进行中间件连接mysql的连接的注册
+	 * 
+	 * @param channel
+	 * @throws IOException
+	 */
+	public void registBlackMysqlConnChannel(SocketChannel channel) throws IOException {
+		new BlackmysqlConnHandler(select, channel);
+	}
+
+	/**
+	 * 进行中间件的提供服务的连接注册
+	 * 
+	 * @param channel
+	 * @throws IOException
+	 */
+	public void registMultMidConnChannel(SocketChannel channel) throws IOException {
+		new MultMidConnHandler(select, channel);
 	}
 
 	@Override
@@ -47,8 +67,7 @@ public class MysqlMidRectorNio extends Thread {
 
 			if (null != selKeys) {
 				for (SelectionKey selectionKey : selKeys) {
-					MysqlMidIOHandlerBase ioHandler = (MysqlMidIOHandlerBase) selectionKey.attachment();
-
+					Runnable ioHandler = (Runnable) selectionKey.attachment();
 					// 将当前的任务提交线程池处理
 					executor.submit(ioHandler);
 				}

@@ -1,21 +1,17 @@
 package com.kk.nio.demo.client;
 
 import java.io.IOException;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 
 public class MysqlClientIoHandler extends MysqlClientIOHandlerBase {
-
-	public MysqlClientIoHandler(Selector select, SocketChannel channel) throws IOException {
-		super(select, channel);
-	}
 
 	/**
 	 * 进行事件的读取操作
 	 */
 	public void doRead() {
 		try {
+			SocketChannel channel = (SocketChannel) currSelectKey.channel();
 			int readByte = channel.read(readBuffer);
 
 			if (readByte > 0) {

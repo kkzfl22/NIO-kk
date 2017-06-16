@@ -19,11 +19,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MysqlClientAcctor implements Runnable {
 
 	/**
-	 * 进行服务端的连接信息
-	 */
-	private SocketChannel socketChannel;
-
-	/**
 	 * 多路rector模式
 	 */
 	private MysqlClientRectorNio[] rectors;
@@ -37,7 +32,7 @@ public class MysqlClientAcctor implements Runnable {
 
 		this.rectors = rector;
 		// 开启服务端的端口信息
-		socketChannel = SocketChannel.open();
+		SocketChannel socketChannel = SocketChannel.open();
 
 		// 开启异步模式
 		socketChannel.configureBlocking(false);
@@ -46,14 +41,22 @@ public class MysqlClientAcctor implements Runnable {
 
 		connSelect = Selector.open();
 
+		System.out.println("当前的注册的连接对象1:" + socketChannel.hashCode());
+
+		// 设置handler对象
+		MysqlClientIoHandler handler = new MysqlClientIoHandler();
+
 		// 注册连接事件
-		socketChannel.register(connSelect, SelectionKey.OP_CONNECT);
+		socketChannel.register(connSelect, SelectionKey.OP_CONNECT, handler);
 
 	}
+	
 
 	@Override
 	public void run() {
 		Set<SelectionKey> key = null;
+
+		
 		while (true) {
 
 			try {
@@ -78,8 +81,12 @@ public class MysqlClientAcctor implements Runnable {
 						channel.configureBlocking(false);
 						// 当服务器收到连接之后
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
+
+						System.out.println("当前的注册的连接对象2:" + channel.hashCode());
+
+						MysqlClientIoHandler handler = (MysqlClientIoHandler) selKey.attachment();
 						// 注册连接事件
-						rectors[index].regectServerChannel(channel);
+						rectors[index].regectServerChannel(handler, channel);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
