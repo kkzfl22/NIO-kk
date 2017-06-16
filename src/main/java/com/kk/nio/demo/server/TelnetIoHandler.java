@@ -2,7 +2,6 @@ package com.kk.nio.demo.server;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,15 +12,8 @@ public class TelnetIoHandler extends IOHandlerBase {
 	 */
 	private AtomicBoolean writingFlag = new AtomicBoolean(false);
 
-	public TelnetIoHandler(Selector select, SocketChannel channel) throws IOException {
-		super(select, channel);
-
-		writeBuffer.put("welcome to kk server!!!\n".getBytes());
-
-		writeBuffer.flip();
-
-		// 进行数据写入
-		doWrite();
+	public TelnetIoHandler(SocketChannel socketChannel) throws IOException {
+		super(socketChannel);
 	}
 
 	/**
@@ -29,6 +21,8 @@ public class TelnetIoHandler extends IOHandlerBase {
 	 */
 	public void doRead() {
 		try {
+			// 通道信息
+			SocketChannel channel = (SocketChannel) currSelectKey.channel();
 			int readByte = channel.read(readBuffer);
 
 			if (readByte > 0) {
@@ -47,7 +41,7 @@ public class TelnetIoHandler extends IOHandlerBase {
 						System.out.println("收到消息:" + msg);
 						writeBuffer.clear();
 						// 向缓冲区中写入数据
-						writeBuffer.put(new String("write msg !! ").getBytes());
+						writeBuffer.put(new String("receving msg is :" + msg + "\r\n").getBytes());
 						writeBuffer.flip();
 						// 将当前的事件注册为写入
 						currSelectKey.interestOps(currSelectKey.interestOps() | SelectionKey.OP_WRITE);
@@ -68,7 +62,7 @@ public class TelnetIoHandler extends IOHandlerBase {
 		}
 
 		try {
-			System.out.println("当前写入positon:" + writeBuffer.position());
+			SocketChannel channel = (SocketChannel) currSelectKey.channel();
 			int writeBytes = channel.write(writeBuffer);
 
 			// 检查当前是否还存在需要写入的数据，如果需要，则进行写入
@@ -78,7 +72,6 @@ public class TelnetIoHandler extends IOHandlerBase {
 			}
 			// 写入完成，取消写事件，注册读取事件
 			else {
-				System.out.println("取消写事件!,当前buffer的position:" + writeBuffer.position());
 				currSelectKey
 						.interestOps((currSelectKey.interestOps() & ~SelectionKey.OP_WRITE) | SelectionKey.OP_READ);
 			}
@@ -88,6 +81,14 @@ public class TelnetIoHandler extends IOHandlerBase {
 			writingFlag.set(false);
 		}
 
+	}
+
+	@Override
+	public void doconnect() {
+		writeBuffer.clear();
+		writeBuffer.put("welcome to kk telnet server demo;\r\n".getBytes());
+		writeBuffer.flip();
+		this.doWrite();
 	}
 
 }

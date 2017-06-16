@@ -49,8 +49,8 @@ public class NioAcctor implements Runnable {
 		serverChannel.register(connSelect, SelectionKey.OP_ACCEPT);
 
 		System.out.println("start success port is :" + port);
-		
-		//进行连接
+
+		// 进行连接
 
 	}
 
@@ -76,7 +76,7 @@ public class NioAcctor implements Runnable {
 						SocketChannel channel = serverChannel.accept();
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 注册连接事件
-						rectors[index].regectServerChannel(channel);
+						rectors[index].addChannelQueue(channel);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

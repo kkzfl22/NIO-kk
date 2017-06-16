@@ -2,11 +2,8 @@ package com.kk.nio.demo.server;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 进行io事情处理的基本类
@@ -18,14 +15,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class IOHandlerBase implements Runnable {
 
 	/**
-	 * 通道信息
-	 */
-	protected SocketChannel channel;
-
-	/**
 	 * 当前注册的key信息
 	 */
 	protected SelectionKey currSelectKey;
+
+	/**
+	 * 通道信息
+	 */
+	protected SocketChannel socketChannel;
 
 	/**
 	 * 读取的buffer信息
@@ -42,24 +39,19 @@ public abstract class IOHandlerBase implements Runnable {
 	 */
 	protected int readOption = 0;
 
-	
-	public IOHandlerBase(Selector select, SocketChannel channel) throws IOException {
+	public IOHandlerBase(SocketChannel socketChannel) throws IOException {
 		super();
-		this.channel = channel;
-
-		// 设置为非阻塞模式
-		channel.configureBlocking(false);
-
-		// 首先注册读取事件
-		currSelectKey = channel.register(select, SelectionKey.OP_READ);
-
-		currSelectKey.attach(this);
-
+		this.socketChannel = socketChannel;
+		socketChannel.configureBlocking(false);
 		// 定义一个512字节大小的缓冲区
 		writeBuffer = ByteBuffer.allocate(1024 * 512);
 		readBuffer = ByteBuffer.allocate(1024 * 512);
-
 	}
+
+	/**
+	 * 连接之后做的事情
+	 */
+	public abstract void doconnect();
 
 	@Override
 	public void run() {
