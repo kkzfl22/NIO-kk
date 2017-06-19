@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -41,8 +40,6 @@ public class MysqlClientAcctor implements Runnable {
 
 		connSelect = Selector.open();
 
-		System.out.println("当前的注册的连接对象1:" + socketChannel.hashCode());
-
 		// 设置handler对象
 		MysqlClientIoHandler handler = new MysqlClientIoHandler();
 
@@ -50,13 +47,11 @@ public class MysqlClientAcctor implements Runnable {
 		socketChannel.register(connSelect, SelectionKey.OP_CONNECT, handler);
 
 	}
-	
 
 	@Override
 	public void run() {
 		Set<SelectionKey> key = null;
 
-		
 		while (true) {
 
 			try {

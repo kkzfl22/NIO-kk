@@ -1,15 +1,16 @@
 package com.kk.nio.demo.midd;
 
 import java.io.IOException;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 
-import com.kk.nio.demo.midd.blackmysqlconn.BlackmysqlConnHandler;
-import com.kk.nio.demo.midd.blackmysqlconn.BlackmysqlConnHandlerBase;
-import com.kk.nio.demo.midd.multmidconn.MultMidConnHandler;
+import com.kk.nio.demo.midd.handler.BaseHandler;
+import com.kk.nio.demo.midd.handler.multmidconn.MultMidConnHandler;
 
 public class MysqlMidRectorNio extends Thread {
 
@@ -23,6 +24,11 @@ public class MysqlMidRectorNio extends Thread {
 	 */
 	private final ExecutorService executor;
 
+	/**
+	 * 后端的连接信息
+	 */
+	private ConcurrentLinkedQueue<BaseHandler> blackConn = new ConcurrentLinkedQueue<>();
+
 	public MysqlMidRectorNio(ExecutorService executor) throws IOException {
 		this.executor = executor;
 		select = Selector.open();
@@ -34,18 +40,37 @@ public class MysqlMidRectorNio extends Thread {
 	 * @param channel
 	 * @throws IOException
 	 */
-	public void registBlackMysqlConnChannel(SocketChannel channel) throws IOException {
-		new BlackmysqlConnHandler(select, channel);
+	public void registBlackMysqlConnChannel(BaseHandler handler) throws IOException {
+		// 将数据加入队列
+		blackConn.offer(handler);
 	}
 
 	/**
-	 * 进行中间件的提供服务的连接注册
+	 * 进行中间件的提供服务的连接注册,将进行后端连接的绑定
 	 * 
 	 * @param channel
+	 *            通道信息
 	 * @throws IOException
+	 *             异常信息
 	 */
-	public void registMultMidConnChannel(SocketChannel channel) throws IOException {
-		new MultMidConnHandler(select, channel);
+	public void registMultMidConnChannel(SocketChannel channel, BaseHandler mysqlConnHandler) throws IOException {
+		blackConn.offer(new MultMidConnHandler(channel, SelectionKey.OP_READ, mysqlConnHandler));
+	}
+
+	/**
+	 * 自理注册连接信息
+	 */
+	public void processRegistConn() {
+		BaseHandler handler = null;
+		while ((handler = blackConn.poll()) != null) {
+			try {
+				// 进行事件的注册操作
+				handler.setCurrSelectKey(handler.getChannel().register(this.select, handler.getRegistEvent(), handler));
+			} catch (ClosedChannelException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	@Override
@@ -56,6 +81,8 @@ public class MysqlMidRectorNio extends Thread {
 		while (true) {
 			try {
 				sels = select.select(200);
+				// 被激活之后首先进行连接的注册
+				processRegistConn();
 				if (sels > 0) {
 					// 获取已经成功注册的键信息
 					selKeys = select.selectedKeys();

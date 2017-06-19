@@ -9,6 +9,10 @@ import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.kk.nio.demo.midd.handler.blackmysqlconn.BlackmysqlConnHandler;
+import com.kk.nio.demo.midd.handler.multmidconn.MultMidConnHandler;
+import com.kk.nio.demo.midd.memory.MemoryPool;
+
 /**
  * 用于处理服务端的连接,仅处理连接，不进行连接的遍历
  * 
@@ -44,7 +48,7 @@ public class MysqlMidAcctor implements Runnable {
 	 * @throws IOException
 	 *             异常
 	 */
-	public SocketChannel regictBlackMysqlConn(String ip, int port) throws IOException {
+	public BlackmysqlConnHandler regictBlackMysqlConn(String ip, int port) throws IOException {
 		// 客户端的连接信息
 		SocketChannel socketChannel = SocketChannel.open();
 		// 开启异步模式
@@ -52,10 +56,13 @@ public class MysqlMidAcctor implements Runnable {
 
 		socketChannel.connect(new InetSocketAddress(ip, port));
 
-		// 注册连接事件
-		socketChannel.register(connSelect, SelectionKey.OP_CONNECT);
+		// 将处理对象附着到通道中
+		BlackmysqlConnHandler connHandler = new BlackmysqlConnHandler(socketChannel, SelectionKey.OP_READ);
 
-		return socketChannel;
+		// 注册连接事件
+		socketChannel.register(connSelect, SelectionKey.OP_CONNECT, connHandler);
+
+		return connHandler;
 	}
 
 	/**
@@ -70,6 +77,7 @@ public class MysqlMidAcctor implements Runnable {
 		// 开启异步模式
 		serverChannel.configureBlocking(false);
 		serverChannel.bind(new InetSocketAddress(port));
+
 		// 注册观察连接事件
 		serverChannel.register(connSelect, SelectionKey.OP_ACCEPT);
 	}
@@ -94,12 +102,14 @@ public class MysqlMidAcctor implements Runnable {
 						if (channel.isConnectionPending()) {
 							channel.finishConnect();
 						}
+
+						BlackmysqlConnHandler mysqlHandler = (BlackmysqlConnHandler) selKey.attachment();
 						// 设置成非阻塞
 						channel.configureBlocking(false);
 						// 当服务器收到连接之后
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 注册连接事件
-						rectors[index].registBlackMysqlConnChannel(channel);
+						rectors[index].registBlackMysqlConnChannel(mysqlHandler);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -112,9 +122,18 @@ public class MysqlMidAcctor implements Runnable {
 						SocketChannel channel = serverChannel.accept();
 						// 设置为异步
 						channel.configureBlocking(false);
+
+						// 进行创建后端的连接
+						BlackmysqlConnHandler blackMysqlConn = regictBlackMysqlConn("localhost", 3306);
+						
+						// 获取一个读取的byteBuffer
+						blackMysqlConn.setReadBuffer(MemoryPool.Instance().allocate(1));
+						// 获取一个写入的bytebuffer
+						blackMysqlConn.setWriteBuffer(MemoryPool.Instance().allocate(1));
+						
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 注册连接事件
-						rectors[index].registMultMidConnChannel(channel);
+						rectors[index].registMultMidConnChannel(channel, blackMysqlConn);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

@@ -21,7 +21,6 @@ public class MysqlMidMain {
 		// 启动连接处理线程
 		new Thread(midAcc).start();
 		
-		midAcc.regictBlackMysqlConn("localhost", 3306);
 		midAcc.regiectMultConn(9002);
 	}
 
