@@ -103,13 +103,15 @@ public class MysqlMidAcctor implements Runnable {
 							channel.finishConnect();
 						}
 
-						BlackmysqlConnHandler mysqlHandler = (BlackmysqlConnHandler) selKey.attachment();
-						// 设置成非阻塞
-						channel.configureBlocking(false);
-						// 当服务器收到连接之后
-						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
-						// 注册连接事件
-						rectors[index].registBlackMysqlConnChannel(mysqlHandler);
+						// BlackmysqlConnHandler mysqlHandler =
+						// (BlackmysqlConnHandler) selKey.attachment();
+						// // 设置成非阻塞
+						// channel.configureBlocking(false);
+						// // 当服务器收到连接之后
+						// int index = ThreadLocalRandom.current().nextInt(0,
+						// rectors.length - 1);
+						// // 注册连接事件
+						// rectors[index].registBlackMysqlConnChannel(mysqlHandler);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -125,15 +127,19 @@ public class MysqlMidAcctor implements Runnable {
 
 						// 进行创建后端的连接
 						BlackmysqlConnHandler blackMysqlConn = regictBlackMysqlConn("localhost", 3306);
-						
+
 						// 获取一个读取的byteBuffer
 						blackMysqlConn.setReadBuffer(MemoryPool.Instance().allocate(1));
 						// 获取一个写入的bytebuffer
 						blackMysqlConn.setWriteBuffer(MemoryPool.Instance().allocate(1));
-						
+
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
+
+						// 创建中间件接口器对象
+						MultMidConnHandler multMidConn = new MultMidConnHandler(channel, SelectionKey.OP_READ,
+								blackMysqlConn);
 						// 注册连接事件
-						rectors[index].registMultMidConnChannel(channel, blackMysqlConn);
+						rectors[index].registMultMidConnChannel(multMidConn);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

@@ -34,27 +34,17 @@ public class MysqlMidRectorNio extends Thread {
 		select = Selector.open();
 	}
 
-	/**
-	 * 进行中间件连接mysql的连接的注册
-	 * 
-	 * @param channel
-	 * @throws IOException
-	 */
-	public void registBlackMysqlConnChannel(BaseHandler handler) throws IOException {
-		// 将数据加入队列
-		blackConn.offer(handler);
-	}
 
 	/**
-	 * 进行中间件的提供服务的连接注册,将进行后端连接的绑定
+	 * 进行中间件的提供服务的连接注册
 	 * 
 	 * @param channel
 	 *            通道信息
 	 * @throws IOException
 	 *             异常信息
 	 */
-	public void registMultMidConnChannel(SocketChannel channel, BaseHandler mysqlConnHandler) throws IOException {
-		blackConn.offer(new MultMidConnHandler(channel, SelectionKey.OP_READ, mysqlConnHandler));
+	public void registMultMidConnChannel(BaseHandler multMidConn) throws IOException {
+		blackConn.offer(multMidConn);
 	}
 
 	/**

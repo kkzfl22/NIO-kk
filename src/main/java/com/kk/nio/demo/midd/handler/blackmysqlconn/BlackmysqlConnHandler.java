@@ -20,7 +20,7 @@ public class BlackmysqlConnHandler extends BaseHandler {
 
 	@Override
 	protected void doRead() {
-
+		
 	}
 
 	@Override
