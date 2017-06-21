@@ -3,7 +3,6 @@ package com.kk.nio.demo.midd.handler.blackmysqlconn.iostate;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
-import com.kk.nio.demo.midd.handler.blackmysqlconn.MysqlIoStateEnum;
 import com.kk.nio.demo.midd.util.ByteBufferTools;
 
 /**
@@ -25,29 +24,23 @@ public class BlackMysqlIoStateAuthRsp implements MysqlIoStateInf {
 
 		if (authRsp > 0) {
 			System.out.println("收到鉴权结果:" + authRsp);
-			
-			int cutPos = buffer.position();
-			buffer.position(0);
-			buffer.limit(cutPos);
-			
-			byte[] valuByte = new byte[cutPos];
-			buffer.get(valuByte);
-			
-			System.out.println("收到鉴权结果信息:" + new String(valuByte));
 
-			// 进行检查
-			boolean bufferCheck = ByteBufferTools.checkLength(iostateContext.getMysqlConn().getReadBuffer(), 0);
+			// 首先读取鉴权结果
+			int length = ByteBufferTools.getLength(buffer, 0);
 
-			if (bufferCheck) {
-				// 进行将状态切换为登录鉴权
-				// 需要将事件变为写入监听
-				iostateContext.getMysqlConn().getCurrSelkey()
-						.interestOps(iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_READ
-								| SelectionKey.OP_WRITE);
+			// 读取消息的类型
+			byte rsp = buffer.get(4);
 
-				iostateContext.getMysqlConn().getSelect().wakeup();
-				return true;
-			}
+			System.out.println("认证结果:包长度（" + length + "),类型:" + rsp);
+
+			// 进行将状态切换为登录鉴权
+			// 需要将事件变为写入监听
+			iostateContext.getMysqlConn().getCurrSelkey()
+					.interestOps(iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_READ
+							| SelectionKey.OP_WRITE);
+
+			iostateContext.getMysqlConn().getSelect().wakeup();
+			return true;
 		}
 
 		return false;
@@ -56,31 +49,6 @@ public class BlackMysqlIoStateAuthRsp implements MysqlIoStateInf {
 
 	@Override
 	public boolean doWrite(BlackMysqlIostateContext iostateContext) throws Exception {
-
-		ByteBuffer buffer = iostateContext.getMysqlConn().getReadBuffer();
-		int writePos = iostateContext.getMysqlConn().getChannel().write(buffer);
-
-		if (writePos > 0) {
-
-			// 检查当前是否已经写入完成,则切换状态为读取监听
-			if (buffer.hasRemaining()) {
-
-				// 进行压缩
-				buffer.compact();
-				return false;
-
-			} else {
-				// 将状态变为结果读取
-				iostateContext.setCurrState(MysqlIoStateEnum.IOSTATE_AUTHRSP.getIoState());
-
-				// 注册结果读取事件
-				iostateContext.getMysqlConn().getCurrSelkey().interestOps(
-						iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_WRITE
-								| SelectionKey.OP_READ);
-
-				return true;
-			}
-		}
 
 		return false;
 	}

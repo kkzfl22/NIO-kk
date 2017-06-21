@@ -25,11 +25,17 @@ public class BlackMysqlIoStateHandshake implements MysqlIoStateInf {
 			iostateContext.getMysqlConn().setReadPostion(iostateContext.getMysqlConn().getReadPostion() + readPositon);
 		}
 
-		// 进行检查
-		boolean bufferCheck = ByteBufferTools.checkLength(iostateContext.getMysqlConn().getReadBuffer(), 0);
+		// 获取消息的长度，然后再获取消息的类型信息
+		int length = ByteBufferTools.getLength(iostateContext.getMysqlConn().getReadBuffer(), 0);
 
-		if (bufferCheck) {
-			// 进行将状态切换为登录鉴权
+		// 获取消息的类型
+		int msgType = iostateContext.getMysqlConn().getReadBuffer().get(4);
+
+		// 当前获取消息成功，则将消息转为进行写入操作
+		if (msgType == 10 && length == iostateContext.getMysqlConn().getReadBuffer().position()) {
+			
+			
+			System.out.println("后——》前 ，收到大小:"+length);
 			// 需要将事件变为写入监听
 			iostateContext.getMysqlConn().getCurrSelkey()
 					.interestOps(iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_READ
@@ -62,26 +68,18 @@ public class BlackMysqlIoStateHandshake implements MysqlIoStateInf {
 				iostateContext.getMysqlConn()
 						.setWritePostion(iostateContext.getMysqlConn().getWritePostion() + writePosition);
 
-				System.out.println("mysql端传送用户名和密码：" + writePosition);
+				System.out.println("前——》后 ，写入大小:"+writePosition);
 
 				// 检查当前是否已经写入完成,则切换状态为读取监听
-				if (buffer.hasRemaining()) {
-					// 进行压缩
-					buffer.compact();
+				if (buffer.position() == writePosition) {
+					
+					buffer.clear();
+					iostateContext.getMysqlConn().setWritePostion(0);
 
-					iostateContext.getMysqlConn()
-							.setWritePostion(iostateContext.getMysqlConn().getWritePostion() + writePosition);
-
-					return false;
-
-				} else {
 					iostateContext.getMysqlConn().getCurrSelkey().interestOps(
 							iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_WRITE
 									| SelectionKey.OP_READ);
 					iostateContext.getMysqlConn().getSelect().wakeup();
-					buffer.clear();
-
-					iostateContext.getMysqlConn().setWritePostion(0);
 
 					return true;
 				}
