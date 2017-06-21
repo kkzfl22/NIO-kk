@@ -23,7 +23,7 @@ public abstract class BaseHandler implements Runnable {
 	/**
 	 * 当前注册的key信息
 	 */
-	protected SelectionKey currSelectKey;
+	protected SelectionKey currSelkey;
 
 	/**
 	 * 选择器的信息
@@ -38,12 +38,22 @@ public abstract class BaseHandler implements Runnable {
 	/**
 	 * 读取的缓冲队列
 	 */
-	protected ByteBuffer readBuffer;
+	protected volatile ByteBuffer readBuffer;
 
 	/**
 	 * 写入的队列
 	 */
-	protected ByteBuffer writeBuffer;
+	protected volatile ByteBuffer writeBuffer;
+
+	/**
+	 * 读取的指针
+	 */
+	protected volatile int readPostion;
+
+	/**
+	 * 写入的指针
+	 */
+	protected volatile int writePostion;
 
 	public BaseHandler(SocketChannel channel, int event) throws IOException {
 		this.channel = channel;
@@ -56,11 +66,11 @@ public abstract class BaseHandler implements Runnable {
 	public void run() {
 
 		// 如果当前是读取事件，交给读取方法
-		if (currSelectKey.isReadable()) {
+		if (currSelkey.isReadable()) {
 			doRead();
 		}
 		// 如果是写入事件，交给写入方法处理
-		else if (currSelectKey.isWritable()) {
+		else if (currSelkey.isWritable()) {
 			doWrite();
 		}
 	}
@@ -75,12 +85,12 @@ public abstract class BaseHandler implements Runnable {
 	 */
 	protected abstract void doWrite();
 
-	public SelectionKey getCurrSelectKey() {
-		return currSelectKey;
+	public SelectionKey getCurrSelkey() {
+		return currSelkey;
 	}
 
-	public void setCurrSelectKey(SelectionKey currSelectKey) {
-		this.currSelectKey = currSelectKey;
+	public void setCurrSelkey(SelectionKey currSelkey) {
+		this.currSelkey = currSelkey;
 	}
 
 	public SocketChannel getChannel() {
@@ -113,6 +123,22 @@ public abstract class BaseHandler implements Runnable {
 
 	public void setWriteBuffer(ByteBuffer writeBuffer) {
 		this.writeBuffer = writeBuffer;
+	}
+
+	public int getReadPostion() {
+		return readPostion;
+	}
+
+	public void setReadPostion(int readPostion) {
+		this.readPostion = readPostion;
+	}
+
+	public int getWritePostion() {
+		return writePostion;
+	}
+
+	public void setWritePostion(int writePostion) {
+		this.writePostion = writePostion;
 	}
 
 }

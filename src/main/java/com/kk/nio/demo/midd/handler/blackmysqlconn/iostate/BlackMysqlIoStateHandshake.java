@@ -1,5 +1,6 @@
 package com.kk.nio.demo.midd.handler.blackmysqlconn.iostate;
 
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
 import com.kk.nio.demo.midd.util.ByteBufferTools;
@@ -17,19 +18,23 @@ public class BlackMysqlIoStateHandshake implements MysqlIoStateInf {
 	public boolean doRead(BlackMysqlIostateContext iostateContext) throws Exception {
 
 		// 首先进行数据读取
-		int readPositon = iostateContext.getChannel().read(iostateContext.getReadBuffer());
+		int readPositon = iostateContext.getMysqlConn().getChannel()
+				.read(iostateContext.getMysqlConn().getReadBuffer());
 
-		iostateContext.setReadPostion(iostateContext.getReadPostion() + readPositon);
+		if (readPositon != -1) {
+			iostateContext.getMysqlConn().setReadPostion(iostateContext.getMysqlConn().getReadPostion() + readPositon);
+		}
 
 		// 进行检查
-		boolean bufferCheck = ByteBufferTools.checkLength(iostateContext.getReadBuffer());
+		boolean bufferCheck = ByteBufferTools.checkLength(iostateContext.getMysqlConn().getReadBuffer(), 0);
 
 		if (bufferCheck) {
 			// 进行将状态切换为登录鉴权
 			// 需要将事件变为写入监听
-			iostateContext.getCurrSelkey().interestOps(
-					iostateContext.getCurrSelkey().interestOps() & ~SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-
+			iostateContext.getMysqlConn().getCurrSelkey()
+					.interestOps(iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_READ
+							| SelectionKey.OP_WRITE);
+			iostateContext.getMysqlConn().getSelect().wakeup();
 			return true;
 		}
 
@@ -40,24 +45,50 @@ public class BlackMysqlIoStateHandshake implements MysqlIoStateInf {
 	@Override
 	public boolean doWrite(BlackMysqlIostateContext iostateContext) throws Exception {
 
-		// 设置当前写入的位置为上一次写入结束的位置
-		iostateContext.getWriteBuffer().position(iostateContext.getWritePostion());
+		ByteBuffer buffer = iostateContext.getMysqlConn().getWriteBuffer();
 
-		int writePosition = iostateContext.getChannel().write(iostateContext.getWriteBuffer());
+		if (buffer.position() > 0) {
 
-		iostateContext.setWritePostion(iostateContext.getWritePostion() + writePosition);
+			int curPos = buffer.position();
 
-		// 检查当前是否已经写入完成,则切换状态为读取监听
-		if (iostateContext.getWriteBuffer().hasRemaining()) {
-			// 进行压缩
-			iostateContext.getWriteBuffer().compact();
-			return false;
+			buffer.position(iostateContext.getMysqlConn().getWritePostion());
+			buffer.limit(curPos);
 
-		} else {
-			iostateContext.getCurrSelkey().interestOps(
-					iostateContext.getCurrSelkey().interestOps() & ~SelectionKey.OP_WRITE | SelectionKey.OP_READ);
-			return true;
+			// 设置当前写入的位置为上一次写入结束的位置
+			int writePosition = iostateContext.getMysqlConn().getChannel().write(buffer);
+
+			if (writePosition > 0) {
+
+				iostateContext.getMysqlConn()
+						.setWritePostion(iostateContext.getMysqlConn().getWritePostion() + writePosition);
+
+				System.out.println("mysql端传送用户名和密码：" + writePosition);
+
+				// 检查当前是否已经写入完成,则切换状态为读取监听
+				if (buffer.hasRemaining()) {
+					// 进行压缩
+					buffer.compact();
+
+					iostateContext.getMysqlConn()
+							.setWritePostion(iostateContext.getMysqlConn().getWritePostion() + writePosition);
+
+					return false;
+
+				} else {
+					iostateContext.getMysqlConn().getCurrSelkey().interestOps(
+							iostateContext.getMysqlConn().getCurrSelkey().interestOps() & ~SelectionKey.OP_WRITE
+									| SelectionKey.OP_READ);
+					iostateContext.getMysqlConn().getSelect().wakeup();
+					buffer.clear();
+
+					iostateContext.getMysqlConn().setWritePostion(0);
+
+					return true;
+				}
+			}
 		}
+
+		return false;
 	}
 
 }

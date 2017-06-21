@@ -1,8 +1,6 @@
 package com.kk.nio.demo.midd.handler.blackmysqlconn.iostate;
 
-import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.SocketChannel;
+import com.kk.nio.demo.midd.handler.blackmysqlconn.BlackmysqlConnHandler;
 
 /**
  * 进行具体的iostate连接状态的处理
@@ -14,96 +12,19 @@ import java.nio.channels.SocketChannel;
 public class BlackMysqlIostateContext {
 
 	/**
-	 * 通道信息
+	 * 连接对象信息
 	 */
-	private SocketChannel channel;
-
-	/**
-	 * 注册的key的信息
-	 */
-	private SelectionKey currSelkey;
-
-	/**
-	 * 读取的byteBuffer;
-	 */
-	private volatile ByteBuffer readBuffer;
-
-	/**
-	 * 写入的byteBuffer
-	 */
-	private volatile ByteBuffer writeBuffer;
-
-	/**
-	 * 读取的指针位置
-	 */
-	private int readPostion;
-
-	/**
-	 * 写入的指针位置
-	 */
-	private int writePostion;
+	private BlackmysqlConnHandler mysqlConn;
 
 	/**
 	 * 当前的状态信息
 	 */
 	private MysqlIoStateInf currState;
 
-	public BlackMysqlIostateContext(SocketChannel channel) {
-		super();
-		this.channel = channel;
+	public BlackMysqlIostateContext(BlackmysqlConnHandler mysqlConn) {
+		this.mysqlConn = mysqlConn;
 	}
 
-	public void setCurrSelkey(SelectionKey currSelkey) {
-		this.currSelkey = currSelkey;
-	}
-
-	public ByteBuffer getReadBuffer() {
-		return readBuffer;
-	}
-
-	public void setReadBuffer(ByteBuffer readBuffer) {
-		this.readBuffer = readBuffer;
-	}
-
-	public ByteBuffer getWriteBuffer() {
-		return writeBuffer;
-	}
-
-	public void setWriteBuffer(ByteBuffer writeBuffer) {
-		this.writeBuffer = writeBuffer;
-	}
-
-	public SocketChannel getChannel() {
-		return channel;
-	}
-
-	public SelectionKey getCurrSelkey() {
-		return currSelkey;
-	}
-
-	public MysqlIoStateInf getCurrState() {
-		return currState;
-	}
-
-	public void setCurrState(MysqlIoStateInf currState) {
-		this.currState = currState;
-	}
-
-	public int getReadPostion() {
-		return readPostion;
-	}
-
-	public void setReadPostion(int readPostion) {
-		this.readPostion = readPostion;
-	}
-
-	public int getWritePostion() {
-		return writePostion;
-	}
-
-	public void setWritePostion(int writePostion) {
-		this.writePostion = writePostion;
-	}
 
 	/**
 	 * 进行数据的读取操作
@@ -125,5 +46,29 @@ public class BlackMysqlIostateContext {
 	public boolean doWrite() throws Exception {
 		return this.currState.doWrite(this);
 	}
+	
+	
+
+
+	public BlackmysqlConnHandler getMysqlConn() {
+		return mysqlConn;
+	}
+
+
+	public void setMysqlConn(BlackmysqlConnHandler mysqlConn) {
+		this.mysqlConn = mysqlConn;
+	}
+
+
+	public MysqlIoStateInf getCurrState() {
+		return currState;
+	}
+
+
+	public void setCurrState(MysqlIoStateInf currState) {
+		this.currState = currState;
+	}
+	
+	
 
 }

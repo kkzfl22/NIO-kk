@@ -8,7 +8,7 @@ public class MysqlMidMain {
 
 	public static void main(String[] args) throws IOException {
 
-		ExecutorService execut = Executors.newFixedThreadPool(4);
+		ExecutorService execut = Executors.newFixedThreadPool(2);
 
 		MysqlMidRectorNio[] reactor = new MysqlMidRectorNio[4];
 
@@ -20,7 +20,7 @@ public class MysqlMidMain {
 		MysqlMidAcctor midAcc = new MysqlMidAcctor(reactor);
 		// 启动连接处理线程
 		new Thread(midAcc).start();
-		
+
 		midAcc.regiectMultConn(9002);
 	}
 

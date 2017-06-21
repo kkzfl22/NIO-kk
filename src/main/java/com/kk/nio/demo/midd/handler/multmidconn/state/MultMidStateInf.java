@@ -1,5 +1,7 @@
 package com.kk.nio.demo.midd.handler.multmidconn.state;
 
+import com.kk.nio.demo.midd.handler.multmidconn.MultMidConnHandler;
+
 /**
  * 进行中间件的多路状态处理接口
  * 
@@ -18,7 +20,7 @@ public interface MultMidStateInf {
 	 * @throws Exception
 	 *             异常信息
 	 */
-	public boolean doRead(MultMidStateContext multMidContext) throws Exception;
+	public void doRead(MultMidConnHandler multMidContext) throws Exception;
 
 	/**
 	 * 进行连接的数据写入操作
@@ -29,5 +31,5 @@ public interface MultMidStateInf {
 	 * @throws Exception
 	 *             连接的异常信息
 	 */
-	public boolean doWrite(MultMidStateContext multMidContext) throws Exception;
+	public void doWrite(MultMidConnHandler multMidContext) throws Exception;
 }

@@ -64,6 +64,8 @@ public class PageMemory {
 		this.chunkCount = this.buffer.capacity() / this.chunkSize;
 		// 设置当前内存标识块的大小
 		this.memUseSet = new BitSet(this.chunkCount);
+
+
 		// 默认可使用的chunk数量为总的chunk数
 		this.canUseChunkNum = chunkCount;
 	}
@@ -112,7 +114,11 @@ public class PageMemory {
 						startIndex = i;
 						endIndex = 1;
 					} else {
-						if (++endIndex == needChunkSize) {
+						if(endIndex == needChunkSize)
+						{
+							break;
+						}
+						else if (++endIndex == needChunkSize) {
 							break;
 						}
 					}

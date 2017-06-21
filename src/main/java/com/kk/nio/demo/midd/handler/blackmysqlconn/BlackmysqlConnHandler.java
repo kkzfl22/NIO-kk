@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 import com.kk.nio.demo.midd.handler.BaseHandler;
-import com.kk.nio.demo.midd.handler.blackmysqlconn.connstate.BlackMysqlConnStateContext;
+import com.kk.nio.demo.midd.handler.blackmysqlconn.connstate.MysqlConnStateInf;
 import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.BlackMysqlIostateContext;
 
 /**
@@ -17,47 +17,71 @@ import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.BlackMysqlIostateCont
 public class BlackmysqlConnHandler extends BaseHandler {
 
 	/**
-	 * 保留mysql的连接的上下文引用
+	 * 当前的连接状态
 	 */
-	private BlackMysqlConnStateContext mysqlConnContext;
+	private volatile MysqlConnStateInf currConnState;
+
+	/**
+	 * 进行io事件处理的上下文信息
+	 */
+	private BlackMysqlIostateContext iostateContext;
 
 	public BlackmysqlConnHandler(SocketChannel channel, int event) throws IOException {
 		super(channel, event);
 		// 进行io的上下文处理
-		BlackMysqlIostateContext iostateContext = new BlackMysqlIostateContext(channel);
-		// 进行mysql连接的上下文处理
-		mysqlConnContext = new BlackMysqlConnStateContext(iostateContext);
+		this.iostateContext = new BlackMysqlIostateContext(this);
+		// 设置io的初始化状态为握手包读取
+		this.iostateContext.setCurrState(MysqlIoStateEnum.IOSTATE_HANDSHAKE.getIoState());
 		// 设置当前的状态
-		mysqlConnContext.setCurrConnState(MysqlConnStateEnum.MYSQLCONN_CREATE.getConnState());
+		this.currConnState = MysqlConnStateEnum.MYSQLCONN_CREATE.getConnState();
 	}
 
 	@Override
 	protected void doRead() {
 
-		// 设置读取共用的buffer
-		mysqlConnContext.getIostateContext().setReadBuffer(this.getReadBuffer());
-		mysqlConnContext.getIostateContext().setCurrSelkey(this.getCurrSelectKey());
-
 		try {
-			mysqlConnContext.doRead();
+			currConnState.doRead(this);
 		} catch (Exception e) {
 			e.printStackTrace();
+			try {
+				this.channel.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}
 
 	@Override
 	protected void doWrite() {
-		// 设置读取共用的buffer
-		mysqlConnContext.getIostateContext().setWriteBuffer(this.getWriteBuffer());
-		mysqlConnContext.getIostateContext().setCurrSelkey(this.getCurrSelectKey());
-
 		try {
-			mysqlConnContext.doWrite();
+			currConnState.doWrite(this);
 		} catch (Exception e) {
 			e.printStackTrace();
+			try {
+				this.channel.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
+	}
 
+	public MysqlConnStateInf getCurrConnState() {
+		return currConnState;
+	}
+
+	public void setCurrConnState(MysqlConnStateInf currConnState) {
+		this.currConnState = currConnState;
+	}
+
+	public BlackMysqlIostateContext getIostateContext() {
+		return iostateContext;
+	}
+
+	public void setIostateContext(BlackMysqlIostateContext iostateContext) {
+		this.iostateContext = iostateContext;
 	}
 
 }

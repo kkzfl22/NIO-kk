@@ -1,5 +1,7 @@
 package com.kk.nio.demo.midd.handler.blackmysqlconn.connstate;
 
+import com.kk.nio.demo.midd.handler.blackmysqlconn.BlackmysqlConnHandler;
+
 /**
  * 进行连接的初始化创建
  * 
@@ -10,7 +12,7 @@ package com.kk.nio.demo.midd.handler.blackmysqlconn.connstate;
 public class BlackMysqlConnUseState implements MysqlConnStateInf {
 
 	@Override
-	public void doRead(BlackMysqlConnStateContext mysqlConnContext) throws Exception {
+	public void doRead(BlackmysqlConnHandler mysqlConnContext) throws Exception {
 		// 首先进行设置当前io处理为读取后端的数据
 		boolean rsp = mysqlConnContext.getIostateContext().doRead();
 
@@ -21,7 +23,7 @@ public class BlackMysqlConnUseState implements MysqlConnStateInf {
 	}
 
 	@Override
-	public void doWrite(BlackMysqlConnStateContext mysqlConnContext) throws Exception {
+	public void doWrite(BlackmysqlConnHandler mysqlConnContext) throws Exception {
 	}
 
 }

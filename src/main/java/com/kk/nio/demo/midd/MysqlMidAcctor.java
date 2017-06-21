@@ -59,6 +59,11 @@ public class MysqlMidAcctor implements Runnable {
 		// 将处理对象附着到通道中
 		BlackmysqlConnHandler connHandler = new BlackmysqlConnHandler(socketChannel, SelectionKey.OP_READ);
 
+		// 获取一个读取的byteBuffer
+		connHandler.setReadBuffer(MemoryPool.Instance().allocate(1024 * 1024));
+		// 获取一个写入的bytebuffer
+		connHandler.setWriteBuffer(MemoryPool.Instance().allocate(1024 * 1024));
+
 		// 注册连接事件
 		socketChannel.register(connSelect, SelectionKey.OP_CONNECT, connHandler);
 
@@ -80,6 +85,8 @@ public class MysqlMidAcctor implements Runnable {
 
 		// 注册观察连接事件
 		serverChannel.register(connSelect, SelectionKey.OP_ACCEPT);
+
+		System.out.println("mysql mid server  start success ,port is " + port);
 	}
 
 	@Override
@@ -126,14 +133,9 @@ public class MysqlMidAcctor implements Runnable {
 						// 进行创建后端的连接
 						BlackmysqlConnHandler blackMysqlConn = regictBlackMysqlConn("localhost", 3306);
 
-						// 获取一个读取的byteBuffer
-						blackMysqlConn.setReadBuffer(MemoryPool.Instance().allocate(1));
-						// 获取一个写入的bytebuffer
-						blackMysqlConn.setWriteBuffer(MemoryPool.Instance().allocate(1));
-
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 创建中间件接口器对象
-						MultMidConnHandler multMidConn = new MultMidConnHandler(channel, SelectionKey.OP_READ,
+						MultMidConnHandler multMidConn = new MultMidConnHandler(channel, SelectionKey.OP_WRITE,
 								blackMysqlConn);
 						// 注册连接事件
 						rectors[index].registMultMidConnChannel(multMidConn);

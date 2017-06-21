@@ -41,17 +41,12 @@ public class ByteBufferTools {
 	 *            buffer信息
 	 * @return true 长度检查正确 false 检查失败
 	 */
-	public static boolean checkLength(ByteBuffer mapBuf) {
+	public static boolean checkLength(ByteBuffer mapBuf, int checkPosition) {
 
-		int currPosition = mapBuf.position();
-		// HandshakeBean handshake = new HandshakeBean();
-		int offset = currPosition;
 		// 1获取长度信息, 占3位
-		int length = getLength(mapBuf, offset);
+		int length = getLength(mapBuf, checkPosition);
 
-		int bufferLength = currPosition + length;
-
-		if (mapBuf.position() >= bufferLength) {
+		if (mapBuf.position() >= length) {
 			return true;
 		}
 		return false;

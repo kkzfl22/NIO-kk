@@ -1,5 +1,7 @@
 package com.kk.nio.demo.midd.handler.blackmysqlconn.connstate;
 
+import com.kk.nio.demo.midd.handler.blackmysqlconn.BlackmysqlConnHandler;
+
 /**
  * 进行mysql连接的状态处理
  * 
@@ -18,7 +20,7 @@ public interface MysqlConnStateInf {
 	 * @throws Exception
 	 *             异常信息
 	 */
-	public void doRead(BlackMysqlConnStateContext mysqlConnContext) throws Exception;
+	public void doRead(BlackmysqlConnHandler mysqlConnContext) throws Exception;
 
 	/**
 	 * 进行连接的数据写入操作
@@ -29,5 +31,5 @@ public interface MysqlConnStateInf {
 	 * @throws Exception
 	 *             连接的异常信息
 	 */
-	public void doWrite(BlackMysqlConnStateContext mysqlConnContext) throws Exception;
+	public void doWrite(BlackmysqlConnHandler mysqlConnContext) throws Exception;
 }

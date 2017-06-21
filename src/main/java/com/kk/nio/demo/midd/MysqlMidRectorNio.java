@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 
 import com.kk.nio.demo.midd.handler.BaseHandler;
-import com.kk.nio.demo.midd.handler.multmidconn.MultMidConnHandler;
 
 public class MysqlMidRectorNio extends Thread {
 
@@ -64,8 +62,10 @@ public class MysqlMidRectorNio extends Thread {
 		BaseHandler handler = null;
 		while ((handler = blackConn.poll()) != null) {
 			try {
+				handler.setSelect(this.select);
 				// 进行事件的注册操作
-				handler.setCurrSelectKey(handler.getChannel().register(this.select, handler.getRegistEvent(), handler));
+				handler.setCurrSelkey(
+						handler.getChannel().register(handler.getSelect(), handler.getRegistEvent(), handler));
 			} catch (ClosedChannelException e) {
 				e.printStackTrace();
 			}
