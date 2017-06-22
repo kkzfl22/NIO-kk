@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 最基本的后台处理handler
@@ -18,42 +19,53 @@ public abstract class BaseHandler implements Runnable {
 	/**
 	 * 通道信息
 	 */
-	protected SocketChannel channel;
+	private SocketChannel channel;
 
 	/**
 	 * 当前注册的key信息
 	 */
-	protected SelectionKey currSelkey;
+	private SelectionKey currSelkey;
 
 	/**
 	 * 选择器的信息
 	 */
-	protected Selector select;
+	private Selector select;
 
 	/**
 	 * 注册的事件信息
 	 */
-	protected int registEvent;
+	private int registEvent;
 
 	/**
 	 * 读取的缓冲队列
 	 */
-	protected volatile ByteBuffer readBuffer;
+	private volatile ByteBuffer readBuffer;
 
 	/**
 	 * 写入的队列
 	 */
-	protected volatile ByteBuffer writeBuffer;
+	private volatile ByteBuffer writeBuffer;
 
 	/**
 	 * 读取的指针
 	 */
-	protected volatile int readPostion;
+	private volatile int readPostion;
 
 	/**
 	 * 写入的指针
 	 */
-	protected volatile int writePostion;
+	private volatile int writePostion;
+	
+	/**
+	 * 读取锁信息
+	 */
+	private AtomicBoolean readLock = new AtomicBoolean(false);
+	
+	
+	/**
+	 * 写入锁信息
+	 */
+	private AtomicBoolean writeLock = new AtomicBoolean(false);
 
 	public BaseHandler(SocketChannel channel, int event) throws IOException {
 		this.channel = channel;
@@ -139,6 +151,14 @@ public abstract class BaseHandler implements Runnable {
 
 	public void setWritePostion(int writePostion) {
 		this.writePostion = writePostion;
+	}
+
+	public AtomicBoolean getReadLock() {
+		return readLock;
+	}
+
+	public AtomicBoolean getWriteLock() {
+		return writeLock;
 	}
 
 }

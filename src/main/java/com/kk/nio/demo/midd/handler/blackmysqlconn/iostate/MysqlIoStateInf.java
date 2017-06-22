@@ -18,7 +18,7 @@ public interface MysqlIoStateInf {
 	 * @throws Exception
 	 *             异常信息
 	 */
-	public boolean doRead(BlackMysqlIostateContext iostateContext) throws Exception;
+	public void doRead(BlackMysqlIostateContext iostateContext) throws Exception;
 
 	/**
 	 * 进行连接的数据写入操作
@@ -29,5 +29,5 @@ public interface MysqlIoStateInf {
 	 * @throws Exception
 	 *             连接的异常信息
 	 */
-	public boolean doWrite(BlackMysqlIostateContext iostateContext) throws Exception;
+	public void doWrite(BlackMysqlIostateContext iostateContext) throws Exception;
 }

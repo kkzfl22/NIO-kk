@@ -1,7 +1,6 @@
 package com.kk.nio.demo.midd.handler.blackmysqlconn.connstate;
 
 import com.kk.nio.demo.midd.handler.blackmysqlconn.BlackmysqlConnHandler;
-import com.kk.nio.demo.midd.handler.blackmysqlconn.MysqlIoStateEnum;
 
 /**
  * 进行连接的初始化创建
@@ -20,12 +19,7 @@ public class BlackMysqlConnCreateState implements MysqlConnStateInf {
 
 	@Override
 	public void doWrite(BlackmysqlConnHandler mysqlConnContext) throws Exception {
-		boolean rsp = mysqlConnContext.getIostateContext().doWrite();
-
-		// 当操作完成，需要将状态切换为连接结果获取
-		if (rsp) {
-			mysqlConnContext.getIostateContext().setCurrState(MysqlIoStateEnum.IOSTATE_AUTHRSP.getIoState());
-		}
+		mysqlConnContext.getIostateContext().doWrite();
 	}
 
 }

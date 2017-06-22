@@ -38,6 +38,16 @@ public class MultMidConnHandler extends BaseHandler {
 			this.currMidState.doRead(this);
 		} catch (Exception e) {
 			e.printStackTrace();
+			try {
+				this.getChannel().close();
+				this.getCurrSelkey().cancel();
+				this.getMysqlConn().setReadPostion(0);
+				this.getMysqlConn().getReadBuffer().clear();
+				this.getMysqlConn().setWritePostion(0);
+				this.getMysqlConn().getWriteBuffer().clear();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -47,6 +57,17 @@ public class MultMidConnHandler extends BaseHandler {
 			this.currMidState.doWrite(this);
 		} catch (Exception e) {
 			e.printStackTrace();
+			try {
+				this.getChannel().close();
+				this.getCurrSelkey().cancel();
+				this.getMysqlConn().setWritePostion(0);
+				this.getMysqlConn().getWriteBuffer().clear();
+				this.getMysqlConn().setReadPostion(0);
+				this.getMysqlConn().getReadBuffer().clear();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}
