@@ -14,11 +14,7 @@ public class BlackMysqlConnUseState implements MysqlConnStateInf {
 	@Override
 	public void doRead(BlackmysqlConnHandler mysqlConnContext) throws Exception {
 		// 首先进行设置当前io处理为读取后端的数据
-		boolean rsp = mysqlConnContext.getIostateContext().doRead();
-
-		// 读取后端的数据成功之后
-		if (rsp) {
-		}
+		mysqlConnContext.getIostateContext().doRead();
 
 	}
 

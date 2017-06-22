@@ -1,6 +1,8 @@
 package com.kk.nio.demo.midd.handler.multmidconn;
 
 import com.kk.nio.demo.midd.handler.multmidconn.state.MultMidStateAuthRsp;
+import com.kk.nio.demo.midd.handler.multmidconn.state.MultMidStateAuthSelUser;
+import com.kk.nio.demo.midd.handler.multmidconn.state.MultMidStateAuthSelVersion;
 import com.kk.nio.demo.midd.handler.multmidconn.state.MultMidStateHandshake;
 import com.kk.nio.demo.midd.handler.multmidconn.state.MultMidStateInf;
 
@@ -22,6 +24,16 @@ public enum MultMidStateEnum {
 	 * 进行握手消息的结果处理
 	 */
 	MULTMIDSTATE_AUTHRSP(new MultMidStateAuthRsp()),
+	
+	/**
+	 * 进行握手消息的成功之后的版本信息查询
+	 */
+	MULTMIDSTATE_AUTH_SELECT_VERSION(new MultMidStateAuthSelVersion()),
+	
+	/**
+	 * 进行握手消息成功之后的一次心跳消息
+	 */
+	MULTMIDSTATE_AUTH_SELECT_USER(new MultMidStateAuthSelUser()),
 
 	;
 

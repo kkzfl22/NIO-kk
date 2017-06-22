@@ -2,6 +2,8 @@ package com.kk.nio.demo.midd.handler.blackmysqlconn;
 
 import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.BlackMysqlIoStateAuthRsp;
 import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.BlackMysqlIoStateHandshake;
+import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.BlackMysqlIoStateSelUser;
+import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.BlackMysqlIoStateSelVersion;
 import com.kk.nio.demo.midd.handler.blackmysqlconn.iostate.MysqlIoStateInf;
 
 /**
@@ -17,11 +19,21 @@ public enum MysqlIoStateEnum {
 	 * 进行握手协议的消息处理状态
 	 */
 	IOSTATE_HANDSHAKE(new BlackMysqlIoStateHandshake()),
-	
+
 	/**
 	 * 进行登录的结果处理
 	 */
 	IOSTATE_AUTHRSP(new BlackMysqlIoStateAuthRsp()),
+
+	/**
+	 * 进行登录成功之后版本号查询
+	 */
+	IOSTATE_SELVERSION(new BlackMysqlIoStateSelVersion()),
+
+	/**
+	 * 进行登录成功之后的用户查询
+	 */
+	IOSTATE_SELUSER(new BlackMysqlIoStateSelUser()),
 
 	;
 

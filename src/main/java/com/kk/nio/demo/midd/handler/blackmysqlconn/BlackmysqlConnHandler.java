@@ -44,7 +44,12 @@ public class BlackmysqlConnHandler extends BaseHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				this.channel.close();
+				this.getChannel().close();
+				this.getCurrSelkey().cancel();
+				this.setReadPostion(0);
+				this.getReadBuffer().clear();
+				this.setWritePostion(0);
+				this.getWriteBuffer().clear();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -60,9 +65,13 @@ public class BlackmysqlConnHandler extends BaseHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				this.channel.close();
+				this.getChannel().close();
+				this.getCurrSelkey().cancel();
+				this.setReadPostion(0);
+				this.getReadBuffer().clear();
+				this.setWritePostion(0);
+				this.getWriteBuffer().clear();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

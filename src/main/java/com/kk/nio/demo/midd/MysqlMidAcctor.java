@@ -131,7 +131,7 @@ public class MysqlMidAcctor implements Runnable {
 						channel.configureBlocking(false);
 
 						// 进行创建后端的连接
-						BlackmysqlConnHandler blackMysqlConn = regictBlackMysqlConn("192.168.3.13", 3306);
+						BlackmysqlConnHandler blackMysqlConn = regictBlackMysqlConn("localhost", 3306);
 
 						int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);
 						// 创建中间件接口器对象

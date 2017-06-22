@@ -25,7 +25,6 @@ public class BlackMysqlIostateContext {
 		this.mysqlConn = mysqlConn;
 	}
 
-
 	/**
 	 * 进行数据的读取操作
 	 * 
@@ -33,8 +32,8 @@ public class BlackMysqlIostateContext {
 	 * @throws Exception
 	 *             异常信息
 	 */
-	public boolean doRead() throws Exception {
-		return this.currState.doRead(this);
+	public void doRead() throws Exception {
+		this.currState.doRead(this);
 	}
 
 	/**
@@ -43,32 +42,24 @@ public class BlackMysqlIostateContext {
 	 * @throws Exception
 	 *             连接的异常信息
 	 */
-	public boolean doWrite() throws Exception {
-		return this.currState.doWrite(this);
+	public void doWrite() throws Exception {
+		this.currState.doWrite(this);
 	}
-	
-	
-
 
 	public BlackmysqlConnHandler getMysqlConn() {
 		return mysqlConn;
 	}
 
-
 	public void setMysqlConn(BlackmysqlConnHandler mysqlConn) {
 		this.mysqlConn = mysqlConn;
 	}
-
 
 	public MysqlIoStateInf getCurrState() {
 		return currState;
 	}
 
-
 	public void setCurrState(MysqlIoStateInf currState) {
 		this.currState = currState;
 	}
-	
-	
 
 }
