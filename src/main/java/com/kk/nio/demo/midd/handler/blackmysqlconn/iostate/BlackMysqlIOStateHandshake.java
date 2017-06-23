@@ -12,7 +12,7 @@ import com.kk.nio.demo.midd.handler.blackmysqlconn.MysqlIoStateEnum;
  * @version 0.0.1
  * @author liujun
  */
-public class BlackMysqlIoStateHandshake implements MysqlIoStateInf {
+public class BlackMysqlIOStateHandshake implements MysqlIoStateInf {
 
 	@Override
 	public void doRead(BlackMysqlIostateContext iostateContext) throws Exception {
