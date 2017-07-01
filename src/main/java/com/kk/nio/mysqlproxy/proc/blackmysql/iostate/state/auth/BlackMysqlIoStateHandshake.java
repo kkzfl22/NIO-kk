@@ -1,4 +1,4 @@
-package com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state;
+package com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.auth;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -15,7 +15,7 @@ import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.MysqIOStateEnum;
  * @version 0.0.1
  * @author liujun
  */
-public class BlackMysqlIoStateSelVersion implements BlackMysqlIOStateInf {
+public class BlackMysqlIoStateHandshake implements BlackMysqlIOStateInf {
 
 	@Override
 	public void doRead(BlackMysqlIOStateContext handler) throws IOException {
@@ -36,7 +36,6 @@ public class BlackMysqlIoStateSelVersion implements BlackMysqlIOStateInf {
 				handler.getMysqlConnStateContext().eventRigCancelRead();
 				// 进行中间件的前端写入事件注册
 				handler.getMysqlConnStateContext().getMidConnHandler().eventRigCancelReadOpenWrite();
-
 			}
 
 		}
@@ -62,7 +61,7 @@ public class BlackMysqlIoStateSelVersion implements BlackMysqlIOStateInf {
 				writeBuffer.clear();
 				handler.getMysqlConnStateContext().setWritePosition(0);
 
-				// 将当前的写入事件取消，切换为读取事件
+				// 将当前的写入事件取消，切换为读取事件,读取mysql的响应结果
 				handler.getMysqlConnStateContext().eventRigCancelWriteOpenRead();
 			}
 		}

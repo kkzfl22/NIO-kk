@@ -1,9 +1,9 @@
 package com.kk.nio.mysqlproxy.proc.frontendmid;
 
-import com.kk.nio.mysqlproxy.proc.frontendmid.state.FrontedIoStateAuthRsp;
-import com.kk.nio.mysqlproxy.proc.frontendmid.state.FrontedIoStateHandshake;
-import com.kk.nio.mysqlproxy.proc.frontendmid.state.FrontedIoStateSelUser;
-import com.kk.nio.mysqlproxy.proc.frontendmid.state.FrontedIoStateSelVersion;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateAuthRsp;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateHandshake;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateSelUser;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateSelVersion;
 
 /**
  * 进行mysql的状态枚举信息
@@ -35,9 +35,6 @@ public enum FrontendMidStateEnum {
 	 * 进行查询mysql一次心跳检查
 	 */
 	FRONTENDSTATE_SELUSER(new FrontedIoStateSelUser()),
-	
-	
-	
 	
 	
 

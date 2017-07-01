@@ -1,9 +1,9 @@
 package com.kk.nio.mysqlproxy.proc.blackmysql.iostate;
 
-import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.BlackMysqlIoStateAuthRsp;
-import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.BlackMysqlIoStateHandshake;
-import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.BlackMysqlIoStateSelUser;
-import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.BlackMysqlIoStateSelVersion;
+import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.auth.BlackMysqlIoStateAuthRsp;
+import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.auth.BlackMysqlIoStateHandshake;
+import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.auth.BlackMysqlIoStateSelUser;
+import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.auth.BlackMysqlIoStateSelVersion;
 
 /**
  * 进行mysql的状态枚举信息

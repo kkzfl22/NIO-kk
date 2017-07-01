@@ -1,11 +1,10 @@
-package com.kk.nio.mysqlproxy.proc.frontendmid.state;
+package com.kk.nio.mysqlproxy.proc.frontendmid.state.auth;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendIOHandStateInf;
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
-import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidStateEnum;
 
 /**
  * 进行查询版本的信息
@@ -14,7 +13,7 @@ import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidStateEnum;
  * @version 0.0.1
  * @author liujun
  */
-public class FrontedIoStateSelVersion implements FrontendIOHandStateInf {
+public class FrontedIoStateSelUser implements FrontendIOHandStateInf {
 
 	@Override
 	public void doRead(FrontendMidConnnectHandler handler) throws IOException {
@@ -48,9 +47,6 @@ public class FrontedIoStateSelVersion implements FrontendIOHandStateInf {
 				handler.getBackMysqlConn().setReadPostion(0);
 				// 当前写入成功，则需要切换到读取状态，以读取当前上传的鉴权信息
 				handler.eventRigCancelWriteOpenRead();
-
-				// 将当前状态切换为查询版本的请求读取
-				handler.setCurrState(FrontendMidStateEnum.FRONTENDSTATE_SELUSER.getMysqlConnState());
 			}
 		}
 	}

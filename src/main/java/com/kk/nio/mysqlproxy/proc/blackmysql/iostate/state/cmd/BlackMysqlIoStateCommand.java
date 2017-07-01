@@ -1,4 +1,4 @@
-package com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state;
+package com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.cmd;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -7,15 +7,17 @@ import com.kk.nio.demo.midd.util.ByteBufferTools;
 import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.BlackMysqlIOStateContext;
 import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.BlackMysqlIOStateInf;
 import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.MysqIOStateEnum;
+import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
+import com.kk.nio.mysqlproxy.proc.mysqlpkg.MysqlPkgEnum;
 
 /**
- * 进行握手包协议的操作
+ * 进行SQL命令的发送
  * 
- * @since 2017年6月23日 下午3:04:35
+ * @since 2017年6月23日 下午4:05:04
  * @version 0.0.1
  * @author liujun
  */
-public class BlackMysqlIoStateHandshake implements BlackMysqlIOStateInf {
+public class BlackMysqlIoStateCommand implements BlackMysqlIOStateInf {
 
 	@Override
 	public void doRead(BlackMysqlIOStateContext handler) throws IOException {
@@ -36,6 +38,7 @@ public class BlackMysqlIoStateHandshake implements BlackMysqlIOStateInf {
 				handler.getMysqlConnStateContext().eventRigCancelRead();
 				// 进行中间件的前端写入事件注册
 				handler.getMysqlConnStateContext().getMidConnHandler().eventRigCancelReadOpenWrite();
+
 			}
 
 		}
@@ -48,21 +51,26 @@ public class BlackMysqlIoStateHandshake implements BlackMysqlIOStateInf {
 			// 检查当前前端写入的信息
 			ByteBuffer writeBuffer = handler.getMysqlConnStateContext().getWriteBuffer();
 
-			int pos = writeBuffer.position();
-			writeBuffer.position(0);
-			writeBuffer.limit(pos);
+			MysqlPkgEnum rsp = MysqlPkgEnum.getPkgType(writeBuffer.get(4));
+			
+			//如果当前为ok响应包，则直接做透传处理
+			if (MysqlPkgEnum.PKG_OK_RSP == rsp) {
+				
+				int pos = writeBuffer.position();
+				writeBuffer.position(0);
+				writeBuffer.limit(pos);
 
-			int writePos = handler.getMysqlConnStateContext().getChannel().write(writeBuffer);
+				int writePos = handler.getMysqlConnStateContext().getChannel().write(writeBuffer);
 
-			// 如果当前写入成功，则将后端进行切换为鉴权结果检查
-			if (writePos == writeBuffer.position()) {
-				// 状态切换为检查的结果检查
-				handler.setCurrState(MysqIOStateEnum.BLACLMYSQLIOSTATE_AUTHRSP.getMysqlIOState());
-				writeBuffer.clear();
-				handler.getMysqlConnStateContext().setWritePosition(0);
+				// 如果当前写入成功，则将后端进行切换为鉴权结果检查
+				if (writePos == writeBuffer.position()) {
+					// 状态切换为检查的结果检查
+					writeBuffer.clear();
+					handler.getMysqlConnStateContext().setWritePosition(0);
 
-				// 将当前的写入事件取消，切换为读取事件,读取mysql的响应结果
-				handler.getMysqlConnStateContext().eventRigCancelWriteOpenRead();
+					// 将当前的写入事件取消，切换为读取事件
+					handler.getMysqlConnStateContext().eventRigCancelWriteOpenRead();
+				}
 			}
 		}
 	}

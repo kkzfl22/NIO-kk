@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.kk.nio.mysqlproxy.proc.ConnectHandler;
 import com.kk.nio.mysqlproxy.proc.blackmysql.BlackMysqlClientHandler;
-import com.kk.nio.mysqlproxy.proc.frontendmid.state.FrontedIoStateHandshake;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateHandshake;
 
 /**
  * 进行中间件处理的handler
