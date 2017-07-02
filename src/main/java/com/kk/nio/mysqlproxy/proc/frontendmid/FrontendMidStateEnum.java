@@ -4,6 +4,7 @@ import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateAuthRsp;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateHandshake;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateSelUser;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.auth.FrontedIoStateSelVersion;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.FrontedIoStateCmdQuery;
 
 /**
  * 进行mysql的状态枚举信息
@@ -36,6 +37,12 @@ public enum FrontendMidStateEnum {
 	 */
 	FRONTENDSTATE_SELUSER(new FrontedIoStateSelUser()),
 	
+	
+	
+	/**
+	 * 进行查询的命令操作
+	 */
+	FRONTENDSTATE_CMDQUERY(new FrontedIoStateCmdQuery()),
 	
 
 	;

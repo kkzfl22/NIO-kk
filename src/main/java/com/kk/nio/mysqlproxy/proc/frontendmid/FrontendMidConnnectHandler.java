@@ -24,10 +24,9 @@ public class FrontendMidConnnectHandler extends ConnectHandler {
 	 * 当前的前端操作的状态
 	 */
 	private FrontendIOHandStateInf currState;
-	
 
 	public FrontendMidConnnectHandler() {
-		//进行初始的状态设置,为握手包的处理
+		// 进行初始的状态设置,为握手包的处理
 		currState = new FrontedIoStateHandshake();
 	}
 
@@ -41,12 +40,18 @@ public class FrontendMidConnnectHandler extends ConnectHandler {
 
 	@Override
 	public void doRead() throws IOException {
-		this.getCurrState().doRead(this);
+		//如果当前设置为状态，则进行状态的流程执行
+		if (currState != null) {
+			this.getCurrState().doRead(this);
+		}
+		
 	}
 
 	@Override
 	public void doWrite() throws IOException {
-		this.getCurrState().doWrite(this);
+		if (currState != null) {
+			this.getCurrState().doWrite(this);
+		}
 	}
 
 	public FrontendIOHandStateInf getCurrState() {
