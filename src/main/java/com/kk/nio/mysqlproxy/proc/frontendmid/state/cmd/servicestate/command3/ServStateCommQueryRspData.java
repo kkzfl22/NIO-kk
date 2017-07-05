@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.PkgFlagEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateRspEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceContext;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceStateInf;
@@ -24,15 +25,25 @@ public class ServStateCommQueryRspData implements MysqlServiceStateInf {
 
 		ByteBuffer readBuffer = handler.getBackMysqlConn().getReadBuffer();
 
-		// 进行eof包大小的解析
-		int length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
+		while (mysqlService.getReadPosition() + 5 < readBuffer.limit()) {
 
-		int currPosition = readBuffer.position();
-		// 检查包长度，然后进行设置已经读取到的列信息
-		if (currPosition + length < readBuffer.limit()) {
-			mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
-			// 设置接下来的状态为数据项的检查
-			mysqlService.setCurrState(ServStateRspEnum.SERV_STATE_RSP_DATA_OVER.getStateProc());
+			// 进行eof包大小的解析
+			int length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
+
+			// 取出当前包的类型
+			byte pkgType = readBuffer.get(mysqlService.getReadPosition() + 4);
+			
+			// 检查包长度，然后进行设置已经读取到的列信息
+			if (pkgType != PkgFlagEnum.PKG_EOF_FLAG.getPkgFlag()) {
+
+				mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
+
+				// 获取下一个包的长度
+				length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
+				// 获取包的类型
+				pkgType = readBuffer.get(mysqlService.getReadPosition() + 4);
+
+			}
 
 		}
 

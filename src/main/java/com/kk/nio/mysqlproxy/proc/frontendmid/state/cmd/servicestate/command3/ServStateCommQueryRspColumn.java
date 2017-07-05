@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.kk.nio.mysqlproxy.mysqlpkg.bean.PkgResultSetHander;
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.PkgFlagEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServFlowEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateRspEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceContext;
@@ -28,43 +29,29 @@ public class ServStateCommQueryRspColumn implements MysqlServiceStateInf {
 
 		ByteBuffer readBuffer = handler.getBackMysqlConn().getReadBuffer();
 
-		PkgResultSetHander resultSetHeader = (PkgResultSetHander) mysqlService
-				.getTransBean(ServFlowEnum.STATE_RESULTSET_FIELDNUM.getKey());
+		while (mysqlService.getReadPosition() + 5 < readBuffer.limit()) {
 
-		int colNum = resultSetHeader.getFieldCount();
-
-		Map<Integer, Boolean> columnCheck = new HashMap<>();
-
-		for (int i = 0; i < colNum; i++) {
-			columnCheck.put(i, false);
-		}
-
-		for (int i = 0; i < colNum; i++) {
 			// 读取消息头
 			int length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
 
-			int currPosition = readBuffer.position();
-			// 检查包长度，然后进行设置已经读取到的列信息
-			if (currPosition + length < readBuffer.limit()) {
+			if (mysqlService.getReadPosition() + length <= readBuffer.limit()) {
+
+				// 检查当前的包为eof包
+				byte flag = readBuffer.get(mysqlService.getReadPosition() + 4);
+				// 设置已经读取包的数据
 				mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
-				columnCheck.put(i, true);
-			}
-		}
 
-		// 如果当前所有的列都已经跳过成功，则进行下一步流程
-		if (!columnCheck.containsKey(false)) {
+				// 如果检查当前为列结束
+				if (flag == PkgFlagEnum.PKG_EOF_FLAG.getPkgFlag()) {
 
-			// 进行列结束项的检查
-			int length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
+					mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
+					// 下一步流程为行数据的检查
+					mysqlService.setCurrState(ServStateRspEnum.SERV_STATE_RSP_DATA_OVER.getStateProc());
+					// 执行下一步流程
+					mysqlService.serviceDoInvoke();
 
-			int currPosition = readBuffer.position();
-			// 检查包长度，然后进行设置已经读取到的列信息
-			if (currPosition + length < readBuffer.limit()) {
-				mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
-				// 下一步流程为行数据的检查
-				mysqlService.setCurrState(ServStateRspEnum.SERV_STATE_RSP_DATA_OVER.getStateProc());
-				// 执行下一步流程
-				mysqlService.serviceDoInvoke();
+					break;
+				}
 			}
 		}
 
