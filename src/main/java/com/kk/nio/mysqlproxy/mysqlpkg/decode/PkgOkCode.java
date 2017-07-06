@@ -12,14 +12,17 @@ import com.kk.nio.mysqlproxy.mysqlpkg.bean.PkgOkBean;
  * @version 0.0.1
  * @author liujun
  */
-public class PkgOkCode implements MysqlPkgDecodeInf {
+public class PkgOkCode extends DeCodeBase implements MysqlPkgDecodeInf {
 
 	@Override
-	public PkgOkBean readPackage(ByteBuffer context) {
+	public PkgOkBean readPackage(ByteBuffer context, int readPos) {
 
 		PkgOkBean pkgBean = new PkgOkBean();
 
-		MySQLMessage mm = new MySQLMessage(context);
+		// ok包消息
+		ByteBuffer buffOk = this.readLength(context);
+
+		MySQLMessage mm = new MySQLMessage(buffOk);
 
 		// 读取包大小
 		pkgBean.setLength(mm.readUB3());

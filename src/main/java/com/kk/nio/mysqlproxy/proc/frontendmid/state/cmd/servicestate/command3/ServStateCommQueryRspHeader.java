@@ -48,7 +48,7 @@ public class ServStateCommQueryRspHeader implements MysqlServiceStateInf {
 			else {
 				// 首先读取列数
 				PkgResultSetHander resultSetHeader = (PkgResultSetHander) PkgEnum.PKG_RESULTSET_HEAD.getPkgDecode()
-						.readPackage(readBuffer);
+						.readPackage(readBuffer, mysqlService.getReadPosition());
 
 				if (resultSetHeader != null && resultSetHeader.getFieldCount() > 0) {
 					mysqlService.putTransBean(ServFlowEnum.STATE_RESULTSET_FIELDNUM.getKey(), resultSetHeader);

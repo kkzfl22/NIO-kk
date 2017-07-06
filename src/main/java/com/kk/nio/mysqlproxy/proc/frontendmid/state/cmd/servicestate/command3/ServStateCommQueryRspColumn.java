@@ -2,13 +2,9 @@ package com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.command3;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.kk.nio.mysqlproxy.mysqlpkg.bean.PkgResultSetHander;
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.PkgFlagEnum;
-import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServFlowEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateRspEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceContext;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceStateInf;

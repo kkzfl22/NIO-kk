@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 import com.kk.nio.mysql.packhandler.common.MySQLMessage;
 import com.kk.nio.mysqlproxy.mysqlpkg.bean.PkgResultSetHander;
-import com.kk.nio.mysqlproxy.util.BufferTools;
 
 /**
  * Result Set 消息体
@@ -13,14 +12,16 @@ import com.kk.nio.mysqlproxy.util.BufferTools;
  * [Result Set Header]列数量 当前消息体 [Field]列信息（多个） [EOF]列结束 [Row Data]行数据（多个）
  * [EOF]数据结束
  */
-public class PkgResultSetHeaderCode implements MysqlPkgDecodeInf {
+public class PkgResultSetHeaderCode extends DeCodeBase implements MysqlPkgDecodeInf {
 
 	@Override
-	public PkgResultSetHander readPackage(ByteBuffer context) {
+	public PkgResultSetHander readPackage(ByteBuffer context, int readPos) {
 		PkgResultSetHander result = new PkgResultSetHander();
 
+		context.position(readPos);
+
 		// 读取消息头
-		ByteBuffer headBuff = BufferTools.readLength(context);
+		ByteBuffer headBuff = this.readLength(context);
 
 		MySQLMessage message = new MySQLMessage(headBuff);
 		// 包大小

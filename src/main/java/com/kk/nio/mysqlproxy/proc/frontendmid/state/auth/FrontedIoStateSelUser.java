@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendIOHandStateInf;
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
+import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidStateEnum;
 
 /**
  * 进行查询版本的信息
@@ -47,6 +48,9 @@ public class FrontedIoStateSelUser implements FrontendIOHandStateInf {
 				handler.getBackMysqlConn().setReadPostion(0);
 				// 当前写入成功，则需要切换到读取状态，以读取当前上传的鉴权信息
 				handler.eventRigCancelWriteOpenRead();
+
+				// 将当前状态切换为查询版本的请求读取
+				handler.setCurrState(FrontendMidStateEnum.FRONTENDSTATE_CMDQUERY.getMysqlConnState());
 			}
 		}
 	}

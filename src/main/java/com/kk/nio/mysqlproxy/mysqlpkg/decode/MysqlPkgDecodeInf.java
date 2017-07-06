@@ -18,9 +18,11 @@ public interface MysqlPkgDecodeInf {
 	 * 
 	 * @param context
 	 *            解析的上下文信息
+	 * @param readPos
+	 *            读取的指针位置
 	 * @return
 	 * @创建日期 2016年12月9日
 	 */
-	public PkgHeader readPackage(ByteBuffer context);
+	public PkgHeader readPackage(ByteBuffer context, int readPos);
 
 }

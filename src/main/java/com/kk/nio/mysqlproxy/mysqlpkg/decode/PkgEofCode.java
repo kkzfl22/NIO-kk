@@ -12,9 +12,11 @@ import com.kk.nio.mysqlproxy.mysqlpkg.bean.PkgEofBean;
 public class PkgEofCode extends DeCodeBase implements MysqlPkgDecodeInf {
 
 	@Override
-	public PkgEofBean readPackage(ByteBuffer buffer) {
+	public PkgEofBean readPackage(ByteBuffer buffer, int readPos) {
 
 		PkgEofBean result = new PkgEofBean();
+
+		buffer.position(readPos);
 
 		// eof消息
 		ByteBuffer buffEof = this.readLength(buffer);

@@ -48,8 +48,25 @@ public class FrontedIoStateCmdQuery implements FrontendIOHandStateInf {
 	public void doWrite(FrontendMidConnnectHandler mysqlService) throws IOException {
 		if (context.getCurrState() != null) {
 			context.setFrontedConn(mysqlService);
-			//进行数据写入流程
+			// 进行数据写入流程
 			context.serviceDoInvoke();
+
+			// 进行当前位置的设置
+			ByteBuffer writeBuffer = mysqlService.getBackMysqlConn().getReadBuffer();
+
+			int pos = writeBuffer.position();
+			writeBuffer.position(0);
+			writeBuffer.limit(context.getReadPosition());
+
+			int writeSize = mysqlService.getChannel().write(writeBuffer);
+
+			// 重新设置buffer位置
+			writeBuffer.position(writeSize);
+			writeBuffer.limit(pos);
+
+			// 进行压缩
+			writeBuffer.compact();
+
 		}
 	}
 
