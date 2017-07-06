@@ -93,6 +93,13 @@ public class MultRector extends Thread {
 								connHandler.doRead();
 							} catch (IOException e) {
 								e.printStackTrace();
+								try {
+									connHandler.getSelKey().cancel();
+									connHandler.getChannel().close();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 							}
 						}
 						// 处理写入事件
@@ -102,6 +109,12 @@ public class MultRector extends Thread {
 								connHandler.doWrite();
 							} catch (IOException e) {
 								e.printStackTrace();
+								try {
+									connHandler.getSelKey().cancel();
+									connHandler.getChannel().close();
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								}
 							}
 						}
 

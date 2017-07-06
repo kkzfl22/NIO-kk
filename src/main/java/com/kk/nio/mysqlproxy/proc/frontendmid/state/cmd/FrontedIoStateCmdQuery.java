@@ -65,7 +65,7 @@ public class FrontedIoStateCmdQuery implements FrontendIOHandStateInf {
 			writeBuffer.limit(pos);
 
 			// 进行压缩
-			writeBuffer.compact();
+			writeBuffer.clear();
 
 		}
 	}

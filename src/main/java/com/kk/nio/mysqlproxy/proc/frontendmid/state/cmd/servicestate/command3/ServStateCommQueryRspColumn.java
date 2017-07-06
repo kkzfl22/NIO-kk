@@ -40,7 +40,7 @@ public class ServStateCommQueryRspColumn implements MysqlServiceStateInf {
 				// 如果检查当前为列结束
 				if (flag == PkgFlagEnum.PKG_EOF_FLAG.getPkgFlag()) {
 
-					mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
+					//mysqlService.setReadPosition(mysqlService.getReadPosition() + length);
 					// 下一步流程为行数据的检查
 					mysqlService.setCurrState(ServStateRspEnum.SERV_STATE_RSP_DATA_OVER.getStateProc());
 					// 执行下一步流程

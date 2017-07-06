@@ -11,6 +11,7 @@ import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServFlowEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateRspEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceContext;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceStateInf;
+import com.kk.nio.mysqlproxy.util.BufferTools;
 
 /**
  * 
@@ -46,6 +47,7 @@ public class ServStateCommQueryRspHeader implements MysqlServiceStateInf {
 			}
 			// 其他包按查询流程进行解析
 			else {
+
 				// 首先读取列数
 				PkgResultSetHander resultSetHeader = (PkgResultSetHander) PkgEnum.PKG_RESULTSET_HEAD.getPkgDecode()
 						.readPackage(readBuffer, mysqlService.getReadPosition());
@@ -55,8 +57,8 @@ public class ServStateCommQueryRspHeader implements MysqlServiceStateInf {
 					// 当前流程切换到进行响应列的部分解析中
 					mysqlService.setCurrState(ServStateRspEnum.SERV_STATE_RSP_COLUMN_OVER.getStateProc());
 
-					// 设置当前已经检查的大小
-					mysqlService.setReadPosition(resultSetHeader.getLength());
+					// 设置当前包的大小
+					mysqlService.setReadPosition(resultSetHeader.getLength() + 4);
 
 					// 将流程切换到下一个状态的检查
 					mysqlService.serviceDoInvoke();

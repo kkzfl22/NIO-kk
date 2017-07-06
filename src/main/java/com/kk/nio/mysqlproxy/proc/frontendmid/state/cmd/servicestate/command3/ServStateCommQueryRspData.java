@@ -65,6 +65,7 @@ public class ServStateCommQueryRspData implements MysqlServiceStateInf {
 
 						break;
 					}
+					break;
 				}
 			}
 
