@@ -30,7 +30,6 @@ public class DeCodeBase {
 		mapBuf.position(currPosition);
 		ByteBuffer copyBuf = mapBuf.slice();
 		copyBuf.limit(length);
-		mapBuf.position(currPosition + length);
 
 		return copyBuf;
 	}

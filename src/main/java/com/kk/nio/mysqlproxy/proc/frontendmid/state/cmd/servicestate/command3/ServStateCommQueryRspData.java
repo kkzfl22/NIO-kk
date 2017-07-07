@@ -28,12 +28,12 @@ public class ServStateCommQueryRspData implements MysqlServiceStateInf {
 
 		ByteBuffer readBuffer = handler.getBackMysqlConn().getReadBuffer();
 
-		while (mysqlService.getReadPosition() + 5 < readBuffer.limit()) {
+		while (mysqlService.getReadPosition() + 5 <= readBuffer.position()) {
 
 			// 进行eof包大小的解析
 			int length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
 
-			if (mysqlService.getReadPosition() + length <= readBuffer.limit()) {
+			if (mysqlService.getReadPosition() + length <=  readBuffer.position()) {
 
 				// 取出当前包的类型
 				byte pkgType = readBuffer.get(mysqlService.getReadPosition() + 4);
@@ -64,16 +64,17 @@ public class ServStateCommQueryRspData implements MysqlServiceStateInf {
 						mysqlService.serviceDoInvoke();
 
 						break;
-					}
-					else
-					{
-						//不再需要进行更多结果检查时，取消当前的事件，进行查询事件的注册 
+					} else {
+						// 不再需要进行更多结果检查时，取消当前的事件，进行查询事件的注册
 						// 取消写入事件的注册，并进行写入事件
 						mysqlService.getFrontedConn().eventRigCancelWriteOpenRead();
+
 						break;
 					}
-					
+
 				}
+			} else {
+				break;
 			}
 
 		}

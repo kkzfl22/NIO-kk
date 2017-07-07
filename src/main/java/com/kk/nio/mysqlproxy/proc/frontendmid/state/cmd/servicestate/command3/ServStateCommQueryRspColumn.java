@@ -25,12 +25,12 @@ public class ServStateCommQueryRspColumn implements MysqlServiceStateInf {
 
 		ByteBuffer readBuffer = handler.getBackMysqlConn().getReadBuffer();
 
-		while (mysqlService.getReadPosition() + 5 < readBuffer.limit()) {
+		while (mysqlService.getReadPosition() + 5 <  readBuffer.position()) {
 
 			// 读取消息头
 			int length = BufferTools.getLength(readBuffer, mysqlService.getReadPosition());
 
-			if (mysqlService.getReadPosition() + length <= readBuffer.limit()) {
+			if (mysqlService.getReadPosition() + length <=  readBuffer.position()) {
 
 				// 检查当前的包为eof包
 				byte flag = readBuffer.get(mysqlService.getReadPosition() + 4);
@@ -48,6 +48,10 @@ public class ServStateCommQueryRspColumn implements MysqlServiceStateInf {
 
 					break;
 				}
+			}
+			else
+			{
+				break;
 			}
 		}
 

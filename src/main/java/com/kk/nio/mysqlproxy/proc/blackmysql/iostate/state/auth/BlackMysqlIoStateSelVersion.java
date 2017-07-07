@@ -57,8 +57,8 @@ public class BlackMysqlIoStateSelVersion implements BlackMysqlIOStateInf {
 
 			// 如果当前写入成功，则将后端进行切换为鉴权结果检查
 			if (writePos == writeBuffer.position()) {
-				// 状态切换为检查的结果检查
-				handler.setCurrState(MysqIOStateEnum.BLACLMYSQLIOSTATE_AUTHRSP.getMysqlIOState());
+				// 状态切换为进行用户的查询
+				handler.setCurrState(MysqIOStateEnum.BLACLMYSQLIOSTATE_SELUSER.getMysqlIOState());
 				writeBuffer.clear();
 				handler.getMysqlConnStateContext().setWritePosition(0);
 

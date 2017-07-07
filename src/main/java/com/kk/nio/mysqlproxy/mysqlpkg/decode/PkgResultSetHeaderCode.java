@@ -18,10 +18,14 @@ public class PkgResultSetHeaderCode extends DeCodeBase implements MysqlPkgDecode
 	public PkgResultSetHander readPackage(ByteBuffer context, int readPos) {
 		PkgResultSetHander result = new PkgResultSetHander();
 
+		int oldPos = context.position();
+
 		context.position(readPos);
 
 		// 读取消息头
 		ByteBuffer headBuff = this.readLength(context);
+
+		context.position(oldPos);
 
 		MySQLMessage message = new MySQLMessage(headBuff);
 		// 包大小

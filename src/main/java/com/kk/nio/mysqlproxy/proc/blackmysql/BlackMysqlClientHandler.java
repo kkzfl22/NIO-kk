@@ -1,6 +1,7 @@
 package com.kk.nio.mysqlproxy.proc.blackmysql;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import com.kk.nio.demo.midd.memory.MemoryPool;
 import com.kk.nio.mysqlproxy.memory.ByteBufferPool;
@@ -35,8 +36,10 @@ public class BlackMysqlClientHandler extends ConnectHandler {
 	public BlackMysqlClientHandler() {
 		currConnState = MysqlConnStateEnum.BLACLMYSQLCONNSTATE_CONN.getMysqlConnState();
 		// 分别配制读取与写入的buffer信息
-		this.setReadBuffer(ByteBufferPool.Instance().allocate(1024 * 1024));
-		this.setWriteBuffer(ByteBufferPool.Instance().allocate(1024 * 1024));
+//		this.setReadBuffer(ByteBufferPool.Instance().allocate(170));
+//		this.setWriteBuffer(ByteBufferPool.Instance().allocate(170));
+		this.setReadBuffer(ByteBuffer.allocateDirect(400));
+		this.setWriteBuffer(ByteBuffer.allocateDirect(400));
 
 		iostateContext.setMysqlConnStateContext(this);
 	}

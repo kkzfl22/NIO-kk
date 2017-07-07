@@ -15,7 +15,12 @@ public enum ServStateReqEnum {
 	/**
 	 * 进行查询存储过程等，以命令包为3的类型处理
 	 */
-	STATE_COMM_PROCQUERY((byte) 3, new ServStateCommQuery());
+	STATE_COMM_PROCQUERY((byte) 3, new ServStateCommQuery()),
+
+	/**
+	 * 进行查询存储过程等，以命令包为3的类型处理
+	 */
+	STATE_COMM_USE((byte) 2, new ServStateCommQuery());
 
 	/**
 	 * 包标识信息

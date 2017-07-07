@@ -3,6 +3,7 @@ package com.kk.nio.mysqlproxy.proc.blackmysql.iostate.state.auth;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import com.kk.nio.demo.midd.handler.blackmysqlconn.MysqlIoStateEnum;
 import com.kk.nio.demo.midd.util.ByteBufferTools;
 import com.kk.nio.mysqlproxy.proc.blackmysql.MysqlConnStateEnum;
 import com.kk.nio.mysqlproxy.proc.blackmysql.iostate.BlackMysqlIOStateContext;
@@ -41,6 +42,10 @@ public class BlackMysqlIoStateSelUser implements BlackMysqlIOStateInf {
 				// 当前的数据发送完成，登录流程已经结束！则切换到流程使用
 				handler.getMysqlConnStateContext()
 						.setCurrConnState(MysqlConnStateEnum.BLACLMYSQLCONNSTATE_USE.getMysqlConnState());
+
+				// 连接完结，则切换到透传的流程
+				handler.getMysqlConnStateContext().getIostateContext()
+						.setCurrState(MysqIOStateEnum.BLACKMYSQLIOSTATE_QUEYRCOMMAND.getMysqlIOState());
 
 			}
 
