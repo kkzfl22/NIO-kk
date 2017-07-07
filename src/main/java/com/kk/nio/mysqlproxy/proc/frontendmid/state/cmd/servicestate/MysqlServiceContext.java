@@ -31,6 +31,11 @@ public class MysqlServiceContext {
 	private int readPosition;
 
 	/**
+	 * 写入的数据位置信息
+	 */
+	private int writePosition;
+
+	/**
 	 * 透传所引用的对象
 	 */
 	private Map<String, Object> transBeanMap = new HashMap<>();
@@ -73,6 +78,14 @@ public class MysqlServiceContext {
 
 	public void putTransBean(String key, Object value) {
 		this.transBeanMap.put(key, value);
+	}
+
+	public int getWritePosition() {
+		return writePosition;
+	}
+
+	public void setWritePosition(int writePosition) {
+		this.writePosition = writePosition;
 	}
 
 }

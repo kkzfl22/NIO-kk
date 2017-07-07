@@ -65,7 +65,14 @@ public class ServStateCommQueryRspData implements MysqlServiceStateInf {
 
 						break;
 					}
-					break;
+					else
+					{
+						//不再需要进行更多结果检查时，取消当前的事件，进行查询事件的注册 
+						// 取消写入事件的注册，并进行写入事件
+						mysqlService.getFrontedConn().eventRigCancelWriteOpenRead();
+						break;
+					}
+					
 				}
 			}
 

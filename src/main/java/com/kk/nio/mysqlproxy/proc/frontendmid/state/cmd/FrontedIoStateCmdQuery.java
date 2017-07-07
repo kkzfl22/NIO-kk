@@ -60,11 +60,9 @@ public class FrontedIoStateCmdQuery implements FrontendIOHandStateInf {
 
 			int writeSize = mysqlService.getChannel().write(writeBuffer);
 
-			// 重新设置buffer位置
-			writeBuffer.position(writeSize);
-			writeBuffer.limit(pos);
-
-			// 进行压缩
+			context.setWritePosition(context.getWritePosition() + writeSize);
+			
+			//数据写入完毕，清理buffer
 			writeBuffer.clear();
 
 		}

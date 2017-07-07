@@ -11,7 +11,6 @@ import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServFlowEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateRspEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceContext;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceStateInf;
-import com.kk.nio.mysqlproxy.util.BufferTools;
 
 /**
  * 
@@ -27,7 +26,7 @@ public class ServStateCommQueryRspHeader implements MysqlServiceStateInf {
 
 		ByteBuffer readBuffer = handler.getBackMysqlConn().getReadBuffer();
 
-		if (readBuffer.position() > 5) {
+		if (mysqlService.getReadPosition() + 5 <= readBuffer.position()) {
 			// 首先检查当前包是否为错误响应包
 			byte flag = readBuffer.get(4);
 
