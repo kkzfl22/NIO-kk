@@ -21,6 +21,12 @@ public enum PkgFlagEnum {
 	
 	
 	/**
+	 * 返回的响应消息的验证
+	 */
+	PKG_TABULAR_FLAG((byte)0xfb),
+	
+	
+	/**
 	 * 错误包标识
 	 */
 	PKG_ERROR_FLAG((byte) 0xff);

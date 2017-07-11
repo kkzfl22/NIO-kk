@@ -50,8 +50,8 @@ public class FrontedIoStateSelVersion implements FrontendIOHandStateInf {
 				handler.eventRigCancelWriteOpenRead();
 
 				// 将当前状态切换为查询版本的请求读取
-				handler.setCurrState(FrontendMidStateEnum.FRONTENDSTATE_SELUSER.getMysqlConnState());
-				//handler.setCurrState(FrontendMidStateEnum.FRONTENDSTATE_CMDQUERY.getMysqlConnState());
+				// handler.setCurrState(FrontendMidStateEnum.FRONTENDSTATE_SELUSER.getMysqlConnState());
+				handler.setCurrState(FrontendMidStateEnum.FRONTENDSTATE_CMDQUERY.getMysqlConnState());
 			}
 		}
 	}

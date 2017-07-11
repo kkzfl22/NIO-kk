@@ -16,10 +16,14 @@ public class PkgEofCode extends DeCodeBase implements MysqlPkgDecodeInf {
 
 		PkgEofBean result = new PkgEofBean();
 
+		int oldPos = buffer.position();
+
 		buffer.position(readPos);
 
 		// eof消息
 		ByteBuffer buffEof = this.readLength(buffer);
+
+		buffer.position(oldPos);
 
 		MySQLMessage mm = new MySQLMessage(buffEof);
 		// 包大小

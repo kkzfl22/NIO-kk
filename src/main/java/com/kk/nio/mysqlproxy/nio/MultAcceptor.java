@@ -132,7 +132,7 @@ public class MultAcceptor extends Thread {
 								FrontendMidConnnectHandler midConn = new FrontendMidConnnectHandler();
 
 								// 设置后端的连接对象信息
-								this.registBlackConn("172.16.18.167", 3306, midConn);
+								this.registBlackConn("192.168.3.13", 3306, midConn);
 
 								// 将连接注册到多路的rector中
 								int index = ThreadLocalRandom.current().nextInt(0, rectors.length - 1);

@@ -44,9 +44,16 @@ public class ServStateCommQueryRspHeader implements MysqlServiceStateInf {
 				// 取消写入事件的注册，并进行写入事件
 				mysqlService.getFrontedConn().eventRigCancelWriteOpenRead();
 			}
+			//如果当前为tabular包
+			else if(flag == PkgFlagEnum.PKG_TABULAR_FLAG.getPkgFlag())
+			{
+				// 当前流程结束 ，直接透传
+				mysqlService.setReadPosition(readBuffer.position());
+				// 取消写入事件的注册，并进行写入事件
+				mysqlService.getFrontedConn().eventRigCancelWriteOpenRead();
+			}
 			// 其他包按查询流程进行解析
 			else {
-
 				// 首先读取列数
 				PkgResultSetHander resultSetHeader = (PkgResultSetHander) PkgEnum.PKG_RESULTSET_HEAD.getPkgDecode()
 						.readPackage(readBuffer, mysqlService.getReadPosition());
