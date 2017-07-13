@@ -2,6 +2,7 @@ package com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console;
 
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceStateInf;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.command3.ServStateCommQuery;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.command3.ServStateLoaderDataTrans;
 
 /**
  * mysql的业务的状态
@@ -20,7 +21,13 @@ public enum ServStateReqEnum {
 	/**
 	 * 进行查询存储过程等，以命令包为3的类型处理
 	 */
-	STATE_COMM_USE((byte) 2, new ServStateCommQuery());
+	STATE_COMM_USE((byte) 2, new ServStateCommQuery()),
+	
+	
+	/**
+	 * 进行loaderdata的数据透传
+	 */
+	STATE_TABULAR_LOADDATA((byte)0xfb,new ServStateLoaderDataTrans());
 
 	/**
 	 * 包标识信息

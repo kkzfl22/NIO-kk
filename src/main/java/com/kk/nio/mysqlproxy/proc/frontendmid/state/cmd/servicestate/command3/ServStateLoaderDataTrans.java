@@ -14,7 +14,7 @@ import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServic
  * @version 0.0.1
  * @author liujun
  */
-public class ServStateCommQuery implements MysqlServiceStateInf {
+public class ServStateLoaderDataTrans implements MysqlServiceStateInf {
 
 	@Override
 	public void serviceDoInvoke(MysqlServiceContext mysqlService) throws IOException {
@@ -25,26 +25,13 @@ public class ServStateCommQuery implements MysqlServiceStateInf {
 
 		handler.getBackMysqlConn().setWritePosition(writeBuffer.position());
 
-		// 首先检查当前数据的最后4个字节是否为000,如果发现此，证明load data的透传已经结束
-		if(checkDataTransOver(writeBuffer))
-		{
-			
-		}
+		// 设置当前的解析的状态为查询响应ok包的检查
+		mysqlService.setCurrState(ServStateRspEnum.SERV_STATE_RSP_HEADER_OVER.getStateProc());
 
 		// 取消当前的读取事件
 		handler.eventRigCancelRead();
 		// 注册后端的写入事件
 		handler.getBackMysqlConn().eventRigOpenWrite();
-	}
-
-	private boolean checkDataTransOver(ByteBuffer writeBuffer) {
-		for (int i = writeBuffer.position() - 1; i > writeBuffer.position() - 4; i--) {
-			if(writeBuffer.get(i) != 0)
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 
 }

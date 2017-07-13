@@ -8,6 +8,7 @@ import com.kk.nio.mysqlproxy.mysqlpkg.console.PkgEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.FrontendMidConnnectHandler;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.PkgFlagEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServFlowEnum;
+import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateReqEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.console.ServStateRspEnum;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceContext;
 import com.kk.nio.mysqlproxy.proc.frontendmid.state.cmd.servicestate.MysqlServiceStateInf;
@@ -44,13 +45,15 @@ public class ServStateCommQueryRspHeader implements MysqlServiceStateInf {
 				// 取消写入事件的注册，并进行写入事件
 				mysqlService.getFrontedConn().eventRigCancelWriteOpenRead();
 			}
-			//如果当前为tabular包
-			else if(flag == PkgFlagEnum.PKG_TABULAR_FLAG.getPkgFlag())
-			{
+			// 如果当前为tabular包
+			else if (flag == PkgFlagEnum.PKG_TABULAR_FLAG.getPkgFlag()) {
 				// 当前流程结束 ，直接透传
 				mysqlService.setReadPosition(readBuffer.position());
 				// 取消写入事件的注册，并进行写入事件
 				mysqlService.getFrontedConn().eventRigCancelWriteOpenRead();
+
+				// 设置处理的状态
+				mysqlService.setCurrState(ServStateReqEnum.STATE_TABULAR_LOADDATA.getStateProc());
 			}
 			// 其他包按查询流程进行解析
 			else {

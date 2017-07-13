@@ -1,0 +1,14 @@
+load data local infile "/root/mysql/loaddata.txt" 
+into table usermsg
+fields terminated by ',' 
+lines terminated by '\n' 
+(userId,name)
+;
+
+
+load data local infile "/root/mysql/loaddata_big.txt" 
+into table usermsg
+fields terminated by ',' 
+lines terminated by '\n' 
+(userId,name)
+;

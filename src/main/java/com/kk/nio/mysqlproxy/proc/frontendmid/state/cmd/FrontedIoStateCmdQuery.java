@@ -28,18 +28,26 @@ public class FrontedIoStateCmdQuery implements FrontendIOHandStateInf {
 
 		int readPos = handler.getChannel().read(writeBuffer);
 
-		if (readPos > 4) {
+		// 首先检查当前状态有没有被设置，如果已经设置，则优先执行状态
+		if (context.getCurrState() != null) {
+			context.setFrontedConn(handler);
+			// 进行状态的读取流程
+			context.serviceDoInvoke();
+		}
+		// 如果没有被设置，则进行解包验证过程
+		else {
+			if (readPos > 4) {
+				// 当读取到数据后，开始解析byte字符，找到当前请求的上下文中的类型标识
+				byte flag = writeBuffer.get(4);
 
-			// 当读取到数据后，开始解析byte字符，找到当前请求的上下文中的类型标识
-			byte flag = writeBuffer.get(4);
+				ServStateReqEnum stateProc = ServStateReqEnum.getpkgProc(flag);
 
-			ServStateReqEnum stateProc = ServStateReqEnum.getpkgProc(flag);
-
-			if (null != stateProc) {
-				context.setCurrState(stateProc.getStateProc());
-				context.setFrontedConn(handler);
-				// 进行状态的读取流程
-				context.serviceDoInvoke();
+				if (null != stateProc) {
+					context.setCurrState(stateProc.getStateProc());
+					context.setFrontedConn(handler);
+					// 进行状态的读取流程
+					context.serviceDoInvoke();
+				}
 			}
 		}
 	}
