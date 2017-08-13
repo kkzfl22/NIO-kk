@@ -12,3 +12,9 @@ fields terminated by ','
 lines terminated by '\n' 
 (userId,name)
 ;
+
+
+create table usermsg(
+userId int  not null primary key,
+name varchar(20) not null
+);
