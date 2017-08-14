@@ -2,13 +2,18 @@
 begin;
 
 
-insert into usermsg (name)
-values('zz4');
+insert into usermsg (userid,name)
+values(500003,'zz4');
 
 update usermsg
 set name='cc3'
 where userid=5;
 
+select count(1) from usermsg;
+
+
+insert into usermsg (userid,name)
+values(500005,'zz6');
 
 commit;
 
@@ -28,6 +33,35 @@ where userid>5;
 
 rollback;
 
+
+--带loaddata的事务操作脚本
+
+begin;
+
+
+insert into usermsg (userid,name)
+values(500003,'zz4');
+
+update usermsg
+set name='cc3'
+where userid=5;
+
+select count(1) from usermsg;
+
+
+insert into usermsg (userid,name)
+values(500005,'zz6');
+
+
+load data local infile "/root/mysql/loaddata_500.txt" 
+into table usermsg
+fields terminated by ',' 
+lines terminated by '\n' 
+(userId,name)
+;
+
+
+commit;
 
 
 
