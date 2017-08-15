@@ -79,7 +79,7 @@ update usermsg
 set name='cc3'
 where userid=5;
 
-select count(1) from usermsg;
+select * from usermsg limit 5;
 
 
 insert into usermsg (userid,name)
@@ -92,6 +92,8 @@ fields terminated by ','
 lines terminated by '\n' 
 (userId,name)
 ;
+
+select count(1) from usermsg;
 
 
 rollback;
