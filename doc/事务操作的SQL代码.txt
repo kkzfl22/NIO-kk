@@ -1,4 +1,6 @@
 
+use mycatdb;
+
 begin;
 
 
@@ -13,7 +15,7 @@ select count(1) from usermsg;
 
 
 insert into usermsg (userid,name)
-values(500005,'zz6');
+values(503208,'zz6');
 
 commit;
 
