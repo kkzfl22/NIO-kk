@@ -30,7 +30,7 @@ values('zz4');
 
 update usermsg
 set name='cc6'
-where userid>5;
+where userid=5;
 
 
 rollback;
