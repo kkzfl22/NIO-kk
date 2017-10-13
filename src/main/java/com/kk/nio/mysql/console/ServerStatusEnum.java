@@ -109,9 +109,12 @@ public enum ServerStatusEnum {
 	}
 	
 	public static void main(String[] args) {
-		boolean result = ServerStatusEnum.StatusCheck(0x0002, ServerStatusEnum.MORE_RESULTS);
-		
+		boolean result = ServerStatusEnum.StatusCheck(0x0003, ServerStatusEnum.IN_TRANSACTION);
 		System.out.println(result);
+		boolean resultauto = ServerStatusEnum.StatusCheck(0x0003, ServerStatusEnum.AUTO_COMMIT);
+		System.out.println(resultauto);
+		boolean resulresult = ServerStatusEnum.StatusCheck(0x0003, ServerStatusEnum.MORE_RESULTS);
+		System.out.println(resulresult);
 	}
 
 }

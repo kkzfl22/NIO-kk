@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpe-lession-web
+spec:
+  type: NodePort
+  sessionAffinity: ClientIP
+  selector:
+    app: hpe-lession-web
+  ports:
+    - port: 8080
+      nodePort: 30082
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: web-pv-claim
+  labels:
+    app: hpe-lession-web
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---      
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: hpe-lession-web
+spec:
+  replicas: 1
+  selector:
+      app: hpe-lession-web
+  template:
+    metadata:
+      labels:
+        app: hpe-lession-web
+    spec:
+      containers:
+      - name: hpe-lession-web
+        image: hpe_k8s_lession_image
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: mysql_ip
+          value: "hpe-k8s-mysql"
+        - name: user
+          value: "lession"
+        - name: password
+          value: "mypass"
+        volumeMounts:
+        - name: hpe-lessionweb-storage
+          mountPath: /usr/webapps
+      volumes:
+        - name: hpe-lessionweb-storage
+          persistentVolumeClaim:
+          claimName: web-pv-claim

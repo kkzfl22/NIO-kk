@@ -1,0 +1,13 @@
+piVersion: v1
+kind: Pod
+metadata:
+ name: nginx-pod
+ lables:
+  name: ngix
+spec:
+ containers:
+ -image: nginx
+ name: nginx
+ imagePullPolicy: ifNotPresent
+ ports:
+  -containerPort: 80
