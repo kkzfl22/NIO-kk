@@ -1,0 +1,74 @@
+﻿
+mysql -uroot -p123456 -P8066 
+
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4800;
+
+
+
+
+/*! mycat:cacheresult cache_time=450 auto_refresh=true access_count=200 */ select * from usermsg limit 4800;
+
+
+
+
+
+/*! mycat:cacheresult cache_time=120 auto_refresh=true access_count=60 */ select * from usermsg limit 4800;
+
+
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4100;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4200;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4300;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4400;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4500;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4600;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4700;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4800;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 4900;
+
+mysql -uroot -p123456 -P8066 
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5000;
+
+
+
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5002;
+
+
+
+
+
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5002;
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5004;
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5005;
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5006;
+/*! mycat:cacheresult cache_time=60 auto_refresh=true access_count=30 */ select * from usermsg limit 5007;
+
